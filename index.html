@@ -112,44 +112,45 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles</h2>
-    <p><b>But :</b> remporter 2 manches sur 3. À chaque manche, le total de PUI de tes combattants est comparé à celui de l'adversaire : le plus haut gagne la manche.</p>
-    <p><b>Tour :</b> tu joues une carte (en payant son coût en Ki) ou tu passes. Au début de ton tour, tu gagnes 1 Ki (maximum 8) et tu pioches 1 carte. Une manche se termine quand les deux joueurs ont passé.</p>
-    <p><b>Ki de combat :</b> chaque fois qu'un de tes combattants est mis KO, tu gagnes 1 Ki (maximum 8).</p>
-    <p><b>Évolution :</b> pose la forme suivante sur le combattant qui la précède (Goku → Goku Super Saiyan).</p>
-    <p><b>Capacités spéciales :</b> les icônes sur les cartes indiquent leurs effets.</p>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>
-      <span><b>Rayon d'énergie</b> (Kamehameha, Galick Gun, Death Ball…) : à la pose, inflige ses dégâts à un combattant ennemi de ton choix.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg>
-      <span><b>Furie</b> (Gohan SSJ2, Kale) : +1 PUI chaque fois qu'un allié est mis KO.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg>
-      <span><b>Régénération</b> (Buu, Kid Buu) : revient dans ta main après un KO, une fois par manche.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#7b3fc4"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg>
-      <span><b>Absorption</b> (Cell, Super Buu) : +2 PUI chaque fois qu'un ennemi est mis KO pendant qu'il est en jeu.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>
-      <span><b>Soutien</b> (Krillin) : +1 PUI à chacun de tes autres combattants.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><polygon points="12,2 14.9,8.6 22,9.3 16.6,14 18.2,21 12,17.3 5.8,21 7.4,14 2,9.3 9.1,8.6" fill="#e0a800"/></svg>
-      <span><b>Divin</b> (Beerus, Whis) : immunisé aux dégâts des rayons, des ondes et des explosions.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><polygon points="12,1 14,7 20,3 17,9 23,10 18,13 22,19 16,17 15,23 12,18 9,23 8,17 2,19 6,13 1,10 7,9 4,3 10,7" fill="#ff7a00"/></svg>
-      <span><b>Explosion</b> (Chaozu, Gotenks) : à sa mort, inflige ses dégâts au combattant ennemi le plus fort.</span>
-    </div>
-    <div class="leg">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#1f8f8f"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="#1f8f8f" stroke-width="2"/><circle cx="12" cy="12" r="11" fill="none" stroke="#1f8f8f" stroke-width="1.5" opacity=".6"/></svg>
-      <span><b>Onde de choc</b> (Jiren) : à la pose, inflige ses dégâts à tous les combattants ennemis.</span>
-    </div>
-    <p><b>Mise en place :</b> chaque joueur a un deck de 20 cartes et pioche 5 cartes. Les Tempéraments ne sont pas encore actifs dans cette version.</p>
+<h3>Le but</h3>
+<p>Gagne <b>2 manches sur 3</b>. La partie s'arrête dès qu'un joueur a gagné 2 manches, ou après 3 manches.</p>
+
+<h3>La PUI et la manche</h3>
+<p>Chaque combattant a une <b>PUI</b> (sa force), affichée sur sa carte. À la fin d'une manche, on additionne la PUI de tous les combattants de chaque joueur. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne la manche.</p>
+
+<h3>Mise en place</h3>
+<p>Chaque joueur a un deck de 20 cartes et pioche 5 cartes pour former sa main. Ton plateau compte 3 emplacements pour les combattants.</p>
+<p>Au début de chaque manche, les combattants restants sont retirés du plateau et vont à la défausse. La première manche commence par toi. Ensuite, c'est le joueur qui a perdu la manche précédente qui commence ; en cas d'égalité, c'est l'autre joueur.</p>
+
+<h3>Ton tour</h3>
+<p>Au début de ton tour, tu gagnes <b>1 Ki</b> (8 maximum) et tu pioches <b>1 carte</b> si ta main en compte moins de 5. Ensuite, tu fais une seule action :</p>
+<ul>
+  <li><b>Jouer une carte</b> : paie son coût en Ki (indiqué par « Ki » sur la carte), puis pose-la sur un emplacement libre de ton plateau.</li>
+  <li><b>Passer</b> : tu ne joues rien pour ce tour.</li>
+</ul>
+<p>La manche se termine dès que les deux joueurs ont passé. Le Ki non dépensé est conservé d'un tour à l'autre, dans la limite de 8.</p>
+
+<h3>Évolution</h3>
+<p>Une carte d'évolution (par exemple Goku → Goku Super Saiyan) se pose <b>directement sur le combattant qui la précède</b>, sans emplacement libre. Le combattant d'origine part à la défausse et la nouvelle forme prend sa place, sans dégâts ni bonus.</p>
+
+<h3>Combattant KO</h3>
+<p>Un combattant est <b>mis KO</b> quand sa PUI tombe à 0 ou moins. Il part alors à la défausse, sauf s'il a la Régénération. Les dégâts subis ne durent que pour la manche en cours.</p>
+
+<h3>Ki de combat</h3>
+<p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b> (8 maximum), quel que soit celui qui l'a mis KO.</p>
+
+<h3>Capacités</h3>
+<p>Les icônes sur les cartes indiquent leurs capacités. Le chiffre à côté d'une icône indique sa valeur (par exemple les dégâts d'un Rayon).</p>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg><span><b>Rayon d'énergie</b> (Kamehameha, Galick Gun, Death Ball) : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg><span><b>Furie</b> (Gohan SSJ2, Kale) : ce combattant gagne +1 PUI chaque fois qu'un de tes combattants est mis KO.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg><span><b>Régénération</b> (Buu, Kid Buu) : une fois par manche, quand ce combattant est mis KO, il retourne dans ta main au lieu de la défausse.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#7b3fc4"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg><span><b>Absorption</b> (Cell, Super Buu) : ce combattant gagne +2 PUI chaque fois qu'un combattant ennemi est mis KO.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg><span><b>Soutien</b> (Krillin) : tant que ce combattant est en jeu, tes autres combattants gagnent +1 PUI chacun.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 14.9,8.6 22,9.3 16.6,14 18.2,21 12,17.3 5.8,21 7.4,14 2,9.3 9.1,8.6" fill="#e0a800"/></svg><span><b>Divin</b> (Beerus, Whis) : ce combattant ne subit aucun dégât des Rayons, des Ondes ou des Explosions.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,1 14,7 20,3 17,9 23,10 18,13 22,19 16,17 15,23 12,18 9,23 8,17 2,19 6,13 1,10 7,9 4,3 10,7" fill="#ff7a00"/></svg><span><b>Explosion</b> (Chaozu, Gotenks) : quand ce combattant est mis KO, il inflige ses dégâts au combattant ennemi le plus fort (sauf Divin).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#1f8f8f"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="#1f8f8f" stroke-width="2"/><circle cx="12" cy="12" r="11" fill="none" stroke="#1f8f8f" stroke-width="1.5" opacity=".6"/></svg><span><b>Onde de choc</b> (Jiren) : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.</span></div>
+<h3>Note</h3>
+<p>Les Tempéraments ne sont pas encore actifs dans cette version.</p>
 <button class="primary" id="btnRulesClose" type="button">Fermer</button></div></div>
 
 <script>
