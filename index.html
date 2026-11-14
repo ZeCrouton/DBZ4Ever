@@ -50,24 +50,34 @@ details .leg svg{width:20px;height:20px;flex:none}
 .over .box{background:var(--surface);border-radius:12px;padding:24px;max-width:380px;text-align:center}
 .hidden{display:none}
 @media (max-width:480px){.card,.slot{width:30vw;max-width:112px}.card .nm{font-size:11px}}
+/* Disposition mobile façon Yen4Ever : barre en haut, main fixe en bas, plateau au centre */
+body{padding-top:56px;padding-bottom:300px}
+header.top{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap}
+header.top h1{font-size:16px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+header.top .tools{display:flex;gap:6px;flex:0 0 auto}
+header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
+.status{justify-content:center;margin:0 0 10px;font-size:13px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -6px 14px rgba(0,0,0,.18);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}
+.dock #msg{min-height:0;padding:6px 10px;margin:0 0 6px;font-size:13px}
+.handhead{font-size:13px;margin:0 0 4px;color:var(--you)}
+.dock .hand{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:8px;gap:8px;border-radius:10px;-webkit-overflow-scrolling:touch}
+.dock .hand .card{width:84px;flex:0 0 auto;padding:4px}
+.dock .hand .card img{height:62px;object-fit:cover}
+.dock .hand .card .nm{font-size:10px;min-height:0;margin:4px 0 2px}
+.dock .hand .card .ev{display:none}
+.dock .hand .card .icons{min-height:0}
+.dock .hand .card.sel{transform:translateY(-8px);outline:3px solid var(--you);outline-offset:2px}
+.dock .actions{margin:6px 0 0;gap:6px}
+.dock .actions button{padding:6px 10px;font-size:13px}
+@media (max-width:480px){.dock .hand .card{width:76px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Dragon Ball : Le Tournoi des Guerriers</h1>
-  <div class="status" id="status"></div>
-</header>
+<header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span class="tools"><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
 <main>
-  <div id="msg"></div>
+  <div class="status" id="status"></div>
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
-  <h2 style="font-size:14px;font-weight:bold;margin:4px 0 8px;color:var(--you)" id="handTitle"></h2>
-  <div class="hand" id="hand"></div>
-  <div class="actions">
-    <button id="btnPass" class="primary">Passer</button>
-    <button id="btnCancel">Annuler la sélection</button>
-    <button id="btnNew">Nouvelle partie</button>
-  </div>
   <details>
     <summary>Règles</summary>
     <p><b>But :</b> remporter 2 manches sur 3, comme au Gwent. À chaque manche, le total de PUI de tes combattants est comparé à celui de l'adversaire : le plus haut gagne la manche.</p>
@@ -109,6 +119,7 @@ details .leg svg{width:20px;height:20px;flex:none}
     <p><b>Mise en place :</b> chaque joueur a un deck de 20 cartes et pioche 5 cartes. Les Tempéraments ne sont pas encore actifs dans cette version.</p>
   </details>
 </main>
+<footer class="dock"><div id="msg"></div><h2 class="handhead" id="handTitle"></h2><div class="hand" id="hand"></div><div class="actions"><button id="btnPass" class="primary">Passer</button><button id="btnCancel">Annuler la sélection</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><button class="primary" id="btnOver"></button></div></div>
 
 <script>
@@ -409,6 +420,44 @@ function render(){
     cardHTML(id, { cls: sel && sel.t === 'h' && sel.i === i ? 'sel' : '', attrs: `onclick="onHand(${i})"` })).join('')
     || '<p style="color:var(--muted)">Main vide.</p>';
 }
+
+/* ---------- Musique de fond : 3 morceaux tirés au hasard pendant la partie ---------- */
+const TRACKS = ['music/track-1.mp3', 'music/track-2.mp3', 'music/track-3.mp3'];
+const bgm = new Audio();
+bgm.volume = 0.35;
+let muted = false;
+let lastTrack = -1;
+try { muted = localStorage.getItem('dbzMuted') === '1'; } catch (e) {}
+function nextTrack(){
+  let i;
+  do { i = Math.floor(Math.random() * TRACKS.length); } while (i === lastTrack && TRACKS.length > 1);
+  lastTrack = i;
+  return i;
+}
+function startMusic(){
+  if (muted) return;
+  if (!bgm.getAttribute('src')) bgm.src = TRACKS[nextTrack()];
+  const r = bgm.play();
+  if (r && r.catch) r.catch(() => {});
+}
+bgm.addEventListener('ended', () => { bgm.src = TRACKS[nextTrack()]; startMusic(); });
+function paintSound(){
+  const b = $('btnSound');
+  b.textContent = muted ? 'Son : off' : 'Son : on';
+  b.setAttribute('aria-pressed', String(muted));
+}
+$('btnSound').onclick = () => {
+  muted = !muted;
+  try { localStorage.setItem('dbzMuted', muted ? '1' : '0'); } catch (e) {}
+  if (muted) bgm.pause(); else startMusic();
+  paintSound();
+};
+// Les navigateurs bloquent l'audio avant une première interaction : on démarre au premier toucher.
+document.addEventListener('pointerdown', function firstTouch(){
+  startMusic();
+  document.removeEventListener('pointerdown', firstTouch);
+});
+paintSound();
 
 $('btnPass').onclick = passTurn;
 $('btnNew').onclick = newGame;
