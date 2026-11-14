@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dragon Ball : Le Tournoi des Guerriers</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#f47c20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DBZ Tournoi">
 <style>
 :root{--bg:#f4f5f7;--surface:#ffffff;--text:#1d1f24;--muted:#5f6670;--border:#d9dde3;--you:#1e5fb8;--you-bg:#e4eefb;--ai:#b3261e;--ai-bg:#fbe7e5;--ki:#c77700;--danger:#b3261e;--ok:#2e7d32}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#15171c;--surface:#1f2229;--text:#eceef2;--muted:#9aa3ae;--border:#363b45;--you:#7fb2ff;--you-bg:#1a2438;--ai:#ff8a80;--ai-bg:#3a1f22;--ki:#ffc94d;--danger:#ff8a80;--ok:#81c784}}
@@ -102,7 +108,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock"><div id="msg"></div><h2 class="handhead" id="handTitle"></h2><div class="hand" id="hand"></div><div class="actions"><button id="btnPass" class="primary">Passer</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button></div></footer>
+<footer class="dock"><div id="msg"></div><h2 class="handhead" id="handTitle"></h2><div class="hand" id="hand"></div><div class="actions"><button id="btnPass" class="primary">Passer</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button" hidden>Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles</h2>
@@ -602,6 +608,24 @@ function sfx(){
     o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.26);
   } catch (e) {}
 }
+
+// Installation sur l'écran d'accueil (comme une application)
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+let installPrompt = null;
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
+if (!isStandalone) {
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; $('btnAddHome').hidden = false; });
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) $('btnAddHome').hidden = false;
+}
+window.addEventListener('appinstalled', () => { installPrompt = null; $('btnAddHome').hidden = true; });
+$('btnAddHome').onclick = () => {
+  if (installPrompt) {
+    installPrompt.prompt();
+    installPrompt.userChoice.then(() => { installPrompt = null; $('btnAddHome').hidden = true; });
+  } else {
+    msg("Sur iPhone : touchez le bouton Partager ⬆︎ de Safari, puis « Sur l'écran d'accueil ».");
+  }
+};
 
 if (!loadGame()) newGame();
 </script>
