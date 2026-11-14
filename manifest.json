@@ -1,0 +1,13 @@
+{
+  "name": "Dragon Ball : Le Tournoi des Guerriers",
+  "short_name": "DBZ Tournoi",
+  "description": "Jeu de cartes Dragon Ball à deux joueurs.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f7",
+  "theme_color": "#f47c20",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
