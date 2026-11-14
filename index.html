@@ -79,6 +79,14 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 #inspImg{width:150px;height:auto;border-radius:10px;display:block;margin:0 auto 10px}
 #inspect{cursor:pointer}
 .insp-hint{font-size:12px;color:var(--muted)}
+/* Main du joueur au premier plan ; carte agrandie non tronquée ; zoom +20 % */
+.board{scroll-margin-top:64px}
+.dock{z-index:8}
+.over{z-index:9}
+.dock .hand{padding-top:30px}
+.dock .hand .card{position:relative}
+.dock .hand .card.sel{transform:translateY(-14px) scale(1.2);transform-origin:50% 100%;z-index:2}
+#inspImg{width:180px}
 </style>
 </head>
 <body>
@@ -250,6 +258,7 @@ function startTurn(){
   if (cur === HUMAN) msg('À toi de jouer : une carte ou Passer.');
   else msg('L\'ordinateur réfléchit…');
   render();
+  focusTurn();
   if (cur === AI) scheduleAI(900);
 }
 
@@ -485,6 +494,11 @@ $('btnCancel').onclick = () => { sel = null; msg(''); render(); };
 
 /* ---------- Mécaniques de l'app : sauvegarde, fenêtres, plein écran, son ---------- */
 const SAVE_KEY = 'dbzSave';
+// Affiche le plateau de celui qui joue : le tien, ou celui de l'ordinateur
+function focusTurn(){
+  const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
+  if (board && !over) board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 const modalOpen = () => !$('over').classList.contains('hidden') || !$('rulesModal').classList.contains('hidden') || !$('inspect').classList.contains('hidden');
 function scheduleAI(d){ clearTimeout(aiTimer); aiTimer = setTimeout(aiTurn, d); }
 function resumeAI(){ if (pendingAI && cur === AI && !over && !modalOpen()) { pendingAI = false; scheduleAI(500); } }
