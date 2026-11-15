@@ -165,10 +165,19 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .handline .handhead{margin:0}
 .handline button{padding:4px 10px;font-size:13px}
 .handbtns{display:flex;gap:6px;flex:0 0 auto}
+
+/* Ergonomie : messages en bulle, score fixe, cartes injouables, cibles */
+.scoretop{font-size:13px;color:var(--muted);white-space:nowrap;margin-left:6px}
+header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dock #msg{position:fixed;top:64px;left:8px;right:8px;margin:0 auto;max-width:560px;z-index:6;opacity:0;pointer-events:none;transition:opacity .3s;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;min-height:0}
+.dock #msg.visible{opacity:1}
+.dock .card.injouable{opacity:.55;filter:grayscale(.4)}
+.card.nontarget{opacity:.4;filter:grayscale(.6)}
+.card.target{outline:3px solid var(--ok);outline-offset:2px}
 </style>
 </head>
 <body>
-<header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
+<header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span id="scoreTop" class="scoretop"></span><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
 <main>
   <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnSpeed" type="button">Vitesse IA</button><button id="btnLog" type="button">Journal</button><button id="btnColl" type="button">Collection</button><button id="btnSucc" type="button">Succès et rangs</button></div>
   <div class="status" id="status"></div>
@@ -342,11 +351,20 @@ let P = [], round = 1, wins = [0, 0], first = HUMAN, cur = HUMAN, sel = null, pe
 let inGame = false, aiTimer = null, pendingAI = false, curBg = 0;
 let R = { kiDebut: 2, kiTour: 2, kiMax: 8, noRayon: false, nom: '' };
 let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '';
-let overCb = null, stayCb = null, tutoEtape = 0;
+let overCb = null, stayCb = null, tutoEtape = 0, avantCoup = null, msgTimer = null;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function msg(t){ $('msg').textContent = t || ''; }
+function msg(t){
+  const el = $('msg');
+  el.textContent = t || '';
+  el.classList.toggle('visible', !!t);
+  clearTimeout(msgTimer);
+  if (t && !pending) msgTimer = setTimeout(() => el.classList.remove('visible'), 3500);
+}
+// Retour haptique (téléphones) et son court pour les KO
+function vib(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+function sfxKo(){ sfx(330, 150, 'sawtooth'); }
 function jour(t){ journal.unshift(t); if (journal.length > 80) journal.length = 80; }
 const adv = () => (advIdx >= 0 ? ADVERSAIRES[advIdx] : null);
 const oppNom = () => (adv() ? adv().nom : 'Ordinateur');
@@ -404,12 +422,14 @@ function hit(p, s, n){
   const inst = P[p].slots[s];
   if (!inst || hasAb(inst, 'divin')) return;
   inst.dmg += n;
+  vib(12);
   if (pui(p, s) <= 0) ko(p, s);
 }
 function ko(p, s){
   const inst = P[p].slots[s];
   if (!inst) return;
   P[p].slots[s] = null;
+  sfxKo(); vib(40);
   P[p].ki = Math.min(R.kiMax, P[p].ki + 1); // Ki de combat : +1 au propriétaire du combattant KO
   const id = inst.id;
   jour(`${nom(p)} : ${CARDS[id].n} est mis KO (+1 Ki).`);
@@ -520,6 +540,7 @@ function startTurn(){
 
 function afterAction(){
   if (over) return;
+  avantCoup = null;
   P[cur].actions++;
   if (!P[1-cur].passed) cur = 1 - cur;
   startTurn();
@@ -760,7 +781,10 @@ function onSlot(player, s){
   if (over) return;
   if (player === AI && !pending && P[AI].slots[s]) { showInspect(s); return; }
   if (pending){
-    if (player === pending.tp && P[player].slots[s]) resolveRayon(s);
+    if (player === pending.tp && P[player].slots[s]){
+      if (hasAb(P[player].slots[s], 'divin')){ msg('Ce combattant est Divin : le rayon ne peut pas le toucher.'); return; }
+      resolveRayon(s);
+    }
     return;
   }
   if (cur !== HUMAN || player !== HUMAN) return;
@@ -793,6 +817,7 @@ function apercu(i, s){
 
 function playCard(p, i, s){
   const me = P[p];
+  if (p === HUMAN) avantCoup = { P: JSON.parse(JSON.stringify(P)), journal: journal.slice() };
   const id = me.hand[i], c = CARDS[id];
   const cout = coutCarte(p, i, s);
   if (c.e < 0){
@@ -982,8 +1007,9 @@ function slotHTML(player, s){
     return `<div class="slot" onclick="onSlot(${player},${s})">Emplacement libre</div>`;
   }
   const isTarget = !!pending && player === pending.tp;
+  const valide = isTarget && !hasAb(inst, 'divin');
   const det = detailPUI(player, s);
-  let extra = '', cls = isTarget ? 'target' : '';
+  let extra = '', cls = valide ? 'target' : (isTarget ? 'nontarget' : '');
   if (dispo){
     const a = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
     extra = `<div class="apercu">${ligne(a)} · ${k} Ki</div>`;
@@ -1003,6 +1029,7 @@ function render(){
   const me = P[HUMAN], ai = P[AI];
   const r = rang();
   $('status').innerHTML = `<span>Manche <b>${round}/${MAX_ROUNDS}</b></span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Tour : <b>${cur === HUMAN ? 'toi' : oppNom()}</b></span><span>Ki <b>${me.ki}/${R.kiMax}</b></span><span>Rang <b>${r.nom}</b> · série ${stats.serie}</span>${modeInfo()}`;
+  $('scoreTop').textContent = `Toi ${total(HUMAN)} – ${total(AI)} ${oppNom()} · manches ${wins[HUMAN]}–${wins[AI]}`;
   $('oppTitle').textContent = `${oppNom()} · total ${total(AI)} · main ${ai.hand.length} · Ki ${ai.ki}`;
   $('myTitle').textContent = `Toi · total ${total(HUMAN)}`;
   $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;
@@ -1010,9 +1037,17 @@ function render(){
   $('myBoard').innerHTML = [0,1,2].map(s => slotHTML(HUMAN, s)).join('');
   const monTour = inGame && !over && cur === HUMAN && !pending;
   $('hand').innerHTML = me.hand.map((id, i) =>
-    cardHTML(id, { cls: [(sel && sel.t === 'h' && sel.i === i) ? 'sel' : '', (monTour && jouable(HUMAN, i)) ? 'jouable' : ''].join(' '), attrs: `onclick="onHand(${i})"` })).join('')
+    cardHTML(id, { cls: [(sel && sel.t === 'h' && sel.i === i) ? 'sel' : '', (monTour && jouable(HUMAN, i)) ? 'jouable' : '', (monTour && !jouable(HUMAN, i)) ? 'injouable' : ''].join(' '), attrs: `onclick="onHand(${i})"` })).join('')
     || '<p style="color:var(--muted)">Main vide.</p>';
   $('btnPass').disabled = !monTour;
+  $('btnPass').textContent = (monTour && !P[AI].passed) ? 'Passer (+1 Ki)' : 'Passer';
+  $('btnPass').title = monTour ? (P[AI].passed ? 'Passer termine la manche' : 'Ne rien jouer ce tour ; +1 Ki si tu es le premier à passer') : "Ce n'est pas ton tour";
+  $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : 'Gagne +2 Ki à la place de jouer une carte';
+  $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
+  $('btnFusion').title = 'Fusionne deux combattants liés en payant le Ki';
+  $('btnCancel').textContent = pending ? 'Annuler le coup' : 'Annuler la sélection';
+  $('msg').classList.toggle('alerte', !!pending);
+  if (pending) $('msg').classList.add('visible');
   $('btnCharge').disabled = !monTour || me.ki >= R.kiMax;
   const fus = monTour ? fusionsPossibles(HUMAN) : [];
   $('btnFusion').hidden = !fus.length;
@@ -1070,7 +1105,16 @@ $('btnMull').onclick = mulligan;
 $('btnNew').onclick = () => { if (inGame && !over) askQuit(); else newGame(); };
 $('btnOver').onclick = onOverButton;
 $('btnStay').onclick = onStay;
-$('btnCancel').onclick = () => { sel = null; msg(''); render(); };
+$('btnCancel').onclick = () => {
+  if (pending && avantCoup){
+    P = avantCoup.P; journal = avantCoup.journal;
+    pending = null; avantCoup = null; sel = null;
+    msg('Coup annulé. Choisis une autre carte ou un autre coup.');
+    render();
+    return;
+  }
+  sel = null; msg(''); render();
+};
 $('tutoBtn').onclick = tutoSuivant;
 
 $('btnSpeed').onclick = () => {
@@ -1248,13 +1292,13 @@ paintFull();
 
 // Bruitage léger à la pose d'une carte (synthèse WebAudio, sans fichier). Coupé avec le bouton Son.
 let actx = null;
-function sfx(){
+function sfx(f1 = 660, f2 = 990, type = 'triangle'){
   if (muted) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
-    o.type = 'triangle';
-    o.frequency.setValueAtTime(660, t); o.frequency.exponentialRampToValueAtTime(990, t + 0.12);
+    o.type = type;
+    o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + 0.12);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
     o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.26);
   } catch (e) {}
