@@ -461,12 +461,16 @@ function strongest(p, onlyStrikable){
   });
   return best;
 }
-function hit(p, s, n){
+function hit(p, s, n, src){
   const inst = P[p].slots[s];
-  if (!inst || hasAb(inst, 'divin')) return;
+  if (!inst) return;
+  const qui = src ? src + ' : ' : '';
+  if (hasAb(inst, 'divin')){ jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) est Divin, il ne subit aucun dégât.`); return; }
   inst.dmg += n;
   vib(12);
-  if (pui(p, s) <= 0) ko(p, s);
+  const reste = pui(p, s);
+  jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) perd ${n} ATT, il lui reste ${Math.max(0, reste)}.`);
+  if (reste <= 0) ko(p, s);
 }
 function ko(p, s){
   const inst = P[p].slots[s];
@@ -488,7 +492,7 @@ function ko(p, s){
   const ex = abVal(id, 'explosion');
   if (ex){
     const t = strongest(1-p, true);
-    if (t >= 0) hit(1-p, t, ex);
+    if (t >= 0) hit(1-p, t, ex, 'Explosion de ' + CARDS[id].n);
   }
 }
 
@@ -949,7 +953,7 @@ function scouter(){
 function effetsEntree(p, id){
   const opp = 1 - p;
   const onde = abVal(id, 'onde');
-  if (onde) idx().forEach(j => hit(opp, j, onde));
+  if (onde) idx().forEach(j => hit(opp, j, onde, 'Onde de choc de ' + CARDS[id].n));
   const rayon = abVal(id, 'rayon');
   if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
     if (p === HUMAN){
@@ -968,7 +972,7 @@ function effetsEntree(p, id){
     if (t >= 0){
       msg(`${CARDS[id].n} tire son rayon sur ${CARDS[P[opp].slots[t].id].n}.`);
       jour(`${nom(p)} : ${CARDS[id].n} tire son rayon (${rayon}).`);
-      hit(opp, t, rayon);
+      hit(opp, t, rayon, 'Rayon de ' + CARDS[id].n);
     }
   }
   return false;
@@ -979,7 +983,7 @@ function resolveRayon(j){
   const pd = pending;
   pending = null;
   const tgt = P[pd.tp].slots[j];
-  hit(pd.tp, j, pd.n);
+  hit(pd.tp, j, pd.n, 'Rayon de ' + pd.name);
   msg(`${pd.name} tire son rayon sur ${tgt ? CARDS[tgt.id].n : 'un combattant'} (${pd.n} dégâts).`);
   jour(`${nom(HUMAN)} : ${pd.name} tire son rayon (${pd.n}).`);
   afterAction();
