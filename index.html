@@ -127,6 +127,10 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .succes{color:var(--ok);font-weight:bold;font-size:14px}
 .journal{text-align:left;font-size:13px;padding-left:18px;max-height:50vh;overflow:auto}
 .journal li{margin:3px 0}
+.journal-bar{display:block;width:100%;margin:0 0 10px;padding:8px 16px;border-radius:999px;font:inherit;font-size:13px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface);border:1px solid var(--muted);cursor:pointer}
+.journal-bar[hidden]{display:none}
+.journal-liste{text-align:left;font-size:13px;max-height:60vh;overflow:auto;padding-left:22px;margin:8px 0}
+.journal-liste li{margin:4px 0}
 .collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
 .collgrid .card{width:auto;padding:4px}
 .collgrid .card img{height:auto}
@@ -229,10 +233,12 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
   <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnBoule" type="button" class="boule" title="Collection et succès"><img src="icons/dragonball.webp" alt="Collection et succès"></button></div>
   <div class="status" id="status"></div>
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
+  <button class="journal-bar" id="btnJournal" type="button" hidden></button>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
 <footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
+<div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="zoomCarte"><div class="box"><img id="zoomImg" alt=""><h2 id="zoomName" style="margin:0"></h2><p id="zoomTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles et aide</h2>
@@ -401,7 +407,7 @@ function msg(t){
 // Retour haptique (téléphones) et son court pour les KO
 function vib(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
 function sfxKo(){ sfx(330, 150, 'sawtooth'); }
-function jour(t){ journal.unshift(t); if (journal.length > 80) journal.length = 80; }
+function jour(t){ journal.unshift(t); if (journal.length > 500) journal.length = 500; }
 const idx = () => Array.from({ length: NB }, (_, k) => k);
 const adv = () => (advIdx >= 0 ? ADVERSAIRES[advIdx] : null);
 const oppNom = () => (adv() ? adv().nom : 'Ennemi');
@@ -1110,7 +1116,24 @@ function modeInfo(){
   return '';
 }
 
+// Barre du journal : dernière action (la plus récente est en tête de liste)
+function rendreJournalBarre(){
+  const b = $('btnJournal');
+  if (!b) return;
+  b.hidden = !inGame;
+  b.textContent = 'Journal : ' + (journal.length ? journal[0] : 'aucune action pour l\'instant');
+}
+function ouvrirJournal(){
+  const ol = $('journalListe');
+  ol.innerHTML = journal.length ? journal.slice().reverse().map(t => `<li>${esc(t)}</li>`).join('') : '<li>Aucune action pour l\'instant.</li>';
+  $('journalModal').classList.remove('hidden');
+  ol.scrollTop = ol.scrollHeight;
+}
+$('btnJournal').onclick = ouvrirJournal;
+$('btnJournalClose').onclick = () => fermerModal('journalModal');
+
 function render(){
+  rendreJournalBarre();
   if (!P.length) return;
   const me = P[HUMAN], ai = P[AI];
   const r = rang();
