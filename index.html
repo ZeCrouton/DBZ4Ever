@@ -156,6 +156,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .dock .hand .card .camp-chip{font-size:8px}
 .dock .hand .card .icons{min-height:0}
 .dock .hand .card .ic svg,.ic svg{width:20px;height:20px}
+.board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
+@keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
+.board{scroll-margin-top:72px}
 </style>
 </head>
 <body>
@@ -822,8 +825,9 @@ function effetsEntree(p, id){
   if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
     if (p === HUMAN){
       pending = { n: rayon, tp: opp, name: CARDS[id].n };
-      msg(`${CARDS[id].n} : choisis la cible du rayon (${rayon} dégâts).`);
+      msg(`${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
       render();
+      focusCible();
       return true;
     }
     const t = strongest(opp, true);
@@ -1008,6 +1012,7 @@ function render(){
   $('btnFusion').hidden = !fus.length;
   if (fus.length) $('btnFusion').textContent = `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
   $('btnMull').hidden = !mulliganDispo();
+  $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
   $('btnMode').textContent = `Mode : ${MODES[mode]}`;
   $('btnSpeed').textContent = `Vitesse IA : ${VITESSES[vitesse][0]}`;
   persist();
@@ -1136,6 +1141,11 @@ $('btnTutoRevoir').onclick = () => { $('rulesModal').classList.add('hidden'); mo
 
 /* ---------- Mécaniques de l'app : sauvegarde, fenêtres, plein écran, son ---------- */
 const SAVE_KEY = 'dbzSave';
+// Choix de cible d'un rayon : on montre le plateau adverse
+function focusCible(){
+  const b = $('oppBoard').closest('.board');
+  if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 function focusTurn(){
   const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
   if (board && !over) board.scrollIntoView({ behavior: 'smooth', block: 'start' });
