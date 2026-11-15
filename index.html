@@ -133,6 +133,11 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .journal-bar[hidden]{display:none}
 .journal-liste{text-align:left;font-size:13px;max-height:60vh;overflow:auto;padding-left:22px;margin:8px 0}
 .journal-liste li{margin:4px 0}
+.zk{cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:8px;border:1px dashed var(--muted)}
+.zstats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-size:14px;margin:4px 0}
+.zcaps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.zcaps .zk svg{width:22px;height:22px;display:block}
+.zexpl{font-size:13px;min-height:3.2em;margin:6px 0}
 .regle-groupe{font-size:15px;margin:16px 0 6px;color:var(--ki)}
 .collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
 .collgrid .card{width:auto;padding:4px}
@@ -243,7 +248,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
-<div class="over hidden" id="zoomCarte"><div class="box"><img id="zoomImg" alt=""><h2 id="zoomName" style="margin:0"></h2><p id="zoomTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
+<div class="over hidden" id="zoomCarte"><div class="box"><img id="zoomImg" alt=""><h2 id="zoomName" style="margin:0"></h2><div id="zoomTxt"></div><p id="zoomExpl" class="zexpl">Touche une caractéristique pour l'expliquer.</p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles et aide</h2>
 <p class="aide-intro">Touche un titre pour afficher son explication.</p>
 <h3 class="regle-groupe">La partie</h3>
@@ -834,15 +839,45 @@ function montrerCarte(id, puiVal, bonusActuels){
   const camp = CAMP_OF[id] ? ` · Camp : ${CAMP_LABEL[CAMP_OF[id]]}` : '';
   montrerInfo({ img: c.img, nom: c.n, texte: `ATT ${puiVal} · Ki ${c.k}${c.e >= 0 ? ' · Évolution de ' + CARDS[c.e].n : ''} · Capacités : ${abil}${camp}` + (bonusActuels.length ? ' · Bonus actifs : ' + bonusActuels.map(b => BONUS_INFO[b].titre).join(' ; ') : '') });
 }
+// Explications des caractéristiques, reprises des règles
+const CAP_TXT = {
+  rayon: "Rayon d'énergie : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.",
+  furie: 'Furie : ce combattant gagne +1 chaque fois qu\'un de tes combattants est mis KO.',
+  regen: 'Régénération : une fois par manche, quand ce combattant est mis KO, il retourne dans ta main.',
+  absorb: 'Absorption : ce combattant gagne +2 chaque fois qu\'un combattant ennemi est mis KO.',
+  soutien: 'Soutien : tes autres combattants gagnent +1 tant qu\'il est en jeu.',
+  divin: 'Divin : ne subit aucun dégât des Rayons, des Ondes ou des Explosions.',
+  explosion: "Explosion : quand ce combattant est mis KO, il inflige ses dégâts au combattant ennemi le plus fort (sauf Divin).",
+  onde: 'Onde de choc : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.',
+  scouter: "Scouter : à sa pose, tu vois la main de l'adversaire."
+};
+function explique(ex){
+  const [t, k, v] = ex.split(':');
+  let txt;
+  if (t === 'att') txt = "ATT : puissance d'attaque de base du combattant, sans les bonus. Quand elle tombe à 0, il est mis KO.";
+  else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
+  else if (t === 'camp') txt = 'Camp : la famille du combattant. Certaines capacités et certains bonus dépendent du camp (Tempérament, Saiyan enragé).';
+  else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
+  else txt = (CAP_TXT[k] || '') + (v ? ` Valeur : ${v}.` : '');
+  $('zoomExpl').textContent = txt;
+}
 function zoomCarte(id){
   const c = CARDS[id];
-  const abil = c.a.map(([k, v]) => `${NAMES[k]}${v ? ' ' + v : ''}`).join(', ') || 'aucune';
-  const camp = CAMP_OF[id] ? ` · Camp : ${CAMP_LABEL[CAMP_OF[id]]}` : '';
+  const camp = CAMP_OF[id] ? `<span class="zk" data-ex="camp">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
+  const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>` : '';
+  const caps = c.a.map(([k, v]) => `<span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v ? v : ''}</span>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
-  $('zoomTxt').textContent = `ATT ${c.p} · Ki ${c.k}${c.e >= 0 ? ' · Évolution de ' + CARDS[c.e].n : ''} · Capacités : ${abil}${camp}`;
+  $('zoomTxt').innerHTML = `<div class="zstats"><span class="zk" data-ex="att">ATT ${c.p}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>`;
+  $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
   $('zoomCarte').classList.remove('hidden');
 }
+$('zoomCarte').querySelector('.box').addEventListener('click', e => {
+  const z = e.target.closest('.zk');
+  if (!z) return;
+  e.stopPropagation();
+  explique(z.dataset.ex);
+});
 $('zoomCarte').onclick = e => { e.stopPropagation(); $('zoomCarte').classList.add('hidden'); };
 const BONUS_COURT = { soutien: 'soutien', camp: 'tempérament', enrage: 'enragé', allie: 'allié', rival: 'rival' };
 const CAMP_LABEL = { saiyan: 'Saiyan', terrien: 'Terrien', namek: 'Namek', demon: 'Démon', dieu: 'Dieu' };
