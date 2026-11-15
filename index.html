@@ -143,6 +143,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .card, .card *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
 .card img{pointer-events:none}
 .over, .over *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ic.bon svg{width:16px;height:16px}
+.icons.bons{margin-top:2px}
+.slot small{font-size:11px}
 </style>
 </head>
 <body>
@@ -180,10 +183,14 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <p>Un combattant est <b>mis KO</b> quand sa PUI tombe à 0 ou moins. Il part à la défausse, sauf s'il a la Régénération. Les dégâts ne durent que pour la manche en cours.</p>
 <h3>Ki de combat</h3>
 <p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b> (8 maximum).</p>
-<h3>Tempéraments</h3>
-<p>Deux cartes du même camp sur ton plateau donnent <b>+1 PUI</b> à chacune. Saiyan : +1 PUI de plus quand tu es mené. Namek : tes combattants blessés se soignent de 1 dégât à chaque début de tour.</p>
-<h3>Rivalités</h3>
-<p>Un combattant gagne <b>+1 PUI</b> quand un allié est présent à ses côtés (Goku + Vegeta, Gohan + Piccolo, Krillin + Tenshinhan) ou quand un rival est en face (Gohan face à Cell, Goku ou Vegeta face à Freezer).</p>
+<h3>Bonus de PUI</h3>
+<p>La PUI affichée sur une carte peut être plus haute que sa valeur de base. Les petites icônes en bas de la carte montrent d'où vient le bonus. Touche une carte longuement pour voir la liste des bonus actifs.</p>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg><span><b>Soutien</b> (Krillin) : chacun de tes <i>autres</i> combattants gagne +1 PUI.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg><span><b>Tempérament de camp</b> : quand deux cartes du même camp sont sur ton plateau, chacune gagne +1 PUI. Camps : Saiyan, Terrien, Namek, Démon, Dieu.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg><span><b>Saiyan enragé</b> : un combattant Saiyan gagne +1 PUI quand ton total est inférieur à celui de l'adversaire (tu es mené).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg><span><b>Allié à côté</b> : un combattant gagne +1 PUI si un allié est sur ton plateau (Goku + Vegeta, Gohan + Piccolo, Krillin + Tenshinhan, Trunks + Goku ou Vegeta, Gohan + Trunks).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg><span><b>Rival en face</b> : un combattant gagne +1 PUI si un rival est en face (Gohan face à Cell, Goku ou Vegeta face à Freezer).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg><span><b>Namek</b> (Piccolo) : en début de ton tour, tes combattants blessés se soignent de 1 dégât.</span></div>
 <h3>Capacités</h3>
 <p>Les icônes sur les cartes indiquent leurs capacités. Le chiffre à côté d'une icône indique sa valeur (par exemple les dégâts d'un Rayon).</p>
 <div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg><span><b>Rayon d'énergie</b> (Kamehameha, Galick Gun, Death Ball) : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.</span></div>
@@ -231,6 +238,14 @@ const TUTO = [
   'Les cartes jouables sont surlignées, et l\'aperçu indique le gain de PUI. Scouter révèle la main adverse. Fusion et Mulligan sont des coups spéciaux.'
 ];
 
+const BONUS_INFO = {
+  soutien: { titre: 'Soutien (Krillin) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>' },
+  camp: { titre: 'Tempérament : 2 cartes du même camp, +1 PUI à chacune', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg>' },
+  enrage: { titre: 'Saiyan enragé : tu es mené au total, +1 PUI', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
+  allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
+  rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
+  namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
+};
 const NAMES = {rayon:'Rayon d\'énergie', furie:'Furie', regen:'Régénération', absorb:'Absorption', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter'};
 const ICONS = {
   rayon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>',
@@ -334,25 +349,27 @@ const famOf = id => FAM_OF[CARDS[id].n] || null;
 function baseVal(p, s){ const inst = P[p].slots[s]; return inst ? CARDS[inst.id].p + inst.bonus - inst.dmg : 0; }
 function baseTotal(p){ return [0,1,2].reduce((a, s) => a + baseVal(p, s), 0); }
 
-// PUI actuelle : Soutien, Tempéraments, Rivalités et Fureur des Saiyans compris
-function pui(p, s){
+// Détail de la PUI : valeur et liste des bonus actifs (utilisée pour les icônes)
+function detailPUI(p, s){
   const inst = P[p].slots[s];
-  if (!inst) return 0;
+  if (!inst) return { v: 0, bonus: [] };
   const sl = P[p].slots, id = inst.id;
   let v = baseVal(p, s);
-  sl.forEach((o, j) => { if (o && j !== s && hasAb(o, 'soutien')) v += 1; });
+  const bonus = [];
+  sl.forEach((o, j) => { if (o && j !== s && hasAb(o, 'soutien')){ v += 1; bonus.push('soutien'); } });
   const camp = CAMP_OF[id];
   if (camp){
-    if (sl.some((o, j) => j !== s && o && CAMP_OF[o.id] === camp)) v += 1;
-    if (camp === 'saiyan' && baseTotal(p) < baseTotal(1 - p)) v += 1;
+    if (sl.some((o, j) => j !== s && o && CAMP_OF[o.id] === camp)){ v += 1; bonus.push('camp'); }
+    if (camp === 'saiyan' && baseTotal(p) < baseTotal(1 - p)){ v += 1; bonus.push('enrage'); }
   }
   const fam = famOf(id);
   if (fam){
-    if (sl.some((o, j) => j !== s && o && paire(ALLIES, fam, famOf(o.id)))) v += 1;
-    if (P[1-p].slots.some(o => o && paire(RIVAUX, fam, famOf(o.id)))) v += 1;
+    if (sl.some((o, j) => j !== s && o && paire(ALLIES, fam, famOf(o.id)))){ v += 1; bonus.push('allie'); }
+    if (P[1-p].slots.some(o => o && paire(RIVAUX, fam, famOf(o.id)))){ v += 1; bonus.push('rival'); }
   }
-  return v;
+  return { v, bonus };
 }
+function pui(p, s){ return detailPUI(p, s).v; }
 function total(p){ return [0,1,2].reduce((a, s) => a + pui(p, s), 0); }
 function strongest(p, onlyStrikable){
   let best = -1, bv = -Infinity;
@@ -685,11 +702,12 @@ function montrerInfo(o){
   $('inspTxt').textContent = o.texte;
   $('inspect').classList.remove('hidden');
 }
-function montrerCarte(id, puiVal){
+function montrerCarte(id, puiVal, bonusActuels){
+  bonusActuels = bonusActuels || [];
   const c = CARDS[id];
   const abil = c.a.map(([k, v]) => `${NAMES[k]}${v ? ' ' + v : ''}`).join(', ') || 'aucune';
   const camp = CAMP_OF[id] ? ` · Camp : ${CAMP_LABEL[CAMP_OF[id]]}` : '';
-  montrerInfo({ img: c.img, nom: c.n, texte: `PUI ${puiVal} · Ki ${c.k}${c.e >= 0 ? ' · Évolution de ' + CARDS[c.e].n : ''} · Capacités : ${abil}${camp}` });
+  montrerInfo({ img: c.img, nom: c.n, texte: `PUI ${puiVal} · Ki ${c.k}${c.e >= 0 ? ' · Évolution de ' + CARDS[c.e].n : ''} · Capacités : ${abil}${camp}` + (bonusActuels.length ? ' · Bonus actifs : ' + bonusActuels.map(b => BONUS_INFO[b].titre).join(' ; ') : '') });
 }
 const CAMP_LABEL = { saiyan: 'Saiyan', terrien: 'Terrien', namek: 'Namek', demon: 'Démon', dieu: 'Dieu' };
 function showInspect(s){
@@ -744,13 +762,14 @@ function peutJouer(p, i, s){
   return coutCarte(p, i, s) <= me.ki;
 }
 function jouable(p, i){ return [0,1,2].some(s => peutJouer(p, i, s)); }
-// Gain de PUI pour le joueur si la carte de la main est posée sur l'emplacement s
+// Aperçu : PUI de la carte posée, gain sur le total, et bonus actifs
 function apercu(i, s){
   const me = P[HUMAN], avant = total(HUMAN), ancien = me.slots[s];
   me.slots[s] = { id: me.hand[i], dmg: 0, bonus: 0 };
   const apres = total(HUMAN);
+  const det = detailPUI(HUMAN, s);
   me.slots[s] = ancien;
-  return apres - avant;
+  return { total: apres - avant, carte: det.v, bonus: det.bonus };
 }
 
 function playCard(p, i, s){
@@ -910,31 +929,34 @@ function cardHTML(id, opts){
   const c = CARDS[id];
   const v = opts.pui !== undefined ? opts.pui : c.p;
   const icons = c.a.map(([k, val]) => `<span class="ic" title="${NAMES[k]}${val ? ' ' + val : ''}">${ICONS[k]}${val ? val : ''}</span>`).join('');
+  const bonus = (opts.bonus || []).map(k => `<span class="ic bon" title="${esc(BONUS_INFO[k].titre)}">${BONUS_INFO[k].svg}</span>`).join('');
+  const namek = CAMP_OF[id] === 'namek' ? `<span class="ic bon" title="${esc(BONUS_INFO.namek.titre)}">${BONUS_INFO.namek.svg}</span>` : '';
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div><div class="st"><span>PUI ${v}</span><span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}</div>${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${(opts.bonus || []).join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div><div class="st"><span>PUI ${v}</span><span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${bonus ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
 function slotHTML(player, s){
   const inst = P[player].slots[s];
   const dispo = player === HUMAN && cur === HUMAN && !pending && sel && sel.t === 'h' && peutJouer(HUMAN, sel.i, s);
+  const ligne = a => `Carte ${a.carte} PUI · total ${a.total >= 0 ? '+' : ''}${a.total}`;
   if (!inst){
     if (dispo){
-      const d = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
-      return `<div class="slot target" onclick="onSlot(${player},${s})">Poser ici<small>${d >= 0 ? '+' : ''}${d} PUI pour toi · ${k} Ki</small></div>`;
+      const a = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
+      return `<div class="slot target" onclick="onSlot(${player},${s})">Poser ici<small>${ligne(a)}</small><small>${k} Ki</small>${a.bonus.length ? `<div class="icons bons">${a.bonus.map(b => `<span class="ic bon" title="${esc(BONUS_INFO[b].titre)}">${BONUS_INFO[b].svg}</span>`).join('')}</div>` : ''}</div>`;
     }
     return `<div class="slot" onclick="onSlot(${player},${s})">Emplacement libre</div>`;
   }
   const isTarget = !!pending && player === pending.tp;
-  let extra = '';
-  let cls = isTarget ? 'target' : '';
+  const det = detailPUI(player, s);
+  let extra = '', cls = isTarget ? 'target' : '';
   if (dispo){
-    const d = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
-    extra = `<div class="apercu">${d >= 0 ? '+' : ''}${d} PUI pour toi · ${k} Ki</div>`;
+    const a = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
+    extra = `<div class="apercu">${ligne(a)} · ${k} Ki</div>`;
     cls = 'target';
   }
-  return cardHTML(inst.id, { pui: pui(player, s), cls, extra, attrs: `onclick="onSlot(${player},${s})"` });
+  return cardHTML(inst.id, { pui: det.v, bonus: det.bonus, cls, extra, attrs: `onclick="onSlot(${player},${s})"` });
 }
 
 function modeInfo(){
@@ -1147,7 +1169,7 @@ document.addEventListener('pointerdown', e => {
   pressTimer = setTimeout(() => {
     pressFired = true;
     if (navigator.vibrate) navigator.vibrate(15);
-    montrerCarte(+el.dataset.cid, el.dataset.pui);
+    montrerCarte(+el.dataset.cid, el.dataset.pui, el.dataset.bonus ? el.dataset.bonus.split(',').filter(Boolean) : []);
   }, 400);
 });
 document.addEventListener('pointermove', e => {
