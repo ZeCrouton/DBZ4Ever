@@ -36,6 +36,8 @@ main{padding:12px 16px 24px;max-width:960px;margin:0 auto}
 .card .st span:first-child{color:var(--danger);font-weight:bold}
 .card .st span:last-child{color:var(--ki);font-weight:bold}
 .pui-ico{width:1.05em;height:1.05em;vertical-align:-0.15em;display:inline-block;fill:none}
+.card .st .rdot{display:inline-block;width:9px;height:9px;align-self:center}
+.card .st .rdot svg{width:100%;height:100%;display:block}
 .card .st .pui-ico{width:13px;height:13px;vertical-align:-2px;margin-right:3px;display:inline-block}
 .card .ev{font-size:10px;color:var(--muted);margin-top:4px}
 .icons{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:4px;min-height:18px}
@@ -1102,7 +1104,7 @@ function cardHTML(id, opts){
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span><span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
 function slotHTML(player, s){
