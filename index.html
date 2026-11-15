@@ -925,6 +925,11 @@ function effetsEntree(p, id){
   const rayon = abVal(id, 'rayon');
   if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
     if (p === HUMAN){
+      // Un combattant Divin ne peut pas être touché : sans cible valide, pas de choix à faire
+      if (!P[opp].slots.some(x => x && !hasAb(x, 'divin'))){
+        msg(`${CARDS[id].n} : tous les combattants ennemis sont Divin, le rayon n'a pas de cible.`);
+        return false;
+      }
       pending = { n: rayon, tp: opp, name: CARDS[id].n };
       msg(`${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
       render();
