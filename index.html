@@ -196,12 +196,14 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .row.n5 .card,.row.n5 .slot{width:17vw;max-width:112px}
 .row.n5 .card .nm{font-size:10px}
 .card.mull{outline:3px dashed var(--ki);outline-offset:2px}
+.boule{padding:3px 6px;line-height:0}
+.boule img{width:30px;height:30px;border-radius:50%;display:block}
 </style>
 </head>
 <body>
 <header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span id="scoreTop" class="scoretop"></span><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
 <main>
-  <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnSpeed" type="button">Vitesse IA</button><button id="btnLog" type="button">Journal</button><button id="btnColl" type="button">Collection</button><button id="btnSucc" type="button">Succès et rangs</button></div>
+  <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnBoule" type="button" class="boule" title="Collection et succès"><img src="icons/dragonball.webp" alt="Collection et succès"></button></div>
   <div class="status" id="status"></div>
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
@@ -259,8 +261,8 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <p>Appui long sur une carte pour la lire en grand. Les cartes jouables sont surlignées dans ta main.</p>
 <button class="primary" id="btnTutoRevoir" type="button">Revoir le tutoriel</button>
 <button class="primary" id="btnRulesClose" type="button">Fermer</button></div></div>
+<div class="over hidden" id="bouleModal"><div class="box"><h2 style="margin-top:0">Collection et succès</h2><div class="actions"><button class="primary" id="btnColl" type="button">Collection et deck</button><button class="primary" id="btnSucc" type="button">Succès et rangs</button></div><button id="btnBouleClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="tutoModal"><div class="box"><h2 id="tutoTitre" style="margin-top:0"></h2><p id="tutoTxt"></p><button class="primary" id="tutoBtn" type="button">Suivant</button></div></div>
-<div class="over hidden" id="logModal"><div class="box rules-box"><h2 style="margin-top:0">Journal</h2><ul class="journal" id="journalListe"></ul><button class="primary" id="btnLogClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="collModal"><div class="box rules-box coll-box"><h2 style="margin-top:0">Collection et deck</h2><p id="collCompte"></p><div class="collgrid" id="collGrille"></div><div class="actions"><button class="primary" id="btnCollSave" type="button">Enregistrer le deck</button><button id="btnCollReset" type="button">Réinitialiser</button><button id="btnCollClose" type="button">Fermer</button></div></div></div>
 <div class="over hidden" id="succModal"><div class="box rules-box"><h2 style="margin-top:0">Succès et rangs</h2><div id="succContenu"></div><button class="primary" id="btnSuccClose" type="button">Fermer</button></div></div>
 
@@ -1091,7 +1093,6 @@ function render(){
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
   $('msg').classList.toggle('alerte', !!pending);
   $('btnMode').textContent = `Mode : ${MODES[mode]}`;
-  $('btnSpeed').textContent = `Vitesse IA : ${VITESSES[vitesse][0]}`;
   persist();
 }
 
@@ -1165,12 +1166,7 @@ $('btnCancel').onclick = () => {
 };
 $('tutoBtn').onclick = tutoSuivant;
 
-$('btnSpeed').onclick = () => {
-  const ordre = Object.keys(VITESSES);
-  vitesse = ordre[(ordre.indexOf(vitesse) + 1) % ordre.length];
-  ecrire('dbzVitesse', vitesse);
-  render();
-};
+
 $('btnMode').onclick = () => {
   if (inGame && !over){ msg('Le mode change à la prochaine partie.'); }
   const ordre = Object.keys(MODES);
@@ -1180,11 +1176,7 @@ $('btnMode').onclick = () => {
 };
 
 /* ---------- Journal, collection, succès ---------- */
-$('btnLog').onclick = () => {
-  $('journalListe').innerHTML = journal.length ? journal.map(t => `<li>${esc(t)}</li>`).join('') : '<li>Rien pour l\'instant.</li>';
-  $('logModal').classList.remove('hidden');
-};
-$('btnLogClose').onclick = () => fermerModal('logModal');
+
 
 function renderColl(){
   $('collCompte').textContent = compteMsg || `Deck : ${deckEdit.length}/${DECK_MAX} · Cartes possédées : ${collection.length}/${CARDS.length}. Le deck sert à la prochaine partie.`;
@@ -1203,6 +1195,7 @@ function toggleDeck(i){
   renderColl();
 }
 $('btnColl').onclick = () => {
+  $('bouleModal').classList.add('hidden');
   compteMsg = '';
   deckEdit = deckJoueur().filter(i => collection.includes(i));
   renderColl();
@@ -1222,7 +1215,10 @@ $('btnCollReset').onclick = () => {
 };
 $('btnCollClose').onclick = () => fermerModal('collModal');
 
+$('btnBoule').onclick = () => $('bouleModal').classList.remove('hidden');
+$('btnBouleClose').onclick = () => fermerModal('bouleModal');
 $('btnSucc').onclick = () => {
+  $('bouleModal').classList.add('hidden');
   const suivant = RANGS.find(x => x.min > stats.victoires);
   $('succContenu').innerHTML = `
     <p><b>Rang :</b> ${rang().nom} · ${stats.victoires} victoire(s) · série ${stats.serie} (meilleure ${stats.meilleure}) · tournois gagnés ${stats.tournois}</p>
