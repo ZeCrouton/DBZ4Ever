@@ -175,6 +175,15 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .card.nontarget{opacity:.4;filter:grayscale(.6)}
 .card.target{outline:3px solid var(--ok);outline-offset:2px}
 .board{scroll-margin-top:72px}
+
+/* Cadre de la main réduit : illustrations, PUI et Ki ; le reste apparaît en glissant la poignée */
+.poignee{touch-action:none;cursor:grab;display:flex;justify-content:center;padding:4px 0 6px}
+.poignee span{display:block;width:48px;height:5px;border-radius:3px;background:var(--muted);opacity:.6}
+.dock.reduit .hand .card .nm,
+.dock.reduit .hand .card .icons,
+.dock.reduit .hand .card .ev,
+.dock.reduit .hand .card .camp-chip{display:none}
+.dock.reduit .hand .card{padding:3px}
 </style>
 </head>
 <body>
@@ -185,7 +194,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock"><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles</h2>
@@ -1205,6 +1214,28 @@ function ajusterMarge(){
   if (d && d.offsetHeight) document.body.style.paddingBottom = (d.offsetHeight + 16) + 'px';
 }
 window.addEventListener('resize', ajusterMarge);
+// Cadre de la main : réduit par défaut (illustrations, PUI et Ki) ; glisser la poignée vers le haut pour l'agrandir
+const dockEl = $('dock'), poignee = $('poignee');
+let glisse = null;
+function reduireMain(v){
+  dockEl.classList.toggle('reduit', v);
+  ecrire('dbzMainReduite', v);
+  ajusterMarge();
+}
+dockEl.classList.toggle('reduit', lire('dbzMainReduite', true));
+poignee.addEventListener('pointerdown', e => {
+  glisse = { y: e.clientY, reduit: dockEl.classList.contains('reduit') };
+  try { poignee.setPointerCapture(e.pointerId); } catch (err) {}
+});
+poignee.addEventListener('pointerup', e => {
+  if (!glisse) return;
+  const dy = e.clientY - glisse.y;
+  if (dy < -24) reduireMain(false);
+  else if (dy > 24) reduireMain(true);
+  else reduireMain(!glisse.reduit);
+  glisse = null;
+});
+poignee.addEventListener('pointercancel', () => { glisse = null; });
 // Affiche le plateau du joueur en entier, au-dessus de la barre du bas
 function focusTurn(){
   const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
