@@ -354,12 +354,12 @@ const ADVERSAIRES = [
 
 /* Tempéraments : camp de chaque combattant. 2 cartes du même camp = +1 PUI à chacune. */
 const CAMPS = {
-  cyborg: ['C-16', 'C-17', 'C-18'],
-  saiyan: ['Son Goku', 'Goku Super Saiyan', 'Goku Super Saiyan Blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black', 'Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Vegeta Ultra Ego', 'Son Gohan', 'Gohan Super Saiyan', 'Gohan Super Saiyan 2', 'Trunks', 'Gotenks', 'Vegetto', 'Gogeta', 'Broly', 'Kale', 'Caulifla', 'Kefla'],
+  cyborg: ['C-16', 'C-17', 'C-18', 'Cell', 'Cell parfait'],
+  saiyan: ['Son Goku', 'Goku Super Saiyan', 'Goku Super Saiyan Blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Vegeta Ultra Ego', 'Son Gohan', 'Gohan Super Saiyan', 'Gohan Super Saiyan 2', 'Trunks', 'Gotenks', 'Vegetto', 'Gogeta', 'Broly', 'Kale', 'Caulifla', 'Kefla'],
   terrien: ['Krillin', 'Tenshinhan', 'Yamcha', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé'],
   namek: ['Piccolo'],
   demon: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi'],
-  dieu: ['Beerus', 'Whis', 'Zamasu', 'Toppo']
+  dieu: ['Beerus', 'Whis', 'Zamasu', 'Goku Black', 'Toppo']
 };
 const CAMP_OF = {};
 Object.keys(CAMPS).forEach(camp => CAMPS[camp].forEach(n => { if (ID[n] !== undefined) CAMP_OF[ID[n]] = camp; }));
