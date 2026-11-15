@@ -282,18 +282,18 @@ const DEFIS = [
 const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Genkidama' };
 const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { nom: 'Dieu', min: 15 }];
 const TUTO = [
-  'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de PUI le plus élevé gagne.',
+  'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de ATT le plus élevé gagne.',
   'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place. Passer ne coûte rien, mais le premier qui passe gagne +1 Ki.',
   'Touche une carte de ta main : elle se pose toute seule sur un emplacement libre. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
-  'Les cartes jouables sont surlignées, et chacune affiche le gain de PUI avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
+  'Les cartes jouables sont surlignées, et chacune affiche le gain de ATT avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
 ];
 
 const BONUS_INFO = {
-  soutien: { titre: 'Soutien (Krillin) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>' },
-  camp: { titre: 'Tempérament : 2 cartes du même camp, +1 PUI à chacune', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg>' },
-  enrage: { titre: 'Saiyan enragé : tu es mené au total, +1 PUI', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
-  allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
-  rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 PUI', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
+  soutien: { titre: 'Soutien (Krillin) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>' },
+  camp: { titre: 'Tempérament : 2 cartes du même camp, +1 ATT à chacune', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg>' },
+  enrage: { titre: 'Saiyan enragé : tu es mené au total, +1 ATT', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
+  allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
+  rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
   namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
 };
 const NAMES = {rayon:'Rayon d\'énergie', furie:'Furie', regen:'Régénération', absorb:'Absorption', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter'};
@@ -548,7 +548,7 @@ function namekSoin(p){
   if (!sl.some(o => o && CAMP_OF[o.id] === 'namek')) return;
   let soigne = false;
   sl.forEach(o => { if (o && o.dmg > 0){ o.dmg--; soigne = true; } });
-  if (soigne) jour(`${nom(p)} : Namek régénère ses combattants (+1 PUI).`);
+  if (soigne) jour(`${nom(p)} : Namek régénère ses combattants (+1 ATT).`);
 }
 
 function startTurn(){
@@ -1066,7 +1066,7 @@ function render(){
     let extra = '';
     if (sl >= 0 && peutJouer(HUMAN, i, sl)){
       const a = apercu(i, sl);
-      extra = `<div class="apercu">${a.total >= 0 ? '+' : ''}${a.total} PUI · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
+      extra = `<div class="apercu">${a.total >= 0 ? '+' : ''}${a.total} ${PUI_ICO} · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
     }
     return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra, attrs: `onclick="onHand(${i})"` });
   }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
@@ -1223,7 +1223,7 @@ $('btnSucc').onclick = () => {
     <p><b>Rang :</b> ${rang().nom} · ${stats.victoires} victoire(s) · série ${stats.serie} (meilleure ${stats.meilleure}) · tournois gagnés ${stats.tournois}</p>
     <p>${suivant ? `Prochain rang : ${suivant.nom} à ${suivant.min} victoires.` : 'Rang maximal atteint.'}</p>
     <ul class="succ">
-      <li class="${succes.kaio ? 'ok' : ''}"><b>Kaio-ken</b> : gagner une manche avec 1 PUI d'écart.${succes.kaio ? ' ✔' : ''}</li>
+      <li class="${succes.kaio ? 'ok' : ''}"><b>Kaio-ken</b> : gagner une manche avec 1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> d'écart.${succes.kaio ? ' ✔' : ''}</li>
       <li class="${succes.genkidama ? 'ok' : ''}"><b>Genkidama</b> : poser 3 cartes avec Soutien dans une même manche.${succes.genkidama ? ' ✔' : ''}</li>
     </ul>`;
   $('succModal').classList.remove('hidden');
