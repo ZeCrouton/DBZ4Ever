@@ -138,6 +138,10 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 /* Ki affiché en permanence au-dessus de la main */
 .kibadge{color:var(--ki);font-weight:bold;font-size:15px}
 .card{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+
+/* Cartes : aucune sélection de texte, aucune image glissable, aucun menu natif sur appui long */
+.card, .card *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
+.card img{pointer-events:none}
 </style>
 </head>
 <body>
@@ -1149,8 +1153,8 @@ document.addEventListener('pointermove', e => {
   if (Math.hypot(e.clientX - pressX, e.clientY - pressY) > 10) clearTimeout(pressTimer);
 });
 ['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer)));
-// Pas de menu contextuel du navigateur sur les cartes (appui long sur téléphone)
-document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.card')) e.preventDefault(); });
+// Pas de menu du navigateur (copier, traduire...) ni de sélection de texte sur les cartes
+['contextmenu', 'selectstart', 'dragstart'].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest('.card, .slot, .hand')) e.preventDefault(); }));
 // Un appui long ne doit pas déclencher le clic qui le suit
 document.addEventListener('click', e => {
   if (pressFired){ pressFired = false; e.stopPropagation(); e.preventDefault(); }
