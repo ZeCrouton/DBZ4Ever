@@ -138,6 +138,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .zcaps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
 .zcaps .zk svg{width:22px;height:22px;display:block}
 .zexpl{font-size:13px;min-height:3.2em;margin:6px 0}
+.zbon{font-size:12px;text-align:center;margin-top:2px}
 .regle-groupe{font-size:15px;margin:16px 0 6px;color:var(--ki)}
 .collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
 .collgrid .card{width:auto;padding:4px}
@@ -833,11 +834,7 @@ function montrerInfo(o){
   $('inspect').classList.remove('hidden');
 }
 function montrerCarte(id, puiVal, bonusActuels){
-  bonusActuels = bonusActuels || [];
-  const c = CARDS[id];
-  const abil = c.a.map(([k, v]) => `${NAMES[k]}${v ? ' ' + v : ''}`).join(', ') || 'aucune';
-  const camp = CAMP_OF[id] ? ` · Camp : ${CAMP_LABEL[CAMP_OF[id]]}` : '';
-  montrerInfo({ img: c.img, nom: c.n, texte: `ATT ${puiVal} · Ki ${c.k}${c.e >= 0 ? ' · Évolution de ' + CARDS[c.e].n : ''} · Capacités : ${abil}${camp}` + (bonusActuels.length ? ' · Bonus actifs : ' + bonusActuels.map(b => BONUS_INFO[b].titre).join(' ; ') : '') });
+  zoomCarte(id, puiVal, bonusActuels);
 }
 // Explications des caractéristiques, reprises des règles
 const CAP_TXT = {
@@ -854,21 +851,23 @@ const CAP_TXT = {
 function explique(ex){
   const [t, k, v] = ex.split(':');
   let txt;
-  if (t === 'att') txt = "ATT : puissance d'attaque de base du combattant, sans les bonus. Quand elle tombe à 0, il est mis KO.";
+  if (t === 'att') txt = `ATT : puissance d'attaque du combattant. Valeur de base : ${k}, actuelle : ${v} (bonus compris). Quand elle tombe à 0, il est mis KO.`;
   else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
   else if (t === 'camp') txt = 'Camp : la famille du combattant. Certaines capacités et certains bonus dépendent du camp (Tempérament, Saiyan enragé).';
   else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
   else txt = (CAP_TXT[k] || '') + (v ? ` Valeur : ${v}.` : '');
   $('zoomExpl').textContent = txt;
 }
-function zoomCarte(id){
+function zoomCarte(id, puiVal, bonusActuels){
   const c = CARDS[id];
+  const v = (puiVal === undefined || puiVal === null || puiVal === '') ? c.p : puiVal;
+  const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => BONUS_INFO[b].titre);
   const camp = CAMP_OF[id] ? `<span class="zk" data-ex="camp">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
   const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>` : '';
   const caps = c.a.map(([k, v]) => `<span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v ? v : ''}</span>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
-  $('zoomTxt').innerHTML = `<div class="zstats"><span class="zk" data-ex="att">ATT ${c.p}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>`;
+  $('zoomTxt').innerHTML = `<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}">ATT ${v}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon">Bonus actifs : ${esc(bons.join(' ; '))}</div>` : ''}`;
   $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
   $('zoomCarte').classList.remove('hidden');
 }
