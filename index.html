@@ -190,12 +190,18 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .poignee{position:relative;height:22px;padding:0;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab}
 .poignee span{width:56px;height:6px;margin:0}
 .poignee button{position:absolute;right:6px;top:0;bottom:0;margin:auto 0;height:20px;padding:0 8px;font-size:12px;line-height:18px}
+
+/* Plateau : 3, 4 ou 5 emplacements ; les cartes se resserrent pour tenir sur téléphone */
+.row.n4 .card,.row.n4 .slot{width:22vw;max-width:112px}
+.row.n5 .card,.row.n5 .slot{width:17vw;max-width:112px}
+.row.n5 .card .nm{font-size:10px}
+.card.mull{outline:3px dashed var(--ki);outline-offset:2px}
 </style>
 </head>
 <body>
 <header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span id="scoreTop" class="scoretop"></span><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
 <main>
-  <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnSpeed" type="button">Vitesse IA</button><button id="btnLog" type="button">Journal</button><button id="btnColl" type="button">Collection</button><button id="btnSucc" type="button">Succès et rangs</button></div>
+  <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnSpeed" type="button">Vitesse IA</button><button id="btnLog" type="button">Journal</button><button id="btnColl" type="button">Collection</button><button id="btnSucc" type="button">Succès et rangs</button></div>
   <div class="status" id="status"></div>
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
@@ -209,18 +215,18 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <h3>La PUI et la manche</h3>
 <p>Chaque combattant a une <b>PUI</b> (sa force), affichée sur sa carte. À la fin d'une manche, on additionne la PUI de tous les combattants de chaque joueur. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne la manche.</p>
 <h3>Mise en place</h3>
-<p>Chaque joueur pioche 5 cartes. Ton plateau compte 3 emplacements. Chaque manche commence avec <b>2 Ki</b>. Le perdant d'une manche gagne <b>+1 Ki</b> et commence la suivante (sursaut du héros).</p>
+<p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>4</b> (Normal) ou <b>5</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>. Le perdant d'une manche gagne <b>+1 Ki</b> et commence la suivante (sursaut du héros).</p>
 <h3>Ton tour</h3>
 <p>Au début de ton tour, tu gagnes <b>2 Ki</b> (8 maximum) et tu pioches si ta main en compte moins de 5. Ensuite, tu fais une seule action :</p>
 <ul>
-  <li><b>Jouer une carte</b> : paie son coût en Ki, puis pose-la sur un emplacement libre.</li>
+  <li><b>Jouer une carte</b> : touche-la. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li>
   <li><b>Charger</b> : gagne <b>+2 Ki</b> à la place de jouer une carte.</li>
   <li><b>Passer</b> : tu ne joues rien. Le <b>premier à passer gagne +1 Ki</b>.</li>
   <li><b>Fusion</b> : quand deux combattants liés sont sur le plateau, paie le Ki pour les fusionner (Gogeta, Gotenks).</li>
 </ul>
 <p>La manche se termine dès que les deux joueurs ont passé. Le Ki non dépensé est conservé d'un tour à l'autre, dans la limite de 8.</p>
 <h3>Mulligan</h3>
-<p>En début de partie, pendant le premier tour, tu peux échanger <b>une</b> carte de ta main : sélectionne-la, puis touche Mulligan.</p>
+<p>En début de partie, pendant le premier tour, tu peux échanger <b>une</b> carte de ta main : touche Mulligan, puis la carte à échanger.</p>
 <h3>Évolution</h3>
 <p>Une évolution (par exemple Goku → Goku Super Saiyan) se pose <b>directement sur le combattant qui la précède</b>, sans emplacement libre. Tu ne paies que la <b>différence de Ki</b> entre les deux formes.</p>
 <h3>Combattant KO</h3>
@@ -278,8 +284,8 @@ const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { no
 const TUTO = [
   'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de PUI le plus élevé gagne.',
   'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place. Passer ne coûte rien, mais le premier qui passe gagne +1 Ki.',
-  'Pose tes cartes sur les emplacements libres. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
-  'Les cartes jouables sont surlignées, et l\'aperçu indique le gain de PUI. Scouter révèle la main adverse. Fusion et Mulligan sont des coups spéciaux.'
+  'Touche une carte de ta main : elle se pose toute seule sur un emplacement libre. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
+  'Les cartes jouables sont surlignées, et chacune affiche le gain de PUI avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
 ];
 
 const BONUS_INFO = {
@@ -366,6 +372,9 @@ let vitesse = lire('dbzVitesse', 'normale');
 let P = [], round = 1, wins = [0, 0], first = HUMAN, cur = HUMAN, sel = null, pending = null, over = false;
 let inGame = false, aiTimer = null, pendingAI = false, curBg = 0;
 let R = { kiDebut: 2, kiTour: 2, kiMax: 8, noRayon: false, nom: '' };
+const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 4 }, difficile: { nom: 'Difficile', slots: 5 } };
+let niveau = lire('dbzNiveau', 'normal');
+let NB = NIVEAUX[niveau].slots, mullMode = false;
 let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '';
 let overCb = null, stayCb = null, tutoEtape = 0, avantCoup = null, msgTimer = null;
 const $ = id => document.getElementById(id);
@@ -382,6 +391,7 @@ function msg(t){
 function vib(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
 function sfxKo(){ sfx(330, 150, 'sawtooth'); }
 function jour(t){ journal.unshift(t); if (journal.length > 80) journal.length = 80; }
+const idx = () => Array.from({ length: NB }, (_, k) => k);
 const adv = () => (advIdx >= 0 ? ADVERSAIRES[advIdx] : null);
 const oppNom = () => (adv() ? adv().nom : 'Ordinateur');
 const nom = p => (p === HUMAN ? 'Toi' : oppNom());
@@ -400,7 +410,7 @@ const famOf = id => FAM_OF[CARDS[id].n] || null;
 
 // PUI de base : carte + bonus - dégâts
 function baseVal(p, s){ const inst = P[p].slots[s]; return inst ? CARDS[inst.id].p + inst.bonus - inst.dmg : 0; }
-function baseTotal(p){ return [0,1,2].reduce((a, s) => a + baseVal(p, s), 0); }
+function baseTotal(p){ return idx().reduce((a, s) => a + baseVal(p, s), 0); }
 
 // Détail de la PUI : valeur et liste des bonus actifs (utilisée pour les icônes)
 function detailPUI(p, s){
@@ -423,7 +433,7 @@ function detailPUI(p, s){
   return { v, bonus };
 }
 function pui(p, s){ return detailPUI(p, s).v; }
-function total(p){ return [0,1,2].reduce((a, s) => a + pui(p, s), 0); }
+function total(p){ return idx().reduce((a, s) => a + pui(p, s), 0); }
 function strongest(p, onlyStrikable){
   let best = -1, bv = -Infinity;
   P[p].slots.forEach((o, s) => {
@@ -489,7 +499,7 @@ function deckAdversaire(a){
   return shuffle(pool);
 }
 function makePlayer(name, ids){
-  return { name, deck: ids.slice(), hand: [], disc: [], slots: [null,null,null], ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0 };
+  return { name, deck: ids.slice(), hand: [], disc: [], slots: Array(NB).fill(null), ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0 };
 }
 function draw(p){ if (p.hand.length < HAND_SIZE && p.deck.length) p.hand.push(p.deck.pop()); }
 
@@ -504,6 +514,7 @@ function newGame(){
   }
   advIdx = mode === 'tournoi' ? Math.min(tournoi.etape, ADVERSAIRES.length - 1) : -1;
   const deckIA = advIdx >= 0 ? deckAdversaire(ADVERSAIRES[advIdx]) : deckAleatoire();
+  NB = NIVEAUX[niveau].slots; mullMode = false;
   P = [makePlayer('Toi', deckJoueur()), makePlayer(oppNom(), deckIA)];
   round = 1; wins = [0,0]; first = HUMAN; sursaut = null; mullUsed = false;
   journal = [];
@@ -518,7 +529,7 @@ function startRound(){
   P.forEach(p => {
     p.passed = false; p.ki = R.kiDebut; p.regenUsed = []; p.actions = 0; p.soutiens = 0;
     p.slots.forEach(x => { if (x) p.disc.push(x.id); });
-    p.slots = [null,null,null];
+    p.slots = Array(NB).fill(null);
     while (p.hand.length < HAND_SIZE && p.deck.length) draw(p);
   });
   if (sursaut !== null){
@@ -788,11 +799,22 @@ function tutoSuivant(){
 /* ---------- Actions du joueur ---------- */
 function onHand(i){
   if (over || cur !== HUMAN || pending) return;
-  sel = (sel && sel.t === 'h' && sel.i === i) ? null : { t: 'h', i };
-  msg(sel ? `${CARDS[P[HUMAN].hand[i]].n} : clique un emplacement, ou une carte à faire évoluer.` : '');
-  render();
+  if (mullMode){ mulliganEchange(i); return; }
+  const c = CARDS[P[HUMAN].hand[i]];
+  const s = emplacementAuto(HUMAN, i);
+  if (s < 0){
+    msg(c.e >= 0 ? `${c.n} évolue depuis ${CARDS[c.e].n} : ce combattant n'est pas en jeu.` : 'Plus d\'emplacement libre : attends qu\'un combattant tombe.');
+    return;
+  }
+  if (!peutJouer(HUMAN, i, s)){ msg(`Il faut ${coutCarte(HUMAN, i, s)} Ki pour jouer ${c.n} (tu as ${P[HUMAN].ki}).`); return; }
+  playCard(HUMAN, i, s);
 }
-
+// Emplacement où la carte se pose : premier libre, ou le combattant qu'elle fait évoluer ; -1 si aucun
+function emplacementAuto(p, i){
+  const c = CARDS[P[p].hand[i]];
+  if (c.e >= 0) return P[p].slots.findIndex(x => x && x.id === c.e);
+  return P[p].slots.findIndex(x => x === null);
+}
 function onSlot(player, s){
   if (over) return;
   if (player === AI && !pending && P[AI].slots[s]) { showInspect(s); return; }
@@ -801,10 +823,7 @@ function onSlot(player, s){
       if (hasAb(P[player].slots[s], 'divin')){ msg('Ce combattant est Divin : le rayon ne peut pas le toucher.'); return; }
       resolveRayon(s);
     }
-    return;
   }
-  if (cur !== HUMAN || player !== HUMAN) return;
-  if (sel && sel.t === 'h') playCard(HUMAN, sel.i, s);
 }
 
 // Coût en Ki : une évolution ne paie que la différence avec le combattant qu'elle remplace
@@ -820,7 +839,7 @@ function peutJouer(p, i, s){
   else if (!me.slots[s] || me.slots[s].id !== c.e) return false;
   return coutCarte(p, i, s) <= me.ki;
 }
-function jouable(p, i){ return [0,1,2].some(s => peutJouer(p, i, s)); }
+function jouable(p, i){ return idx().some(s => peutJouer(p, i, s)); }
 // Aperçu : PUI de la carte posée, gain sur le total, et bonus actifs
 function apercu(i, s){
   const me = P[HUMAN], avant = total(HUMAN), ancien = me.slots[s];
@@ -867,7 +886,7 @@ function scouter(){
 function effetsEntree(p, id){
   const opp = 1 - p;
   const onde = abVal(id, 'onde');
-  if (onde) [0,1,2].forEach(j => hit(opp, j, onde));
+  if (onde) idx().forEach(j => hit(opp, j, onde));
   const rayon = abVal(id, 'rayon');
   if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
     if (p === HUMAN){
@@ -902,7 +921,7 @@ function resolveRayon(j){
 function fusionsPossibles(p){
   const me = P[p], out = [];
   FUSIONS.forEach(f => {
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++){
+    for (let i = 0; i < NB; i++) for (let j = 0; j < NB; j++){
       if (i === j) continue;
       const a = me.slots[i], b = me.slots[j];
       if (a && b && famOf(a.id) === f.a && famOf(b.id) === f.b && me.ki >= f.ki){ out.push({ f, i, j }); return; }
@@ -934,15 +953,13 @@ function onFusion(){
 function mulliganDispo(){
   return !over && inGame && round === 1 && cur === HUMAN && !pending && !mullUsed && P[HUMAN].actions === 0;
 }
-function mulligan(){
-  if (!mulliganDispo()) return;
-  if (!sel || sel.t !== 'h'){ msg('Sélectionne la carte à échanger, puis touche Mulligan.'); return; }
+function mulliganEchange(i){
+  if (!mulliganDispo()){ mullMode = false; render(); return; }
   const me = P[HUMAN];
-  const [carte] = me.hand.splice(sel.i, 1);
+  const [carte] = me.hand.splice(i, 1);
   me.deck.unshift(carte);
   draw(me);
-  mullUsed = true;
-  sel = null;
+  mullUsed = true; mullMode = false;
   jour('Toi : Mulligan, une carte échangée.');
   msg('Carte échangée. À toi de jouer.');
   render();
@@ -962,26 +979,30 @@ function aiTurn(){
   const me = P[AI];
   const style = adv() ? adv().style : { prudent: false, agressif: 1 };
   if (P[HUMAN].passed && total(AI) > total(HUMAN)){ aiPass(); return; }
-  const fus = fusionsPossibles(AI);
-  if (fus.length){ fusionner(AI, fus[0]); return; }
+  if (niveau !== 'facile'){
+    const fus = fusionsPossibles(AI);
+    if (fus.length){ fusionner(AI, fus[0]); return; }
+  }
   if (style.prudent && !P[HUMAN].passed && total(AI) >= total(HUMAN) + 3){ aiPass(); return; }
-  let best = null;
+  const coups = [];
   me.hand.forEach((id, i) => {
     const c = CARDS[id];
-    [0,1,2].forEach(s => {
+    idx().forEach(s => {
       if (!peutJouer(AI, i, s)) return;
       let sc = c.e < 0 ? c.p + (c.a.length ? 1 : 0) : c.p + 3;
       if (c.a.some(([k]) => k === 'rayon')) sc += style.agressif;
-      if (!best || sc > best.sc) best = { i, s, sc };
+      coups.push({ i, s, sc });
     });
   });
-  if (!best){
+  if (!coups.length){
     const peutCharger = me.ki < R.kiMax && me.hand.some(id => CARDS[id].k > me.ki);
     if (peutCharger){ charger(AI); return; }
     aiPass();
     return;
   }
-  playCard(AI, best.i, best.s);
+  let choix = coups.reduce((a, b) => (b.sc > a.sc ? b : a));
+  if (niveau === 'facile' && Math.random() < 0.4) choix = coups[Math.floor(Math.random() * coups.length)];
+  playCard(AI, choix.i, choix.s);
 }
 
 /* ---------- Affichage ---------- */
@@ -1013,25 +1034,11 @@ function cardHTML(id, opts){
 
 function slotHTML(player, s){
   const inst = P[player].slots[s];
-  const dispo = player === HUMAN && cur === HUMAN && !pending && sel && sel.t === 'h' && peutJouer(HUMAN, sel.i, s);
-  const ligne = a => `Carte ${a.carte} PUI · total ${a.total >= 0 ? '+' : ''}${a.total}`;
-  if (!inst){
-    if (dispo){
-      const a = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
-      return `<div class="slot target" onclick="onSlot(${player},${s})">Poser ici<small>${ligne(a)}</small><small>${k} Ki</small>${a.bonus.length ? `<div class="icons bons">${a.bonus.map(b => `<span class="ic bon" title="${esc(BONUS_INFO[b].titre)}">${BONUS_INFO[b].svg}</span>`).join('')}</div>` : ''}</div>`;
-    }
-    return `<div class="slot" onclick="onSlot(${player},${s})">Emplacement libre</div>`;
-  }
+  if (!inst) return `<div class="slot" onclick="onSlot(${player},${s})">Emplacement libre</div>`;
   const isTarget = !!pending && player === pending.tp;
   const valide = isTarget && !hasAb(inst, 'divin');
   const det = detailPUI(player, s);
-  let extra = '', cls = valide ? 'target' : (isTarget ? 'nontarget' : '');
-  if (dispo){
-    const a = apercu(sel.i, s), k = coutCarte(HUMAN, sel.i, s);
-    extra = `<div class="apercu">${ligne(a)} · ${k} Ki</div>`;
-    cls = 'target';
-  }
-  return cardHTML(inst.id, { pui: det.v, bonus: det.bonus, cls, extra, attrs: `onclick="onSlot(${player},${s})"` });
+  return cardHTML(inst.id, { pui: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), attrs: `onclick="onSlot(${player},${s})"` });
 }
 
 function modeInfo(){
@@ -1049,19 +1056,30 @@ function render(){
   $('oppTitle').textContent = `${oppNom()} · total ${total(AI)} · main ${ai.hand.length} · Ki ${ai.ki}`;
   $('myTitle').textContent = `Toi · total ${total(HUMAN)}`;
   $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;
-  $('oppBoard').innerHTML = [0,1,2].map(s => slotHTML(AI, s)).join('');
-  $('myBoard').innerHTML = [0,1,2].map(s => slotHTML(HUMAN, s)).join('');
+  $('oppBoard').innerHTML = idx().map(s => slotHTML(AI, s)).join('');
+  $('myBoard').innerHTML = idx().map(s => slotHTML(HUMAN, s)).join('');
   const monTour = inGame && !over && cur === HUMAN && !pending;
-  $('hand').innerHTML = me.hand.map((id, i) =>
-    cardHTML(id, { cls: [(sel && sel.t === 'h' && sel.i === i) ? 'sel' : '', (monTour && jouable(HUMAN, i)) ? 'jouable' : '', (monTour && !jouable(HUMAN, i)) ? 'injouable' : ''].join(' '), attrs: `onclick="onHand(${i})"` })).join('')
-    || '<p style="color:var(--muted)">Main vide.</p>';
+  $('hand').innerHTML = me.hand.map((id, i) => {
+    const ok = monTour && jouable(HUMAN, i);
+    const sl = monTour ? emplacementAuto(HUMAN, i) : -1;
+    let extra = '';
+    if (sl >= 0 && peutJouer(HUMAN, i, sl)){
+      const a = apercu(i, sl);
+      extra = `<div class="apercu">${a.total >= 0 ? '+' : ''}${a.total} PUI · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
+    }
+    return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra, attrs: `onclick="onHand(${i})"` });
+  }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
   $('btnPass').disabled = !monTour;
   $('btnPass').textContent = (monTour && !P[AI].passed) ? 'Passer (+1 Ki)' : 'Passer';
   $('btnPass').title = monTour ? (P[AI].passed ? 'Passer termine la manche' : 'Ne rien jouer ce tour ; +1 Ki si tu es le premier à passer') : "Ce n'est pas ton tour";
   $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : 'Gagne +2 Ki à la place de jouer une carte';
   $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
   $('btnFusion').title = 'Fusionne deux combattants liés en payant le Ki';
-  $('btnCancel').textContent = pending ? 'Annuler le coup' : 'Annuler la sélection';
+  $('btnCancel').textContent = pending ? 'Annuler le coup' : (mullMode ? 'Annuler le Mulligan' : 'Annuler la sélection');
+  $('btnMull').textContent = mullMode ? 'Mulligan : choisis une carte' : 'Mulligan';
+  $('btnNiveau').textContent = `Niveau : ${NIVEAUX[niveau].nom}`;
+  $('myBoard').className = 'row n' + NB;
+  $('oppBoard').className = 'row n' + NB;
   $('msg').classList.toggle('alerte', !!pending);
   if (pending) $('msg').classList.add('visible');
   $('btnCharge').disabled = !monTour || me.ki >= R.kiMax;
@@ -1118,7 +1136,19 @@ paintSound();
 $('btnPass').onclick = passTurn;
 $('btnCharge').onclick = onCharger;
 $('btnFusion').onclick = onFusion;
-$('btnMull').onclick = mulligan;
+$('btnMull').onclick = () => {
+  if (!mulliganDispo()) return;
+  mullMode = !mullMode;
+  msg(mullMode ? 'Mulligan : touche la carte de ta main à échanger.' : '');
+  render();
+};
+$('btnNiveau').onclick = () => {
+  const ordre = Object.keys(NIVEAUX);
+  niveau = ordre[(ordre.indexOf(niveau) + 1) % ordre.length];
+  ecrire('dbzNiveau', niveau);
+  msg(`Niveau ${NIVEAUX[niveau].nom} : appliqué à la prochaine partie.`);
+  render();
+};
 $('btnNew').onclick = () => { if (inGame && !over) askQuit(); else newGame(); };
 $('btnOver').onclick = onOverButton;
 $('btnStay').onclick = onStay;
@@ -1130,6 +1160,7 @@ $('btnCancel').onclick = () => {
     render();
     return;
   }
+  if (mullMode){ mullMode = false; msg(''); render(); return; }
   sel = null; msg(''); render();
 };
 $('tutoBtn').onclick = tutoSuivant;
@@ -1277,7 +1308,7 @@ function focusTurn(){
 const modalOpen = () => !!document.querySelector('.over:not(.hidden)');
 function persist(){
   try {
-    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, advIdx, sursaut, mullUsed, journal }));
+    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, advIdx, sursaut, mullUsed, journal, NB }));
     else localStorage.removeItem(SAVE_KEY);
   } catch (e) {}
 }
@@ -1290,6 +1321,7 @@ function loadGame(){
     advIdx = typeof d.advIdx === 'number' ? d.advIdx : -1;
     sursaut = d.sursaut === undefined ? null : d.sursaut;
     mullUsed = !!d.mullUsed;
+    NB = d.NB || 3;
     journal = Array.isArray(d.journal) ? d.journal : [];
     P.forEach(p => { p.actions = p.actions || 0; p.soutiens = p.soutiens || 0; p.regenUsed = p.regenUsed || []; });
     over = false; inGame = true; sel = null;
