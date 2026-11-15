@@ -849,12 +849,20 @@ const CAP_TXT = {
   onde: 'Onde de choc : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.',
   scouter: "Scouter : à sa pose, tu vois la main de l'adversaire."
 };
+// Caractéristiques de chaque camp, reprises des règles
+const CAMP_TXT = {
+  saiyan: "Saiyan : un Saiyan gagne +1 ATT quand ton total est inférieur à celui de l'adversaire (Saiyan enragé). Tempérament : deux Saiyan sur ton plateau donnent +1 ATT à chacun.",
+  terrien: 'Terrien : pas de capacité propre. Tempérament : deux Terriens sur ton plateau donnent +1 ATT à chacun.',
+  namek: 'Namek : en début de ton tour, tes combattants blessés se soignent de 1 dégât. Tempérament : deux Namek sur ton plateau donnent +1 ATT à chacun.',
+  demon: 'Démon : pas de capacité propre. Tempérament : deux Démons sur ton plateau donnent +1 ATT à chacun.',
+  dieu: 'Dieu : pas de capacité propre. Tempérament : deux Dieux sur ton plateau donnent +1 ATT à chacun.'
+};
 function explique(ex){
   const [t, k, v] = ex.split(':');
   let txt;
   if (t === 'att') txt = `ATT : puissance d'attaque du combattant. Valeur de base : ${k}, actuelle : ${v} (bonus compris). Quand elle tombe à 0, il est mis KO.`;
   else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
-  else if (t === 'camp') txt = 'Camp : la famille du combattant. Certaines capacités et certains bonus dépendent du camp (Tempérament, Saiyan enragé).';
+  else if (t === 'camp') txt = CAMP_TXT[k];
   else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
   else txt = (CAP_TXT[k] || '') + (v ? ` Valeur : ${v}.` : '');
   $('zoomExpl').textContent = txt;
@@ -863,7 +871,7 @@ function zoomCarte(id, puiVal, bonusActuels){
   const c = CARDS[id];
   const v = (puiVal === undefined || puiVal === null || puiVal === '') ? c.p : puiVal;
   const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => BONUS_INFO[b].titre);
-  const camp = CAMP_OF[id] ? `<span class="zk" data-ex="camp">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
+  const camp = CAMP_OF[id] ? `<span class="zk" data-ex="camp:${CAMP_OF[id]}">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
   const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>` : '';
   const caps = c.a.map(([k, v]) => `<span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v ? v : ''}</span>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
