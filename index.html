@@ -166,6 +166,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .dock .hand .card .camp-chip{font-size:8px}
 .dock .hand .card .icons{min-height:0}
 .dock .hand .card .ic svg,.ic svg{width:20px;height:20px}
+.board.vu{outline:3px solid var(--ki);outline-offset:3px}
 .board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
 @keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
 .board{scroll-margin-top:72px}
@@ -245,6 +246,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Évolution</summary><div class="aide-corps"><p>Une évolution (par exemple Goku → Goku Super Saiyan) se pose <b>directement sur le combattant qu'elle remplace</b>. Tu ne paies que la <b>différence de Ki</b> entre les deux formes. Les cartes d'évolution portent le badge violet <b>ÉVO</b>.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
 <details class="aide"><summary>Combat : KO et Ki de combat</summary><div class="aide-corps"><p>Un combattant est <b>mis KO</b> quand sa <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> tombe à 0 ou moins. Il part à la défausse, sauf s'il a la Régénération. Les dégâts ne durent que pour la manche en cours.</p><p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b>.</p></div></details>
+<details class="aide"><summary>Lire une carte</summary><div class="aide-corps"><ul><li><b>Nom</b> : en haut de la carte.</li><li><b>Camp</b> : l'étiquette colorée (Saiyan, Terrien, Namek, Démon, Dieu). Certaines capacités dépendent du camp, comme le Saiyan enragé.</li><li><b>ATT</b> (chiffre rouge avec l'icône <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>) : la puissance d'attaque de base du combattant, sans les bonus.</li><li><b>Ki</b> (chiffre orange) : le coût pour poser la carte.</li><li><b>Icônes en bas</b> : les capacités de la carte, expliquées dans « Capacités sur les cartes » ci-dessous.</li><li><b>ÉVO</b> (badge violet) : carte d'évolution, à poser sur le combattant qu'elle remplace.</li><li><b>Ligne sous une carte de ta main</b> : quand un emplacement libre convient, la puissance (ATT) que la carte aurait là, avec le détail de ses bonus, et son coût en Ki.</li></ul></div></details>
 <details class="aide"><summary>Capacités sur les cartes</summary><div class="aide-corps"><p>Les icônes en bas de la carte indiquent ses capacités. Le chiffre à côté d'une icône est sa valeur (par exemple les dégâts d'un Rayon).</p><div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg><span><b>Rayon d'énergie</b> (Kamehameha, Galick Gun, Death Ball) : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg><span><b>Furie</b> (Gohan SSJ2, Kale) : ce combattant gagne +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> chaque fois qu'un de tes combattants est mis KO.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg><span><b>Régénération</b> (Buu, Kid Buu) : une fois par manche, quand ce combattant est mis KO, il retourne dans ta main.</span></div>
@@ -522,6 +524,7 @@ function draw(p){ if (p.hand.length < HAND_SIZE && p.deck.length) p.hand.push(p.
 
 /* ---------- Manches et tours ---------- */
 function newGame(){
+  clearTimeout(vueTimer); vueTimer = null;
   pickBg();
   inGame = true; over = false; history.pushState({ g: 1 }, '');
   R = { kiDebut: 2, kiTour: 2, kiMax: 8, noRayon: false, nom: '' };
@@ -586,8 +589,26 @@ function afterAction(){
   if (over) return;
   avantCoup = null;
   P[cur].actions++;
+  const jouaIA = cur === AI;
   if (!P[1-cur].passed) cur = 1 - cur;
+  if (jouaIA && cur === HUMAN){ pauseVueIA(); return; }
   startTurn();
+}
+// Après un coup de l'adversaire, son plateau reste en évidence quelques secondes avant ton tour
+let vueTimer = null;
+function pauseVueIA(){
+  cur = AI; // bloque les actions pendant la pause
+  const plateau = $('oppBoard').closest('.board');
+  plateau.classList.add('vu');
+  render();
+  clearTimeout(vueTimer);
+  vueTimer = setTimeout(() => {
+    vueTimer = null;
+    plateau.classList.remove('vu');
+    if (over || !inGame) return;
+    cur = HUMAN;
+    startTurn();
+  }, 2000);
 }
 
 // Passer : le premier qui passe gagne +1 Ki
@@ -807,6 +828,7 @@ function zoomCarte(id){
   $('zoomCarte').classList.remove('hidden');
 }
 $('zoomCarte').onclick = e => { e.stopPropagation(); $('zoomCarte').classList.add('hidden'); };
+const BONUS_COURT = { soutien: 'soutien', camp: 'tempérament', enrage: 'enragé', allie: 'allié', rival: 'rival' };
 const CAMP_LABEL = { saiyan: 'Saiyan', terrien: 'Terrien', namek: 'Namek', demon: 'Démon', dieu: 'Dieu' };
 function showInspect(s){
   const inst = P[AI].slots[s];
@@ -1106,7 +1128,9 @@ function render(){
     let extra = '';
     if (sl >= 0 && peutJouer(HUMAN, i, sl)){
       const a = apercu(i, sl);
-      extra = `<div class="apercu">${a.total >= 0 ? '+' : ''}${a.total} ${PUI_ICO} · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
+      const base = CARDS[id].p, bonusTxt = a.bonus.filter(b => BONUS_COURT[b]).map(b => BONUS_COURT[b]).join(', ');
+      const detail = (a.carte > base && bonusTxt) ? ` = ${base} + ${a.carte - base} (${bonusTxt})` : '';
+      extra = `<div class="apercu">ATT ${a.carte}${detail} · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
     }
     return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra, attrs: `onclick="onHand(${i})"` });
   }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
