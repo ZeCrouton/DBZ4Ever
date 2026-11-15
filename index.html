@@ -184,6 +184,9 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .dock.reduit .hand .card .ev,
 .dock.reduit .hand .card .camp-chip{display:none}
 .dock.reduit .hand .card{padding:3px}
+
+.poignee{position:relative;min-height:34px}
+.poignee button{position:absolute;right:8px;top:2px;padding:4px 8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -194,7 +197,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲ Agrandir la main</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles</h2>
@@ -1223,19 +1226,37 @@ function reduireMain(v){
   ajusterMarge();
 }
 dockEl.classList.toggle('reduit', lire('dbzMainReduite', true));
-poignee.addEventListener('pointerdown', e => {
-  glisse = { y: e.clientY, reduit: dockEl.classList.contains('reduit') };
-  try { poignee.setPointerCapture(e.pointerId); } catch (err) {}
-});
-poignee.addEventListener('pointerup', e => {
-  if (!glisse) return;
-  const dy = e.clientY - glisse.y;
+// Geste : glisser vers le haut agrandit, vers le bas réduit, un simple toucher bascule
+function geste(dy){
   if (dy < -24) reduireMain(false);
   else if (dy > 24) reduireMain(true);
-  else reduireMain(!glisse.reduit);
+  else reduireMain(!dockEl.classList.contains('reduit'));
+  majBoutonMain();
+}
+function majBoutonMain(){
+  $('btnMain').textContent = dockEl.classList.contains('reduit') ? '▲ Agrandir la main' : '▼ Réduire la main';
+}
+majBoutonMain();
+// Souris (pointeur)
+poignee.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse') return;
+  glisse = { y: e.clientY };
+});
+poignee.addEventListener('pointerup', e => {
+  if (e.pointerType !== 'mouse' || !glisse) return;
+  geste(e.clientY - glisse.y);
   glisse = null;
 });
-poignee.addEventListener('pointercancel', () => { glisse = null; });
+// Tactile : événements touch, plus fiables que les pointeurs sur tous les navigateurs mobiles
+poignee.addEventListener('touchstart', e => { glisse = { y: e.touches[0].clientY }; }, { passive: true });
+poignee.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
+poignee.addEventListener('touchend', e => {
+  if (!glisse) return;
+  e.preventDefault();
+  geste(e.changedTouches[0].clientY - glisse.y);
+  glisse = null;
+}, { passive: false });
+$('btnMain').onclick = () => { reduireMain(!dockEl.classList.contains('reduit')); majBoutonMain(); };
 // Affiche le plateau du joueur en entier, au-dessus de la barre du bas
 function focusTurn(){
   const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
