@@ -164,6 +164,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .handline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px}
 .handline .handhead{margin:0}
 .handline button{padding:4px 10px;font-size:13px}
+.handbtns{display:flex;gap:6px;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -174,7 +175,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
   <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock"><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><button id="btnCharge" type="button">Charger (+2 Ki)</button></div><div class="hand" id="hand"></div><div class="actions"><button id="btnPass" class="primary">Passer</button><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<footer class="dock"><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles</h2>
