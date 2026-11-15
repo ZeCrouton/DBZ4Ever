@@ -235,6 +235,18 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .row.n4 .card,.row.n4 .slot{width:22vw;max-width:112px}
 .row.n5 .card,.row.n5 .slot{width:17vw;max-width:112px}
 .row.n5 .card .nm{font-size:10px}
+/* Cartes du plateau à l'horizontale : image à gauche, texte à droite. 2 par ligne sur téléphone, 4 en paysage */
+.board .row .card.hz{width:calc(50% - 5px);max-width:none;display:grid;grid-template-columns:38% 1fr;column-gap:8px;align-items:start;text-align:left;padding:6px}
+.board .row .card.hz > img{grid-column:1;grid-row:1 / -1;margin:0}
+.board .row .card.hz > *:not(img){grid-column:2;min-width:0}
+.board .row .card.hz .nm{min-height:0;justify-content:flex-start;margin:0 0 4px;font-size:12px}
+.board .row .card.hz .camp-chip{margin:0 0 4px;justify-self:start}
+.board .row .card.hz .icons{justify-content:flex-start;margin-top:2px}
+.board .row .slot{width:calc(50% - 5px);max-width:none;min-height:70px}
+@media (min-width:640px){
+  .board .row .card.hz,.board .row .slot{width:calc(25% - 8px)}
+  .board .row.n5 .card.hz,.board .row.n5 .slot{width:calc(20% - 8px)}
+}
 .card.mull{outline:3px dashed var(--ki);outline-offset:2px}
 .boule{padding:3px 6px;line-height:0}
 .boule img{width:30px;height:30px;border-radius:50%;display:block}
@@ -1211,7 +1223,7 @@ function cardHTML(id, opts){
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
 function slotHTML(player, s){
@@ -1220,7 +1232,7 @@ function slotHTML(player, s){
   const isTarget = !!pending && player === pending.tp;
   const valide = isTarget && !hasAb(inst, 'divin');
   const det = detailPUI(player, s);
-  return cardHTML(inst.id, { pui: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), attrs: `onclick="onSlot(${player},${s})"` });
+  return cardHTML(inst.id, { pui: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), horiz: true, attrs: `onclick="onSlot(${player},${s})"` });
 }
 
 function modeInfo(){
