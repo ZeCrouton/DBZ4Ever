@@ -174,6 +174,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .dock .card.injouable{opacity:.55;filter:grayscale(.4)}
 .card.nontarget{opacity:.4;filter:grayscale(.6)}
 .card.target{outline:3px solid var(--ok);outline-offset:2px}
+.board{scroll-margin-top:72px}
 </style>
 </head>
 <body>
@@ -1053,6 +1054,7 @@ function render(){
   $('btnFusion').hidden = !fus.length;
   if (fus.length) $('btnFusion').textContent = `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
   $('btnMull').hidden = !mulliganDispo();
+  ajusterMarge();
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
   $('msg').classList.toggle('alerte', !!pending);
   $('btnMode').textContent = `Mode : ${MODES[mode]}`;
@@ -1197,9 +1199,24 @@ function focusCible(){
   const b = $('oppBoard').closest('.board');
   if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+// La barre du bas (main) recouvre le bas de la page : on réserve sa hauteur pour que le plateau défile au-dessus
+function ajusterMarge(){
+  const d = document.querySelector('footer.dock');
+  if (d && d.offsetHeight) document.body.style.paddingBottom = (d.offsetHeight + 16) + 'px';
+}
+window.addEventListener('resize', ajusterMarge);
+// Affiche le plateau du joueur en entier, au-dessus de la barre du bas
 function focusTurn(){
   const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
-  if (board && !over) board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!board || over) return;
+  ajusterMarge();
+  board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => {
+    const d = document.querySelector('footer.dock');
+    const limite = window.innerHeight - (d ? d.offsetHeight : 0) - 8;
+    const bas = board.getBoundingClientRect().bottom;
+    if (bas > limite) window.scrollBy({ top: bas - limite, behavior: 'smooth' });
+  }, 450);
 }
 const modalOpen = () => !!document.querySelector('.over:not(.hidden)');
 function persist(){
