@@ -1390,6 +1390,24 @@ document.addEventListener('fullscreenchange', paintFull);
 document.addEventListener('webkitfullscreenchange', paintFull);
 paintFull();
 
+// Plein écran automatique en tournant le téléphone : le navigateur exige un geste, donc le
+// premier appui en mode paysage l'active ; revenir en portrait le quitte. Écrans tactiles seulement.
+const fsDispo = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+const mqPaysage = window.matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 600px)');
+let fsArme = false, fsAuto = false;
+function entrerAuto(){
+  if (!fsDispo || fsEl() || !mqPaysage.matches) return;
+  const el = document.documentElement, r = (el.requestFullscreen || el.webkitRequestFullscreen);
+  try { const pr = r.call(el); fsAuto = true; if (pr && pr.catch) pr.catch(() => { fsAuto = false; }); } catch (e) { fsAuto = false; }
+}
+function suivreOrientation(){
+  if (mqPaysage.matches){ fsArme = true; entrerAuto(); }
+  else { fsArme = false; if (fsAuto && fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); fsAuto = false; }
+}
+document.addEventListener('pointerup', () => { if (fsArme){ fsArme = false; entrerAuto(); } }, true);
+if (mqPaysage.addEventListener) mqPaysage.addEventListener('change', suivreOrientation); else mqPaysage.addListener(suivreOrientation);
+suivreOrientation();
+
 // Bruitage léger à la pose d'une carte (synthèse WebAudio, sans fichier). Coupé avec le bouton Son.
 let actx = null;
 function sfx(f1 = 660, f2 = 990, type = 'triangle'){
