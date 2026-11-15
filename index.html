@@ -146,6 +146,16 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .ic.bon svg{width:16px;height:16px}
 .icons.bons{margin-top:2px}
 .slot small{font-size:11px}
+.camp-chip{display:inline-block;font-size:9px;font-weight:bold;color:#fff;border-radius:6px;padding:1px 5px;margin:2px auto 0;letter-spacing:.3px}
+.camp-chip.c-saiyan{background:#e0662a}
+.camp-chip.c-terrien{background:#c77700}
+.camp-chip.c-namek{background:#2e9e44}
+.camp-chip.c-demon{background:#b0307a}
+.camp-chip.c-dieu{background:#8a6d00}
+.ic.bon.pot{opacity:.35;filter:grayscale(.7)}
+.dock .hand .card .camp-chip{font-size:8px}
+.dock .hand .card .icons{min-height:0}
+.dock .hand .card .ic svg,.ic svg{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -184,7 +194,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <h3>Ki de combat</h3>
 <p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b> (8 maximum).</p>
 <h3>Bonus de PUI</h3>
-<p>La PUI affichée sur une carte peut être plus haute que sa valeur de base. Les petites icônes en bas de la carte montrent d'où vient le bonus. Touche une carte longuement pour voir la liste des bonus actifs.</p>
+<p>La PUI affichée sur une carte peut être plus haute que sa valeur de base. Chaque carte affiche son <b>camp</b> (étiquette colorée sous le nom) et ses bonus possibles : une icône <b>grisée</b> est un bonus possible, une icône <b>en couleur</b> est un bonus actif. Touche une carte longuement pour voir le détail.</p>
 <div class="leg"><svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg><span><b>Soutien</b> (Krillin) : chacun de tes <i>autres</i> combattants gagne +1 PUI.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg><span><b>Tempérament de camp</b> : quand deux cartes du même camp sont sur ton plateau, chacune gagne +1 PUI. Camps : Saiyan, Terrien, Namek, Démon, Dieu.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg><span><b>Saiyan enragé</b> : un combattant Saiyan gagne +1 PUI quand ton total est inférieur à celui de l'adversaire (tu es mené).</span></div>
@@ -929,12 +939,25 @@ function cardHTML(id, opts){
   const c = CARDS[id];
   const v = opts.pui !== undefined ? opts.pui : c.p;
   const icons = c.a.map(([k, val]) => `<span class="ic" title="${NAMES[k]}${val ? ' ' + val : ''}">${ICONS[k]}${val ? val : ''}</span>`).join('');
-  const bonus = (opts.bonus || []).map(k => `<span class="ic bon" title="${esc(BONUS_INFO[k].titre)}">${BONUS_INFO[k].svg}</span>`).join('');
-  const namek = CAMP_OF[id] === 'namek' ? `<span class="ic bon" title="${esc(BONUS_INFO.namek.titre)}">${BONUS_INFO.namek.svg}</span>` : '';
+  // Bonus : actifs en couleur, possibles (selon le camp et les liens de la carte) en grisé
+  const camp = CAMP_OF[id], fam = famOf(id);
+  const actifs = opts.bonus || [];
+  const possibles = [];
+  if (camp && camp !== 'namek') possibles.push('camp');
+  if (camp === 'saiyan') possibles.push('enrage');
+  if (fam && ALLIES.some(([x, y]) => x === fam || y === fam)) possibles.push('allie');
+  if (fam && RIVAUX.some(([x, y]) => x === fam || y === fam)) possibles.push('rival');
+  const cles = [...new Set([...possibles, ...actifs])];
+  const bonus = cles.map(k => {
+    const on = actifs.includes(k);
+    return `<span class="ic bon ${on ? '' : 'pot'}" title="${esc(BONUS_INFO[k].titre)} — ${on ? 'actif' : 'possible'}">${BONUS_INFO[k].svg}</span>`;
+  }).join('');
+  const namek = camp === 'namek' ? `<span class="ic bon" title="${esc(BONUS_INFO.namek.titre)}">${BONUS_INFO.namek.svg}</span>` : '';
+  const chip = camp ? `<div class="camp-chip c-${camp}">${CAMP_LABEL[camp]}</div>` : '';
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${(opts.bonus || []).join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div><div class="st"><span>PUI ${v}</span><span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${bonus ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span>PUI ${v}</span><span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
 function slotHTML(player, s){
