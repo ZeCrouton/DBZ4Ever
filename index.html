@@ -159,6 +159,8 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
 @keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
 .board{scroll-margin-top:72px}
+#msg.alerte{color:#b3261e;font-weight:bold;animation:alerteClig 1.6s steps(1,end) infinite}
+@keyframes alerteClig{0%{opacity:1}50%{opacity:.25}}
 </style>
 </head>
 <body>
@@ -1013,6 +1015,7 @@ function render(){
   if (fus.length) $('btnFusion').textContent = `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
   $('btnMull').hidden = !mulliganDispo();
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
+  $('msg').classList.toggle('alerte', !!pending);
   $('btnMode').textContent = `Mode : ${MODES[mode]}`;
   $('btnSpeed').textContent = `Vitesse IA : ${VITESSES[vitesse][0]}`;
   persist();
