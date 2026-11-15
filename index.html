@@ -134,6 +134,10 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .card.evo{border:2px solid #7b3fc4;box-shadow:0 0 0 1px #d9c4f5 inset}
 .badge-evo{position:absolute;top:-6px;left:-6px;background:#7b3fc4;color:#fff;font-size:10px;font-weight:bold;letter-spacing:.5px;padding:2px 6px;border-radius:8px;z-index:3;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .collgrid .card .badge-evo{font-size:9px;padding:1px 4px}
+
+/* Ki affiché en permanence au-dessus de la main */
+.kibadge{color:var(--ki);font-weight:bold;font-size:15px}
+.card{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -941,7 +945,7 @@ function render(){
   $('status').innerHTML = `<span>Manche <b>${round}/${MAX_ROUNDS}</b></span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Tour : <b>${cur === HUMAN ? 'toi' : oppNom()}</b></span><span>Ki <b>${me.ki}/${R.kiMax}</b></span><span>Rang <b>${r.nom}</b> · série ${stats.serie}</span>${modeInfo()}`;
   $('oppTitle').textContent = `${oppNom()} · total ${total(AI)} · main ${ai.hand.length} · Ki ${ai.ki}`;
   $('myTitle').textContent = `Toi · total ${total(HUMAN)}`;
-  $('handTitle').textContent = `Ta main (${me.hand.length})`;
+  $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;
   $('oppBoard').innerHTML = [0,1,2].map(s => slotHTML(AI, s)).join('');
   $('myBoard').innerHTML = [0,1,2].map(s => slotHTML(HUMAN, s)).join('');
   const monTour = inGame && !over && cur === HUMAN && !pending;
@@ -1128,17 +1132,25 @@ $('btnRulesClose').onclick = () => fermerModal('rulesModal');
 $('inspect').onclick = () => { $('inspect').classList.add('hidden'); render(); resumeAI(); };
 
 /* ---------- Appui long : lire une carte (la nôtre comme celle de l'adversaire) ---------- */
-let pressTimer = null, pressFired = false;
+let pressTimer = null, pressFired = false, pressX = 0, pressY = 0;
 document.addEventListener('pointerdown', e => {
   const el = e.target.closest && e.target.closest('.card[data-cid]');
   pressFired = false;
+  clearTimeout(pressTimer);
   if (!el) return;
+  pressX = e.clientX; pressY = e.clientY;
   pressTimer = setTimeout(() => {
     pressFired = true;
+    if (navigator.vibrate) navigator.vibrate(15);
     montrerCarte(+el.dataset.cid, el.dataset.pui);
-  }, 450);
+  }, 400);
 });
-['pointerup', 'pointercancel', 'pointermove'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer)));
+document.addEventListener('pointermove', e => {
+  if (Math.hypot(e.clientX - pressX, e.clientY - pressY) > 10) clearTimeout(pressTimer);
+});
+['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer)));
+// Pas de menu contextuel du navigateur sur les cartes (appui long sur téléphone)
+document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.card')) e.preventDefault(); });
 // Un appui long ne doit pas déclencher le clic qui le suit
 document.addEventListener('click', e => {
   if (pressFired){ pressFired = false; e.stopPropagation(); e.preventDefault(); }
