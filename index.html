@@ -127,6 +127,16 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 @keyframes aura{from{box-shadow:0 0 4px var(--ki)}to{box-shadow:0 0 14px var(--ki)}}
 .jauge b{min-width:24px;text-align:right}
 .succes{color:var(--ok);font-weight:bold;font-size:14px}
+.fete{position:relative;overflow:hidden;margin:4px 0 6px;padding-top:4px}
+.confettis{position:absolute;inset:0;pointer-events:none}
+.confettis i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:0;animation:confettiTombe 2.8s ease-in forwards}
+@keyframes confettiTombe{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(300px) rotate(600deg)}}
+.gain-titre{font-weight:bold;color:var(--ki);text-align:center;margin:6px 0;animation:victPop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes victPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.gains{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.gain{animation:victMonte .5s ease-out both}
+@keyframes victMonte{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.confettis{display:none}.gain-titre,.gain{animation:none}}
 .journal{text-align:left;font-size:13px;padding-left:18px;max-height:50vh;overflow:auto}
 .journal li{margin:3px 0}
 .journal-bar{display:block;width:100%;margin:0 0 10px;padding:8px 16px;border-radius:999px;font:inherit;font-size:13px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface);border:1px solid var(--muted);cursor:pointer}
@@ -711,6 +721,7 @@ function onCharger(){
   charger(HUMAN);
 }
 
+let gainsVictoire = [];
 function endRound(){
   const tt = [total(HUMAN), total(AI)];
   let winner = null;
@@ -735,13 +746,14 @@ function endRound(){
     if (mode === 'tournoi'){
       if (gagne){
         const gains = recompenses(adv());
+        gainsVictoire = gains;
         tournoi.etape++;
         if (tournoi.etape >= ADVERSAIRES.length){
           stats.tournois++; ecrire('dbzStats', stats);
           extra = 'Tu es champion du tournoi !';
           tournoi.etape = 0;
         } else {
-          extra = `Cartes gagnées : ${gains.join(', ') || 'aucune'}. Prochain adversaire : ${ADVERSAIRES[tournoi.etape].nom}.`;
+          extra = `Prochain adversaire : ${ADVERSAIRES[tournoi.etape].nom}.`;
         }
       } else {
         tournoi.etape = 0;
@@ -751,7 +763,10 @@ function endRound(){
     }
     const final = gagne ? 'Tu remportes la partie !' : `${oppNom()} remporte la partie.`;
     jour(final);
-    showOver(final, `${text} ${extra}`.trim(), 'Rejouer', newGame, { html });
+    const fete = gainsVictoire.length ? victoireHTML(gainsVictoire) : '';
+    gainsVictoire = [];
+    if (gagne) setTimeout(() => { sfx(523, 1046, 'triangle'); setTimeout(() => sfx(659, 1318, 'triangle'), 180); }, 150);
+    showOver(final, `${text} ${extra}`.trim(), 'Rejouer', newGame, { html: fete + html });
   } else {
     sursaut = winner === null ? null : 1 - winner;
     first = winner === null ? 1 - first : 1 - winner;
@@ -797,9 +812,16 @@ function recompenses(a){
   const gain = tirerPondere(cands, 2);
   gain.forEach(i => collection.push(i));
   ecrire('dbzColl', collection);
-  return gain.map(i => CARDS[i].n);
+  return gain;
 }
 
+// Écran de victoire : cartes gagnées + petite animation de fête
+function victoireHTML(ids){
+  const couleurs = ['#ffd34d', '#ff7a3d', '#3ddc84', '#4aa8ff', '#ff4fa3'];
+  const conf = Array.from({ length: 30 }, (_, i) => `<i style="left:${(i * 37) % 100}%;animation-delay:${((i * 7) % 10) * 0.12}s;background:${couleurs[i % 5]}"></i>`).join('');
+  const cartes = ids.map((id, i) => `<div class="gain" style="animation-delay:${0.4 + i * 0.2}s">${cardHTML(id)}</div>`).join('');
+  return `<div class="fete"><div class="confettis">${conf}</div><p class="gain-titre">Nouvelles cartes pour ton deck !</p><div class="gains">${cartes}</div></div>`;
+}
 function resumeHTML(){
   const k = [P[HUMAN].ki, P[AI].ki];
   const ligne = (label, v) => `<div class="jauge"><span>${esc(label)}</span><div class="barre"><i data-w="${Math.round(v / R.kiMax * 100)}"></i></div><b>${v}</b></div>`;
