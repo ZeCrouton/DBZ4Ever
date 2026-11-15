@@ -235,12 +235,11 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 .row.n4 .card,.row.n4 .slot{width:22vw;max-width:112px}
 .row.n5 .card,.row.n5 .slot{width:17vw;max-width:112px}
 .row.n5 .card .nm{font-size:10px}
-/* Cartes du plateau à l'horizontale : image à gauche, texte à droite. 2 par ligne sur téléphone, 4 en paysage */
-.board .row .card.hz{width:calc(50% - 5px);max-width:none;display:grid;grid-template-columns:38% 1fr;column-gap:8px;align-items:start;text-align:left;padding:6px}
-.board .row .card.hz > img{grid-column:1;grid-row:1 / -1;margin:0}
-.board .row .card.hz > *:not(img){grid-column:2;min-width:0}
+/* Cartes du plateau à l'horizontale : image à gauche (flottante), texte qui se place à côté. 2 par ligne sur téléphone, 4 en paysage */
+.board .row .card.hz{display:flow-root;width:calc(50% - 5px);max-width:none;text-align:left;padding:6px}
+.board .row .card.hz > img{float:left;width:38%;margin:0 8px 4px 0}
 .board .row .card.hz .nm{min-height:0;justify-content:flex-start;margin:0 0 4px;font-size:12px}
-.board .row .card.hz .camp-chip{margin:0 0 4px;justify-self:start}
+.board .row .card.hz .camp-chip{margin:0 0 4px}
 .board .row .card.hz .icons{justify-content:flex-start;margin-top:2px}
 .board .row .slot{width:calc(50% - 5px);max-width:none;min-height:70px}
 @media (min-width:640px){
