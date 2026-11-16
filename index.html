@@ -286,7 +286,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
   <button class="journal-bar" id="btnJournal" type="button" hidden></button>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnPass" class="primary">Passer</button><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
@@ -298,7 +298,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Yamcha, Vegeta, Freezer, Cell, Buu, Jiren, Beerus, Goku Ultra Instinct). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (4 emplacements), Difficile (5 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>4</b> (Normal) ou <b>5</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (8 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte.</li><li><b>Passer</b> : tu ne fais rien. Le <b>premier à passer gagne +1 Ki</b>. Quand les deux joueurs ont passé, la manche se termine.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (8 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
 <details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
@@ -356,7 +356,7 @@ const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Genkidama' };
 const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { nom: 'Dieu', min: 15 }];
 const TUTO = [
   'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de ATT le plus élevé gagne.',
-  'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place. Passer ne coûte rien, mais le premier qui passe gagne +1 Ki.',
+  'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place. Si tu ne peux plus rien faire, ton tour est sauté.',
   'Touche une carte de ta main : elle se pose toute seule sur un emplacement libre. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
   'Les cartes jouables sont surlignées, et chacune affiche le gain de ATT avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
 ];
@@ -675,13 +675,13 @@ function newGame(){
   jour(`Nouvelle partie : mode ${MODES[mode]}${advIdx >= 0 ? ' contre ' + oppNom() : ''}${R.nom ? ' · ' + R.nom : ''}.`);
   $('over').classList.add('hidden');
   startRound();
-  msg('Première manche. Choisis une carte de ta main puis un emplacement, ou passe.');
+  msg('Première manche. Choisis une carte de ta main puis un emplacement.');
   if (!lire('dbzTuto', false)) montrerTuto(0);
 }
 
 function startRound(){
   P.forEach(p => {
-    p.passed = false; p.ki = R.kiDebut; p.regenUsed = []; p.actions = 0; p.soutiens = 0;
+    p.ki = R.kiDebut; p.regenUsed = []; p.actions = 0; p.soutiens = 0;
     p.slots.forEach(x => { if (x) p.disc.push(x.id); });
     p.slots = Array(NB).fill(null);
     while (p.hand.length < HAND_SIZE && p.deck.length) draw(p);
@@ -730,8 +730,16 @@ function startTurn(){
   }
   draw(p, true);
   namekSoin(cur);
+  // Rien à poser ni de Ki pour charger : le tour est sauté
+  if (!peutAgir(cur)){
+    jour(`${nom(cur)} ne peut rien jouer : son tour est sauté.`);
+    const autre = 1 - cur;
+    if (!peutAgir(autre)) return endRound();
+    cur = autre;
+    return startTurn();
+  }
   sel = null; pending = null;
-  if (cur === HUMAN) msg('À toi de jouer : une carte, Charger, Passer ou Fusion.');
+  if (cur === HUMAN) msg('À toi de jouer : une carte, Charger ou Fusion.');
   else msg(`${oppNom()} réfléchit…`);
   render();
   focusTurn();
@@ -743,7 +751,10 @@ function afterAction(){
   avantCoup = null;
   P[cur].actions++;
   const jouaIA = cur === AI;
-  if (!P[1-cur].passed) cur = 1 - cur;
+  // Plateaux pleins des deux côtés : la manche est finie
+  if (P[HUMAN].slots.every(Boolean) && P[AI].slots.every(Boolean)) return endRound();
+  // Sinon le tour passe à l'autre (s'il ne peut rien faire, startTurn le saute)
+  cur = 1 - cur;
   if (jouaIA && cur === HUMAN){ pauseVueIA(); return; }
   startTurn();
 }
@@ -764,40 +775,10 @@ function pauseVueIA(){
   }, 2000);
 }
 
-// Passer : le premier qui passe gagne +1 Ki
-function passer(p){
-  const me = P[p], autre = P[1-p];
-  me.passed = true;
-  // Passer fait piocher une carte bonus (même si la main est pleine)
-  draw(P[p], true);
-  if (!autre.passed){
-    me.ki = Math.min(R.kiMax, me.ki + 1);
-    jour(`${nom(p)} : passe le premier (+1 Ki) et pioche une carte.`);
-  } else {
-    jour(`${nom(p)} : passe et pioche une carte.`);
-  }
-}
-
-function passTurn(){
-  if (over || cur !== HUMAN || pending) return;
-  if (!P[AI].passed && total(HUMAN) > total(AI)){
-    showOver('Passer en tête ?', `Tu mènes ${total(HUMAN)} – ${total(AI)}. Si tu passes, ${oppNom()} peut encore jouer.`, 'Passer', doPass, { stayLabel: 'Annuler' });
-    return;
-  }
-  doPass();
-}
-function doPass(){
-  if (over || cur !== HUMAN || pending) return;
-  passer(HUMAN);
-  if (P[AI].passed) return endRound();
-  msg(`Tu passes. ${oppNom()} joue.`);
-  afterAction();
-}
-function aiPass(){
-  passer(AI);
-  if (P[HUMAN].passed) return endRound();
-  msg(`${oppNom()} passe.`);
-  afterAction();
+// Un joueur peut agir s'il peut poser une carte, ou charger son Ki
+function peutAgir(p){
+  if (P[p].ki < R.kiMax) return true;
+  return P[p].hand.some((id, i) => idx().some(s => peutJouer(p, i, s)));
 }
 
 // Charger : +2 Ki à la place de jouer une carte
@@ -1318,14 +1299,13 @@ function aiTurn(){
   if (modalOpen()){ pendingAI = true; return; }
   const me = P[AI];
   const style = adv() ? adv().style : { prudent: false, agressif: 1 };
-  if (P[HUMAN].passed && total(AI) > total(HUMAN)){ aiPass(); return; }
   if (niveau !== 'facile'){
     const fus = fusionsPossibles(AI);
     if (fus.length){ fusionner(AI, fus[0]); return; }
   }
-  if (style.prudent && !P[HUMAN].passed && total(AI) >= total(HUMAN) + 3){ aiPass(); return; }
+  if (style.prudent && total(AI) >= total(HUMAN) + 3 && me.ki < R.kiMax){ charger(AI); return; }
   // Beerus : il ne fait rien quand il mène, il attend
-  if (style.trait === 'attentiste' && !P[HUMAN].passed && total(AI) > total(HUMAN)){ aiPass(); return; }
+  if (style.trait === 'attentiste' && total(AI) > total(HUMAN) && me.ki < R.kiMax){ charger(AI); return; }
   const coups = [];
   me.hand.forEach((id, i) => {
     const c = CARDS[id];
@@ -1339,10 +1319,8 @@ function aiTurn(){
     });
   });
   if (!coups.length){
-    const peutCharger = me.ki < R.kiMax && me.hand.some(id => CARDS[id].k > me.ki);
-    if (peutCharger){ charger(AI); return; }
-    aiPass();
-    return;
+    if (me.ki < R.kiMax){ charger(AI); return; }
+    return endRound();
   }
   let choix = coups.reduce((a, b) => (b.sc > a.sc ? b : a));
   // Difficile : sans bon coup et sans être en tête, mieux vaut charger son Ki
@@ -1440,9 +1418,6 @@ function render(){
     }
     return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra, attrs: `onclick="onHand(${i})"` });
   }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
-  $('btnPass').disabled = !monTour;
-  $('btnPass').textContent = (monTour && !P[AI].passed) ? 'Passer (+1 Ki)' : 'Passer';
-  $('btnPass').title = monTour ? (P[AI].passed ? 'Passer termine la manche' : 'Ne rien jouer ce tour ; +1 Ki si tu es le premier à passer') : "Ce n'est pas ton tour";
   $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : 'Gagne +2 Ki à la place de jouer une carte';
   $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
   $('btnFusion').title = 'Fusionne deux combattants liés en payant le Ki';
@@ -1504,7 +1479,6 @@ document.addEventListener('pointerdown', function firstTouch(){
 });
 paintSound();
 
-$('btnPass').onclick = passTurn;
 $('btnCharge').onclick = onCharger;
 $('btnFusion').onclick = onFusion;
 $('btnMull').onclick = () => {

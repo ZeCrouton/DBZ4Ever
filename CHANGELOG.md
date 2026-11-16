@@ -1,5 +1,12 @@
 # Journal des modifications
 
+## Version 2.5
+
+- « Passer » est supprimé. Une manche se termine quand plus personne ne peut agir (pas de carte jouable et Ki au maximum), ou quand les deux plateaux sont pleins.
+- Un joueur qui ne peut rien faire voit son tour sauté ; l'adversaire joue.
+- L'IA charge son Ki à la place de passer.
+- Service worker : cache `dbz-v8`.
+
 ## Version 2.4
 
 - Passer fait piocher une carte bonus au joueur qui passe (en plus du +1 Ki pour le premier à passer).
