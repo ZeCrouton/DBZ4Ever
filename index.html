@@ -768,11 +768,13 @@ function pauseVueIA(){
 function passer(p){
   const me = P[p], autre = P[1-p];
   me.passed = true;
+  // Passer fait piocher une carte bonus (même si la main est pleine)
+  draw(P[p], true);
   if (!autre.passed){
     me.ki = Math.min(R.kiMax, me.ki + 1);
-    jour(`${nom(p)} : passe le premier (+1 Ki).`);
+    jour(`${nom(p)} : passe le premier (+1 Ki) et pioche une carte.`);
   } else {
-    jour(`${nom(p)} : passe.`);
+    jour(`${nom(p)} : passe et pioche une carte.`);
   }
 }
 

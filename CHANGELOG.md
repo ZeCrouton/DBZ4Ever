@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.4
+
+- Passer fait piocher une carte bonus au joueur qui passe (en plus du +1 Ki pour le premier à passer).
+- Service worker : cache `dbz-v7`.
+
 ## Version 2.3
 
 - Rayons d'énergie de 2 et 3 PUI augmentés de 1 (les rayons de 4 et 5 sont inchangés).
