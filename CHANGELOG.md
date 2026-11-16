@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.3
+
+- Rayons d'énergie de 2 et 3 PUI augmentés de 1 (les rayons de 4 et 5 sont inchangés).
+- Service worker : cache `dbz-v6`.
+
 ## Version 2.2
 
 - Esquive : affichage deux fois plus long, description « Chance d'esquiver l'attaque ennemie. »
