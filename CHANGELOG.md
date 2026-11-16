@@ -1,5 +1,13 @@
 # Journal des modifications
 
+## Version 2.1
+
+- **Ki par tour** : +1 de base (au lieu de +2). Charger reste à +2 Ki.
+- **Pioche** : une carte par tour, sans plafond à 5 en cours de partie (la main de départ reste à 5).
+- **Personnalités d'IA** : chaque adversaire du tournoi a son comportement. Vegeta est fier et joue ses Saiyans ; Freezer frappe quand un rayon peut tuer ; Cell aime les évolutions ; Buu est imprévisible ; Jiren privilégie les ondes de choc ; Beerus attend quand il mène et charge son Ki quand aucun coup ne vaut le coup ; Goku Ultra Instinct privilégie l'esquive et la régénération.
+- Service worker : cache `dbz-v4`.
+
+
 ## Corrections
 
 - **Partie bloquée** : fermer la fenêtre d'agrandissement pendant le tour de l'IA relance désormais l'IA.
