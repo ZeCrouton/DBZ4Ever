@@ -614,7 +614,18 @@ function deckAdversaire(a){
 function makePlayer(name, ids){
   return { name, deck: ids.slice(), hand: [], disc: [], slots: Array(NB).fill(null), ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0 };
 }
-function draw(p){ if (p.hand.length < HAND_SIZE && p.deck.length) p.hand.push(p.deck.pop()); }
+function draw(p){
+  if (p.hand.length >= HAND_SIZE) return;
+  // Pioche vide : la défausse est remélangée dans la pioche (sinon la main se vide et le joueur ne peut plus jouer)
+  if (!p.deck.length && p.disc.length){
+    p.deck = p.disc.slice();
+    p.disc = [];
+    for (let i = p.deck.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [p.deck[i], p.deck[j]] = [p.deck[j], p.deck[i]]; }
+    const i = P.indexOf(p);
+    jour(`${nom(i)} : la défausse est remélangée dans la pioche.`);
+  }
+  if (p.deck.length) p.hand.push(p.deck.pop());
+}
 
 /* ---------- Manches et tours ---------- */
 function newGame(){
