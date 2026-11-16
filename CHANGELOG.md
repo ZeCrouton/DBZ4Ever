@@ -1,5 +1,16 @@
 # Journal des modifications
 
+## Version 2.2
+
+- Esquive : affichage deux fois plus long, description « Chance d'esquiver l'attaque ennemie. »
+- Adversaires du tournoi renommés en héros MCU : Hawkeye, Iron Man, Thor, Spider-Man, Hulk, Captain America, Doctor Strange, Wanda.
+- Changement de mode ou de niveau : le message s'affiche sous le menu et ne couvre plus les boutons.
+- Tremblement d'écran sur les rayons d'énergie, ondes de choc et explosions.
+- Petits cœurs au-dessus du plateau quand Namek soigne un combattant.
+- Cartes liées (Tempérament de camp, alliés, rivaux) entourées de violet.
+- Règles Enragé et Survie reformulées : « si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total) ».
+- Service worker : cache `dbz-v5`.
+
 ## Version 2.1
 
 - **Ki par tour** : +1 de base (au lieu de +2). Charger reste à +2 Ki.

@@ -119,6 +119,11 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 /* Ajouts : menus, cartes jouables, aperçu, résumé de fin de manche, collection, succès */
 .menu{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 8px}
 .menu button,.actions button{padding:6px 10px;font-size:13px}
+.menu-note{min-height:20px;margin:-4px 0 8px;text-align:center;font-size:13px;opacity:0;transition:opacity .3s}
+.menu-note.visible{opacity:1}
+.coeur-fx{position:fixed;font-size:18px;color:#ff5c8a;pointer-events:none;z-index:7;animation:coeurFx 1.4s ease-out forwards}
+@keyframes coeurFx{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
+.card.lien{box-shadow:0 0 0 2px #b08cff,0 0 12px #8e5fd6}
 .card.jouable{box-shadow:0 0 0 2px var(--ok)}
 .slot small,.apercu{display:block;font-size:11px;color:var(--ok);margin-top:4px}
 .apercu{text-align:center;background:var(--surface);border-radius:6px;padding:2px}
@@ -143,7 +148,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 @media (prefers-reduced-motion: reduce){.confettis{display:none}.gain-titre,.gain{animation:none}}
 .journal{text-align:left;font-size:13px;padding-left:18px;max-height:50vh;overflow:auto}
 .journal li{margin:3px 0}
-.esquive-fx{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:44px;font-weight:bold;color:#fff;text-shadow:0 0 8px #6a2c91,0 3px 0 #3b1560;z-index:8;pointer-events:none;white-space:nowrap;animation:esquiveFx .95s ease-out forwards}
+.esquive-fx{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:44px;font-weight:bold;color:#fff;text-shadow:0 0 8px #6a2c91,0 3px 0 #3b1560;z-index:8;pointer-events:none;white-space:nowrap;animation:esquiveFx 1.8s ease-out forwards}
 @keyframes esquiveFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 .secoue{animation:secoue .45s linear}
 @keyframes secoue{0%,100%{transform:translate(0)}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
@@ -300,7 +305,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Combat : KO et Ki de combat</summary><div class="aide-corps"><p>Un combattant est <b>mis KO</b> quand sa <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> tombe à 0 ou moins. Il part à la défausse, sauf s'il a la Régénération. Les dégâts ne durent que pour la manche en cours.</p><p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b>.</p></div></details>
 <h3 class="regle-groupe">Les cartes</h3>
 <details class="aide"><summary>Lire une carte</summary><div class="aide-corps"><ul><li><b>Nom</b> : en haut de la carte.</li><li><b>Camp</b> : l'étiquette colorée (Saiyan, Terrien, Namek, Démon, Dieu, Cyborg, Ennemis jurés, Survie de l'univers). Certaines capacités dépendent du camp, comme le Saiyan enragé.</li><li><b>ATT</b> (chiffre rouge avec l'icône <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>) : la puissance d'attaque de base du combattant, sans les bonus.</li><li><b>Ki</b> (chiffre orange) : le coût pour poser la carte.</li><li><b>Icônes en bas</b> : les capacités de la carte, expliquées dans « Capacités sur les cartes » ci-dessous.</li><li><b>ÉVO</b> (badge violet) : carte d'évolution, à poser sur le combattant qu'elle remplace.</li><li><b>Ligne sous une carte de ta main</b> : quand un emplacement libre convient, la puissance (ATT) que la carte aurait là, avec le détail de ses bonus, et son coût en Ki.</li></ul></div></details>
-<details class="aide"><summary>Les camps</summary><div class="aide-corps"><p>Chaque combattant appartient à un camp, indiqué par l'étiquette colorée sur sa carte : <b>Saiyan</b>, <b>Terrien</b>, <b>Namek</b>, <b>Démon</b>, <b>Dieu</b>, <b>Cyborg</b>, <b>Ennemis jurés</b> ou <b>Survie de l'univers</b>.</p><ul><li><b>Tempérament</b> (tous les camps) : deux cartes du même camp sur ton plateau donnent +1 ATT à chacune.</li><li><b>Saiyan enragé</b> : un Saiyan gagne +1 ATT quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire.</li><li><b>Namek</b> (Piccolo) : en début de ton tour, tes combattants blessés se soignent de 1 dégât.</li><li><b>Terrien</b> (Entraide) : quand un Terrien allié est mis KO, les autres Terriens de ton plateau gagnent +1 ATT.</li><li><b>Démon</b> (Magie démoniaque) : quand un Démon est posé, ton adversaire perd 1 Ki.</li><li><b>Dieu</b> (Aura divine) : au début de ton tour, si tu as un Dieu sur ton plateau, tu gagnes 1 Ki de plus.</li><li><b>Cyborg</b> (Barrière) : chaque dégât reçu par un Cyborg est réduit de 1.</li><li><b>Ennemis jurés</b> (Rancune) : quand un Saiyan adverse est mis KO, tes Ennemis jurés gagnent +1 ATT.</li><li><b>Survie de l'univers</b> (Dernier rempart) : quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire, chaque combattant de ce camp gagne +1 ATT.</li></ul></div></details>
+<details class="aide"><summary>Les camps</summary><div class="aide-corps"><p>Chaque combattant appartient à un camp, indiqué par l'étiquette colorée sur sa carte : <b>Saiyan</b>, <b>Terrien</b>, <b>Namek</b>, <b>Démon</b>, <b>Dieu</b>, <b>Cyborg</b>, <b>Ennemis jurés</b> ou <b>Survie de l'univers</b>.</p><ul><li><b>Tempérament</b> (tous les camps) : deux cartes du même camp sur ton plateau donnent +1 ATT à chacune.</li><li><b>Saiyan enragé</b> : un Saiyan gagne +1 ATT si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total).</li><li><b>Namek</b> (Piccolo) : en début de ton tour, tes combattants blessés se soignent de 1 dégât.</li><li><b>Terrien</b> (Entraide) : quand un Terrien allié est mis KO, les autres Terriens de ton plateau gagnent +1 ATT.</li><li><b>Démon</b> (Magie démoniaque) : quand un Démon est posé, ton adversaire perd 1 Ki.</li><li><b>Dieu</b> (Aura divine) : au début de ton tour, si tu as un Dieu sur ton plateau, tu gagnes 1 Ki de plus.</li><li><b>Cyborg</b> (Barrière) : chaque dégât reçu par un Cyborg est réduit de 1.</li><li><b>Ennemis jurés</b> (Rancune) : quand un Saiyan adverse est mis KO, tes Ennemis jurés gagnent +1 ATT.</li><li><b>Survie de l'univers</b> (Dernier rempart) : si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total), chaque combattant de ce camp gagne +1 ATT.</li></ul></div></details>
 <details class="aide"><summary>Capacités sur les cartes</summary><div class="aide-corps"><p>Les icônes en bas de la carte indiquent ses capacités. Le chiffre à côté d'une icône est sa valeur (par exemple les dégâts d'un Rayon). L'icône d'esquive n'a pas de chiffre : elle signale seulement que le combattant peut éviter une attaque.</p><div class="leg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg><span><b>Rayon d'énergie</b> (Kamehameha, Galick Gun, Death Ball) : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg><span><b>Furie</b> (Gohan SSJ2, Kale) : ce combattant gagne +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> chaque fois qu'un de tes combattants est mis KO.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg><span><b>Régénération</b> (Buu, Kid Buu) : une fois par manche, quand ce combattant est mis KO, il retourne dans ta main.</span></div>
@@ -315,9 +320,9 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Pourquoi une icône est grisée ?</summary><div class="aide-corps"><p>Les icônes de bonus sous une carte montrent les bonus de <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> que cette carte peut recevoir :</p><ul><li><b>En couleur</b> : le bonus est <b>actif</b> maintenant.</li><li><b>Grisée</b> : le bonus est <b>possible</b>, mais pas actif. Il dépend de ce qui est sur ton plateau.</li></ul><p>Exemple : Trunks est grisé pour « Allié » tant qu'aucun allié n'est posé à côté de lui.</p></div></details>
 <details class="aide"><summary>Bonus de <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></summary><div class="aide-corps"><p>La <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> affichée peut dépasser la valeur de base. Chaque carte affiche son <b>camp</b> (étiquette colorée sous le nom). Touche une carte longuement pour voir le détail de ses bonus.</p><div class="leg"><svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg><span><b>Soutien</b> : tes autres combattants gagnent +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg><span><b>Tempérament de camp</b> : deux cartes du même camp sur ton plateau donnent +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> à chacune. Camps : Saiyan, Terrien, Namek, Démon, Dieu.</span></div>
-<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg><span><b>Saiyan enragé</b> : un Saiyan gagne +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg><span><b>Saiyan enragé</b> : un Saiyan gagne +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total).</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg><span><b>Allié à côté</b> : +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si un allié est sur ton plateau (Goku + Vegeta, Gohan + Piccolo, Krillin + Tenshinhan, Trunks + Goku ou Vegeta, Gohan + Trunks).</span></div>
-<div class="leg"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg><span><b>Survie de l'univers</b> : quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire, +1 ATT à chaque combattant de ce camp.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg><span><b>Survie de l'univers</b> : si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total), +1 ATT à chaque combattant de ce camp.</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg><span><b>Rival en face</b> : +1 <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si un rival est en face (Gohan face à Cell, Goku ou Vegeta face à Freezer).</span></div>
 <div class="leg"><svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg><span><b>Namek</b> (Piccolo) : en début de ton tour, tes combattants blessés se soignent de 1 dégât.</span></div>
 </div></details>
@@ -359,9 +364,9 @@ const TUTO = [
 const BONUS_INFO = {
   soutien: { titre: 'Soutien (Krillin) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>' },
   camp: { titre: 'Tempérament : 2 cartes du même camp, +1 ATT à chacune', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg>' },
-  enrage: { titre: 'Saiyan enragé : tu es mené (hors bonus Enragé et Survie), +1 ATT', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
+  enrage: { titre: 'Saiyan enragé : tu es mené, +1 ATT', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
   allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
-  survie: { titre: 'Survie de l\'univers (tu es mené, hors bonus Enragé et Survie) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg>' },
+  survie: { titre: 'Survie de l\'univers (tu es mené) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg>' },
   rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
   namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
 };
@@ -381,14 +386,14 @@ const ICONS = {
 
 /* Adversaires du mode Tournoi, dans l'ordre. Chacun a son deck (équipe) et son style. */
 const ADVERSAIRES = [
-  { nom: 'Yamcha', equipe: ['Yamcha', 'Tenshinhan', 'Krillin', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé', 'Son Goku enfant'], style: { prudent: true, agressif: 0 } },
-  { nom: 'Vegeta', equipe: ['Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Goku Super Saiyan', 'Son Goku', 'Gohan Super Saiyan', 'Trunks', 'Gotenks', 'Vegetto', 'Gogeta'], style: { prudent: false, agressif: 2, trait: 'fier' } },
-  { nom: 'Freezer', equipe: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer', 'Dabra', 'Babidi', 'Zamasu', 'Goku Black', 'Hit'], style: { prudent: false, agressif: 1, trait: 'calculateur' } },
-  { nom: 'Cell', equipe: ['Cell', 'Cell parfait', 'C-16', 'C-17', 'C-18', 'Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2', 'Hit'], style: { prudent: false, agressif: 1, trait: 'parfait' } },
-  { nom: 'Buu', equipe: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi', 'Krillin', 'Tenshinhan', 'Yamcha'], style: { prudent: false, agressif: 0, trait: 'chaotique' } },
-  { nom: 'Jiren', equipe: ['Jiren', 'Broly', 'Toppo', 'Kale', 'Caulifla', 'Kefla', 'Hit', 'Goku Ultra Instinct'], style: { prudent: false, agressif: 2, trait: 'imperturbable' } },
-  { nom: 'Beerus', equipe: ['Beerus', 'Whis', 'Toppo', 'Zamasu', 'Goku Black', 'Goku Super Saiyan Blue', 'Hit'], style: { prudent: false, agressif: 1, trait: 'attentiste' } },
-  { nom: 'Goku Ultra Instinct', equipe: ['Goku Ultra Instinct', 'Goku Super Saiyan Blue', 'Son Goku', 'Vegeta Ultra Ego', 'Whis', 'Gogeta', 'Vegetto', 'Kefla'], style: { prudent: false, agressif: 1, trait: 'instinct' } }
+  { nom: 'Hawkeye', equipe: ['Yamcha', 'Tenshinhan', 'Krillin', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé', 'Son Goku enfant'], style: { prudent: true, agressif: 0 } },
+  { nom: 'Iron Man', equipe: ['Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Goku Super Saiyan', 'Son Goku', 'Gohan Super Saiyan', 'Trunks', 'Gotenks', 'Vegetto', 'Gogeta'], style: { prudent: false, agressif: 2, trait: 'fier' } },
+  { nom: 'Thor', equipe: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer', 'Dabra', 'Babidi', 'Zamasu', 'Goku Black', 'Hit'], style: { prudent: false, agressif: 1, trait: 'calculateur' } },
+  { nom: 'Spider-Man', equipe: ['Cell', 'Cell parfait', 'C-16', 'C-17', 'C-18', 'Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2', 'Hit'], style: { prudent: false, agressif: 1, trait: 'parfait' } },
+  { nom: 'Hulk', equipe: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi', 'Krillin', 'Tenshinhan', 'Yamcha'], style: { prudent: false, agressif: 0, trait: 'chaotique' } },
+  { nom: 'Captain America', equipe: ['Jiren', 'Broly', 'Toppo', 'Kale', 'Caulifla', 'Kefla', 'Hit', 'Goku Ultra Instinct'], style: { prudent: false, agressif: 2, trait: 'imperturbable' } },
+  { nom: 'Doctor Strange', equipe: ['Beerus', 'Whis', 'Toppo', 'Zamasu', 'Goku Black', 'Goku Super Saiyan Blue', 'Hit'], style: { prudent: false, agressif: 1, trait: 'attentiste' } },
+  { nom: 'Wanda', equipe: ['Goku Ultra Instinct', 'Goku Super Saiyan Blue', 'Son Goku', 'Vegeta Ultra Ego', 'Whis', 'Gogeta', 'Vegetto', 'Kefla'], style: { prudent: false, agressif: 1, trait: 'instinct' } }
 ];
 
 /* Tempéraments : camp de chaque combattant. 2 cartes du même camp = +1 PUI à chacune. */
@@ -457,6 +462,15 @@ let overCb = null, stayCb = null, tutoEtape = 0, avantCoup = null, msgTimer = nu
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+let noteTimer = null;
+function menuNote(t){
+  let el = document.getElementById('menuNote');
+  if (!el){ el = document.createElement('div'); el.id = 'menuNote'; el.className = 'menu-note'; el.setAttribute('aria-live', 'polite'); document.querySelector('.menu').insertAdjacentElement('afterend', el); }
+  el.textContent = t || '';
+  el.classList.toggle('visible', !!t);
+  clearTimeout(noteTimer);
+  if (t) noteTimer = setTimeout(() => el.classList.remove('visible'), 4000);
+}
 function msg(t){
   const el = $('msg');
   el.textContent = t || '';
@@ -466,6 +480,14 @@ function msg(t){
 }
 // Retour haptique (téléphones) et son court pour les KO
 function vib(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+// Secousse de l'écran (évite d'empiler les secousses)
+function secouer(){
+  try {
+    if (document.body.classList.contains('secoue')) return;
+    document.body.classList.add('secoue');
+    setTimeout(() => document.body.classList.remove('secoue'), 500);
+  } catch (e) {}
+}
 // Esquive : secousse de l'écran et mot « Esquive » au centre
 function esquiveFx(){
   try {
@@ -477,7 +499,7 @@ function esquiveFx(){
   const el = document.createElement('div');
   el.className = 'esquive-fx'; el.textContent = 'Esquive';
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 950);
+  setTimeout(() => el.remove(), 1800);
 }
 function sfxKo(){ sfx(330, 150, 'sawtooth'); }
 function jour(t){ journal.unshift(t); if (journal.length > 500) journal.length = 500; }
@@ -550,6 +572,7 @@ function hit(p, s, n, src){
     if (bloque) jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) : barrière cyborg, ${bloque} dégât bloqué.`);
     if (n <= 0) return;
   }
+  secouer();
   inst.dmg += n;
   vib(12);
   const reste = pui(p, s);
@@ -674,12 +697,27 @@ function startRound(){
 }
 
 // Namek : au début de son tour, le camp Namek soigne 1 dégât de ses combattants
+// Petits cœurs au-dessus du plateau du joueur soigné
+function coeurs(p){
+  const row = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
+  if (!row) return;
+  const r = row.getBoundingClientRect();
+  for (let k = 0; k < 6; k++){
+    const h = document.createElement('span');
+    h.className = 'coeur-fx'; h.textContent = '♥';
+    h.style.left = (r.left + r.width * (0.1 + 0.8 * Math.random())) + 'px';
+    h.style.top = (r.top + r.height / 2) + 'px';
+    h.style.animationDelay = (k * 0.12) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1600 + k * 120);
+  }
+}
 function namekSoin(p){
   const sl = P[p].slots;
   if (!sl.some(o => o && CAMP_OF[o.id] === 'namek')) return;
   let soigne = false;
   sl.forEach(o => { if (o && o.dmg > 0){ o.dmg--; soigne = true; } });
-  if (soigne) jour(`${nom(p)} : Namek régénère ses combattants (+1 ATT).`);
+  if (soigne){ jour(`${nom(p)} : Namek régénère ses combattants (+1 ATT).`); coeurs(p); }
 }
 
 function startTurn(){
@@ -976,18 +1014,18 @@ const CAP_TXT = {
   explosion: "Explosion : quand ce combattant est mis KO, il inflige ses dégâts au combattant ennemi le plus fort (sauf Divin).",
   onde: 'Onde de choc : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.',
   scouter: "Scouter : à sa pose, tu vois la main de l'adversaire.",
-  esquive: "Esquive : ce combattant peut éviter une attaque subie (rayon, onde, explosion), selon sa rapidité. Le chiffre exact n'est pas affiché."
+  esquive: "Chance d'esquiver l'attaque ennemie."
 };
 // Caractéristiques de chaque camp, reprises des règles
 const CAMP_TXT = {
-  saiyan: "Saiyan : un Saiyan gagne +1 ATT quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire (Saiyan enragé). Tempérament : deux Saiyan sur ton plateau donnent +1 ATT à chacun.",
+  saiyan: "Saiyan : un Saiyan gagne +1 ATT si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total) (Saiyan enragé). Tempérament : deux Saiyan sur ton plateau donnent +1 ATT à chacun.",
   terrien: "Terrien : entraide. Quand un Terrien allié est mis KO, les autres Terriens de ton plateau gagnent +1 ATT. Tempérament : deux Terriens sur ton plateau donnent +1 ATT à chacun.",
   namek: 'Namek : en début de ton tour, tes combattants blessés se soignent de 1 dégât. Tempérament : deux Namek sur ton plateau donnent +1 ATT à chacun.',
   demon: "Démon : magie démoniaque. Quand un Démon est posé, ton adversaire perd 1 Ki. Tempérament : deux Démons sur ton plateau donnent +1 ATT à chacun.",
   dieu: "Dieu : aura divine. Au début de ton tour, si tu as un Dieu sur ton plateau, tu gagnes 1 Ki de plus. Tempérament : deux Dieux sur ton plateau donnent +1 ATT à chacun.",
   cyborg: "Cyborg : barrière. Chaque dégât reçu par un Cyborg est réduit de 1. Tempérament : deux Cyborgs sur ton plateau donnent +1 ATT à chacun.",
   ennemis: "Ennemis jurés : rancune. Quand un Saiyan adverse est mis KO, tes Ennemis jurés gagnent +1 ATT. Tempérament : deux Ennemis jurés sur ton plateau donnent +1 ATT à chacun.",
-  survie: "Survie de l'univers : dernier rempart. Quand ton total (hors bonus Enragé et Survie) est inférieur à celui de l'adversaire, chaque combattant de ce camp gagne +1 ATT. Tempérament : deux combattants de ce camp sur ton plateau donnent +1 ATT à chacun."
+  survie: "Survie de l'univers : dernier rempart. Si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total), chaque combattant de ce camp gagne +1 ATT. Tempérament : deux combattants de ce camp sur ton plateau donnent +1 ATT à chacun."
 };
 function explique(ex){
   const [t, k, v] = ex.split(':');
@@ -1341,7 +1379,7 @@ function cardHTML(id, opts){
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}${actifs.some(b => b === 'camp' || b === 'allie' || b === 'rival') ? ' lien' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
 function slotHTML(player, s){
@@ -1477,7 +1515,7 @@ $('btnNiveau').onclick = () => {
   const ordre = Object.keys(NIVEAUX);
   niveau = ordre[(ordre.indexOf(niveau) + 1) % ordre.length];
   ecrire('dbzNiveau', niveau);
-  msg(`Niveau ${NIVEAUX[niveau].nom} : appliqué à la prochaine partie.`);
+  menuNote(`Niveau ${NIVEAUX[niveau].nom} : appliqué à la prochaine partie.`);
   render();
 };
 $('btnNew').onclick = () => { if (inGame && !over) askQuit(); else newGame(); };
@@ -1498,7 +1536,7 @@ $('tutoBtn').onclick = tutoSuivant;
 
 
 $('btnMode').onclick = () => {
-  if (inGame && !over){ msg('Le mode change à la prochaine partie.'); }
+  if (inGame && !over){ menuNote('Le mode change à la prochaine partie.'); }
   const ordre = Object.keys(MODES);
   mode = ordre[(ordre.indexOf(mode) + 1) % ordre.length];
   ecrire('dbzMode', mode);
