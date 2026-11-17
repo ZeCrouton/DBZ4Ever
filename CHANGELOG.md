@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.32
+
+- Main agrandie : le défilement s'arrête sur une ligne entière, pour que les illustrations (et les visages) ne soient plus coupées.
+- Service worker : cache `dbz-v36`.
+
 ## Version 2.31
 
 - Main agrandie (▲) : les cartes passent sur plusieurs lignes, en proportions normales (3 par ligne sur téléphone), et la liste défile dans sa zone. La main repliée ne change pas.

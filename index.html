@@ -119,6 +119,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .dock:not(.reduit) .hand{flex-wrap:wrap;align-content:flex-start;overflow-y:auto;max-height:50vh;justify-content:center;-webkit-overflow-scrolling:touch}
 .dock:not(.reduit) .hand .card{flex:0 0 calc(33.33% - 6px);width:calc(33.33% - 6px);max-width:none;min-width:0}
 @media (min-width:600px){.dock:not(.reduit) .hand .card{flex:0 0 calc(20% - 6px);width:calc(20% - 6px)}}
+/* Le défilement s'arrête sur une ligne entière : aucun visage coupé en haut ou en bas */
+.dock:not(.reduit) .hand{scroll-snap-type:y proximity;scroll-padding:8px 0}
+.dock:not(.reduit) .hand .card{scroll-snap-align:start}
 
 /* Ajouts : menus, cartes jouables, aperçu, résumé de fin de manche, collection, succès */
 .menu{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 8px}
