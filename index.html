@@ -68,8 +68,13 @@ details .leg svg{width:20px;height:20px;flex:none}
 .hidden{display:none}
 @media (max-width:480px){.card,.slot{width:30vw;max-width:112px}.card .nm{font-size:11px}}
 /* Disposition mobile façon Yen4Ever : barre en haut, main fixe en bas, plateau au centre */
-body{padding-top:56px;padding-bottom:300px}
+body{padding-top:84px;padding-bottom:300px}
 header.top{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap}
+.score-fixe{position:fixed;top:46px;left:0;right:0;z-index:6;display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;padding:5px 12px;background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-align:center}
+.score-fixe[hidden]{display:none}
+.score-fixe b{color:var(--ki)}
+.score-tot-fixe{font-size:15px;font-weight:bold;color:var(--text)}
+.score-tot-fixe b{font-size:17px}
 header.top h1{font-size:16px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 header.top .tools{display:flex;gap:6px;flex:0 0 auto}
 header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
@@ -104,7 +109,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .inspcartes .card .st{font-size:11px}
 .inspcartes .capa{font-size:9px;color:var(--muted);line-height:1.2;margin-top:3px}
 /* Main du joueur au premier plan ; carte agrandie non tronquée ; zoom +20 % */
-.board{scroll-margin-top:64px}
+.board{scroll-margin-top:90px}
 .dock{z-index:8}
 .over{z-index:9}
 
@@ -238,7 +243,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .board.vu{outline:3px solid var(--ki);outline-offset:3px}
 .board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
 @keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
-.board{scroll-margin-top:72px}
+.board{scroll-margin-top:90px}
 #msg.alerte{color:#b3261e;font-weight:bold;animation:alerteClig 1.6s steps(1,end) infinite}
 @keyframes alerteClig{0%{opacity:1}50%{opacity:.25}}
 .handline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px}
@@ -247,15 +252,12 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .handbtns{display:flex;gap:6px;flex:0 0 auto}
 
 /* Ergonomie : messages en bulle, score fixe, cartes injouables, cibles */
-.scoretop{font-size:13px;color:var(--muted);white-space:nowrap;margin-left:6px}
-header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-width:0}
-@media (max-width:480px){header.top .scoretop{display:none}}
-.dock #msg{position:fixed;top:64px;left:8px;right:8px;margin:0 auto;max-width:560px;z-index:6;opacity:0;pointer-events:none;transition:opacity .3s;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;min-height:0}
+.dock #msg{position:fixed;top:84px;left:8px;right:8px;margin:0 auto;max-width:560px;z-index:6;opacity:0;pointer-events:none;transition:opacity .3s;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;min-height:0}
 .dock #msg.visible{opacity:1}
 .dock .card.injouable{opacity:.55;filter:grayscale(.4)}
 .card.nontarget{opacity:.4;filter:grayscale(.6)}
 .card.target{outline:3px solid var(--ok);outline-offset:2px}
-.board{scroll-margin-top:72px}
+.board{scroll-margin-top:90px}
 
 /* Cadre de la main réduit : illustrations, ATT et Ki ; le reste apparaît en glissant la poignée */
 .poignee{touch-action:none;cursor:grab;display:flex;justify-content:center;padding:4px 0 6px}
@@ -307,7 +309,8 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 </style>
 </head>
 <body>
-<header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span id="scoreTop" class="scoretop"></span><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
+<header class="top"><h1>Dragon Ball : Le Tournoi des Guerriers</h1><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
+<div id="scoreFixe" class="score-fixe" hidden></div>
 <main>
   <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnBoule" type="button" class="boule" title="Collection et succès"><img src="icons/dragonball.webp" alt="Collection et succès"></button></div>
   <div class="status" id="status"></div>
@@ -1713,8 +1716,9 @@ function render(){
   if (!P.length) return;
   const me = P[HUMAN], ai = P[AI];
   const r = rang();
-  $('status').innerHTML = `<span class="score-tot">Toi <b>${total(HUMAN)}</b> – <b>${total(AI)}</b> ${esc(oppNom())}</span><span>Manche <b>${round}/${MAX_ROUNDS}</b></span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Tour : <b>${cur === HUMAN ? 'toi' : oppNom()}</b></span><span>Ki <b>${me.ki}/${R.kiMax}</b></span><span>Rang <b>${r.nom}</b> · série ${stats.serie}</span>${modeInfo()}`;
-  $('scoreTop').textContent = `Toi ${total(HUMAN)} – ${total(AI)} ${oppNom()} · manches ${wins[HUMAN]}–${wins[AI]}`;
+  $('scoreFixe').hidden = !inGame;
+  $('scoreFixe').innerHTML = `<span class="score-tot-fixe">Toi <b>${total(HUMAN)}</b> – <b>${total(AI)}</b> ${esc(oppNom())}</span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Manche <b>${round}/${MAX_ROUNDS}</b></span>`;
+  $('status').innerHTML = `<span>Manche <b>${round}/${MAX_ROUNDS}</b></span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Tour : <b>${cur === HUMAN ? 'toi' : oppNom()}</b></span><span>Ki <b>${me.ki}/${R.kiMax}</b></span><span>Rang <b>${r.nom}</b> · série ${stats.serie}</span>${modeInfo()}`;
   $('oppTitle').textContent = `${oppNom()} · total ${total(AI)} · main ${ai.hand.length} · Ki ${ai.ki}`;
   $('myTitle').textContent = `Toi · total ${total(HUMAN)}`;
   $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;

@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.39
+
+- Score fixe : la barre du score (Toi – Ennemi, manches, manche en cours) reste affichée juste sous le bandeau pendant qu'on fait défiler le plateau. Elle remplace l'affichage du score dans le bandeau et dans le bloc d'informations.
+- Service worker : cache `dbz-v43`.
+
 ## Version 2.38
 
 - Journal : quand tu tires un rayon, « tire son rayon » s'affiche avant les dégâts, comme pour les rayons de l'adversaire.
