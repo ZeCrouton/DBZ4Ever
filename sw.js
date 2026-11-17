@@ -1,7 +1,7 @@
 // Service worker : installation hors ligne (cache versionné).
 // Mise en cache à l'installation, puis « cache d'abord » avec mise à jour en arrière-plan.
 // Pour publier une nouvelle version des fichiers, incrémenter VERSION.
-const VERSION = 'dbz-v9';
+const VERSION = 'dbz-v10';
 const STATIQUES = [
   './',
   './index.html',

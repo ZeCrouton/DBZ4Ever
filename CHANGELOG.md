@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.7
+
+- Plateaux de 6 places en niveau Normal et Difficile (3 en Facile, inchangé).
+- Service worker : cache `dbz-v10`.
+
 ## Version 2.6
 
 - L'écran de fin de manche indique la raison : « Les deux plateaux sont pleins » ou « Plus personne ne peut agir ».

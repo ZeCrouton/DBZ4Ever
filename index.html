@@ -454,7 +454,7 @@ let vitesse = lire('dbzVitesse', 'normale');
 let P = [], round = 1, wins = [0, 0], first = HUMAN, cur = HUMAN, sel = null, pending = null, over = false;
 let inGame = false, aiTimer = null, pendingAI = false, curBg = 0;
 let R = { kiDebut: 2, kiTour: 1, kiMax: 8, noRayon: false, nom: '' };
-const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 4 }, difficile: { nom: 'Difficile', slots: 5 } };
+const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 6 }, difficile: { nom: 'Difficile', slots: 6 } };
 let niveau = lire('dbzNiveau', 'normal');
 let NB = NIVEAUX[niveau].slots, mullMode = false;
 let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '';
