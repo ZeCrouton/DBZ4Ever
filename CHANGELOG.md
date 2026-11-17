@@ -14,6 +14,11 @@
 - Explication d'une capacité : le nom de la capacité est en gras, et la valeur (« Valeur : ») se lit sur une ligne à part.
 - Service worker : cache `dbz-v27`.
 
+## Version 2.24
+
+- Aide : listes corrigées pour Assimilation (Cell, Cell parfait, Super Buu) et Explosion (Chaozu, Gotenks, Toppo).
+- Service worker : cache `dbz-v28`.
+
 ## Version 2.21
 
 - ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.
