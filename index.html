@@ -76,7 +76,6 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .handhead{font-size:13px;margin:0 0 4px;color:var(--you)}
 .dock .hand{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:8px;gap:8px;border-radius:10px;-webkit-overflow-scrolling:touch}
 .dock .hand .card{width:84px;flex:0 0 auto;padding:4px}
-.dock .hand .card img{height:62px;object-fit:cover}
 .dock .hand .card .nm{font-size:10px;min-height:0;margin:4px 0 2px}
 .dock .hand .card .ev{display:none}
 .dock .hand .card .icons{min-height:0}
@@ -119,6 +118,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .dock:not(.reduit) .hand{flex-wrap:wrap;align-content:flex-start;overflow-y:auto;max-height:50vh;justify-content:center;-webkit-overflow-scrolling:touch}
 .dock:not(.reduit) .hand .card{flex:0 0 calc(33.33% - 6px);width:calc(33.33% - 6px);max-width:none;min-width:0}
 @media (min-width:600px){.dock:not(.reduit) .hand .card{flex:0 0 calc(20% - 6px);width:calc(20% - 6px)}}
+/* Illustrations en entier : hauteur réduite (62 px) seulement dans la main repliée */
+.dock.reduit .hand .card img{height:62px;object-fit:cover}
+.dock:not(.reduit) .hand .card img{height:auto;object-fit:contain}
 /* Le défilement s'arrête sur une ligne entière : aucun visage coupé en haut ou en bas */
 .dock:not(.reduit) .hand{scroll-snap-type:y proximity;scroll-padding:8px 0}
 .dock:not(.reduit) .hand .card{scroll-snap-align:start}
