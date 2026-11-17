@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.9
+
+- Mises à jour : la page est maintenant cherchée d'abord sur Internet, donc une nouvelle version s'affiche dès l'ouverture suivante. La copie en cache ne sert plus qu'hors ligne.
+- Service worker : cache `dbz-v13`.
+
 ## Version 2.8
 
 - Ki plafonné à 12 (au lieu de 8).

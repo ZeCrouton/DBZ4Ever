@@ -1,7 +1,9 @@
 // Service worker : installation hors ligne (cache versionné).
-// Mise en cache à l'installation, puis « cache d'abord » avec mise à jour en arrière-plan.
+// Mise en cache à l'installation. La page (index.html) est cherchée d'abord sur Internet pour que
+// chaque nouvelle version s'affiche tout de suite ; la copie en cache ne sert qu'hors ligne.
+// Images et musiques : « cache d'abord » avec mise à jour en arrière-plan.
 // Pour publier une nouvelle version des fichiers, incrémenter VERSION.
-const VERSION = 'dbz-v12';
+const VERSION = 'dbz-v13';
 const STATIQUES = [
   './',
   './index.html',
@@ -71,7 +73,7 @@ const STATIQUES = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(VERSION).then(c => c.addAll(STATIQUES)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(VERSION).then(c => c.addAll(STATIQUES.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', event => {
@@ -87,6 +89,19 @@ self.addEventListener('fetch', event => {
   // Seules les requêtes GET du même site sont mises en cache.
   // Les requêtes « Range » (lecture audio) passent directement au réseau.
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin || req.headers.has('range')) return;
+  // Page principale : réseau d'abord (toujours la dernière version), cache seulement hors ligne
+  const chemin = new URL(req.url).pathname;
+  if (req.mode === 'navigate' || chemin.endsWith('/') || chemin.endsWith('/index.html')){
+    event.respondWith(
+      fetch(req.url, { cache: 'no-cache' })
+        .then(res => {
+          if (res.ok) caches.open(VERSION).then(c => c.put('./index.html', res.clone()));
+          return res;
+        })
+        .catch(() => caches.match('./index.html').then(c => c || caches.match('./')))
+    );
+    return;
+  }
   event.respondWith(
     caches.match(req).then(enCache => {
       const reseau = fetch(req).then(res => {
