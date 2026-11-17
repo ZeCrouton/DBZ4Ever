@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.27
+
+- Liens temporaires : le bonus dure bien deux tours après celui de la pose. Il disparaissait auparavant dès la fin du tour suivant.
+- Service worker : cache `dbz-v32`.
+
 ## Version 2.21
 
 - ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.

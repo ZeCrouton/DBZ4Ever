@@ -821,7 +821,7 @@ function afterAction(estCharge){
   P[cur].actions++;
   P[cur].aCharge = !!estCharge;
   const jouaIA = cur === AI;
-  // Les bonus de liens spéciaux durent deux tours du propriétaire.
+  // Les bonus de liens spéciaux durent deux tours du propriétaire, après celui de la pose (la pose compte déjà une fin d'action).
   P[cur].slots.forEach(o => {
     if (o && o.liensActifs && o.liensActifs.length){
       o.liensActifs.forEach(l => l.tours--);
@@ -1337,8 +1337,8 @@ function activerLiensSpeciaux(p){
     if(a.liensDeclenches.includes(key)||b.liensDeclenches.includes(key)) continue;
     a.liensDeclenches.push(key); b.liensDeclenches.push(key);
     const type = lien.key === 'bulma' ? 'bulma' : 'pere';
-    a.liensActifs=(a.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 2 }]);
-    b.liensActifs=(b.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 2 }]);
+    a.liensActifs=(a.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 3 }]);
+    b.liensActifs=(b.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 3 }]);
     jour(`${lien.nom} : ${CARDS[a.id].n} et ${CARDS[b.id].n} gagnent +2 ATT pendant deux tours.`);
   }
 }
