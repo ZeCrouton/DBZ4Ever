@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.20
+
+- Explication d'un camp : le nom du camp et « Tempérament : » sont en gras, avec une ligne vide entre les deux définitions.
+- Service worker : cache `dbz-v24`.
+
 ## Version 2.19
 
 - Carte agrandie plus lisible : libellés en gras (camp, ATT, Ki, Capacités, noms des capacités, bonus actifs), chaque capacité sur sa ligne avec son nom, et plus d'espace entre les éléments.

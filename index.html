@@ -176,7 +176,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .zcap{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.4}
 .zcap b{font-size:15px}
 .zcaps .zk svg{width:22px;height:22px;display:block}
-.zexpl{font-size:13px;min-height:3.2em;margin:6px 0}
+.zexpl{font-size:14px;line-height:1.5;min-height:3.2em;margin:6px 0}
+.zexpl p{margin:0 0 10px}
+.zexpl p:last-child{margin-bottom:0}
 .zbon{font-size:13px;text-align:center;margin-top:12px;line-height:1.6}
 .regle-groupe{font-size:15px;margin:16px 0 6px;color:var(--ki)}
 .collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
@@ -1089,12 +1091,19 @@ const CAMP_TXT = {
   ennemis: "Ennemis jurés : rancune. Quand un Saiyan adverse est mis KO, tes Ennemis jurés gagnent +1 ATT. Tempérament : deux Ennemis jurés sur ton plateau donnent +1 ATT à chacun.",
   survie: "Survie de l'univers : dernier rempart. Si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total), chaque combattant de ce camp gagne +1 ATT. Tempérament : deux combattants de ce camp sur ton plateau donnent +1 ATT à chacun."
 };
+// Définition d'un camp : « Camp : » et « Tempérament : » en gras, une ligne vide entre les deux
+function formaterCamp(t){
+  const [definition, temperament] = t.split(' Tempérament : ');
+  const i = definition.indexOf(' : ');
+  const def = i > 0 ? `<b>${esc(definition.slice(0, i))} :</b> ${esc(definition.slice(i + 3))}` : esc(definition);
+  return `<p>${def}</p><p><b>Tempérament :</b> ${esc(temperament || '')}</p>`;
+}
 function explique(ex){
   const [t, k, v] = ex.split(':');
   let txt;
+  if (t === 'camp'){ $('zoomExpl').innerHTML = formaterCamp(CAMP_TXT[k]); return; }
   if (t === 'att') txt = `ATT : puissance d'attaque du combattant. Valeur de base : ${k}, actuelle : ${v} (bonus compris). Quand elle tombe à 0, il est mis KO.`;
   else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
-  else if (t === 'camp') txt = CAMP_TXT[k];
   else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
   else txt = (CAP_TXT[k] || '') + (v && k !== 'esquive' ? ` Valeur : ${v}.` : '');
   $('zoomExpl').textContent = txt;
