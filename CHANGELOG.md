@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.17
+
+- Animation de la carte jouée : seule l'illustration vole (sans le texte). Ta vue reste sur ton plateau pendant l'animation, et le tour de l'adversaire ne démarre qu'à la fin.
+- Service worker : cache `dbz-v21`.
+
 ## Version 2.16
 
 - Animation quand tu joues une carte : elle sort de ta main, s'affiche agrandie un court instant, puis se pose sur son emplacement. Désactivée si l'option « réduire les animations » est active sur l'appareil.

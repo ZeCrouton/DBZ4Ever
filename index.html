@@ -764,6 +764,12 @@ function startTurn(){
 
 function afterAction(estCharge){
   if (over) return;
+  // Carte du joueur encore en vol : la suite attend la fin de l'animation (cur bloqué pendant ce temps)
+  if (cur === HUMAN && animJusquA > performance.now()){
+    cur = AI;
+    setTimeout(() => { cur = HUMAN; afterAction(estCharge); }, animJusquA - performance.now() + 20);
+    return;
+  }
   avantCoup = null;
   P[cur].actions++;
   P[cur].aCharge = !!estCharge;
@@ -1210,19 +1216,25 @@ function scoreDifficile(id, i, s, style){
   return sc;
 }
 
-// Carte jouée par le joueur : elle sort de la main, s'affiche agrandie un court instant, puis se pose sur son emplacement
+// Carte jouée par le joueur : seule l'illustration sort de la main, s'affiche agrandie un court instant, puis se pose sur son emplacement.
+// Pendant le vol, le joueur reste sur son plateau : le tour de l'adversaire ne commence qu'à la fin.
+let animJusquA = 0;
+const DUREE_CARTE_JOUEE = 1400;
 function animerCarteJouee(i, s){
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const src = document.querySelectorAll('#hand .card')[i];
   const cible = document.getElementById('myBoard') && document.getElementById('myBoard').children[s];
   if (!src || !cible) return;
-  const a = src.getBoundingClientRect(), b = cible.getBoundingClientRect();
+  const img = src.querySelector('img');
+  if (!img) return;
+  const a = img.getBoundingClientRect();
+  const b = (cible.querySelector('img') || cible).getBoundingClientRect();
   if (!a.width || !b.width) return;
-  const clone = src.cloneNode(true);
-  clone.removeAttribute('onclick'); clone.removeAttribute('id');
-  clone.classList.remove('jouable', 'injouable', 'mull', 'sel');
-  clone.style.cssText = `position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;margin:0;z-index:30;pointer-events:none;transform-origin:center;`;
+  const clone = img.cloneNode(true);
+  clone.removeAttribute('loading');
+  clone.style.cssText = `position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;margin:0;object-fit:cover;border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.6);z-index:30;pointer-events:none;transform-origin:center;`;
   document.body.appendChild(clone);
+  src.style.visibility = 'hidden'; // la carte part de la main : elle n'y reste pas pendant le vol
   const cx = a.left + a.width / 2, cy = a.top + a.height / 2;
   const kC = Math.min(220, innerWidth * 0.6) / a.width;   // taille agrandie
   const dxC = innerWidth / 2 - cx, dyC = innerHeight / 2 - cy;
@@ -1233,7 +1245,8 @@ function animerCarteJouee(i, s){
     { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.3, easing: 'linear' },
     { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.68, easing: 'cubic-bezier(.5,0,.6,1)' },
     { transform: `translate(${dxT}px,${dyT}px) scale(${kT})`, offset: 1 }
-  ], { duration: 1400, fill: 'forwards' });
+  ], { duration: DUREE_CARTE_JOUEE, fill: 'forwards' });
+  animJusquA = performance.now() + DUREE_CARTE_JOUEE;
   anim.onfinish = () => clone.remove();
 }
 function playCard(p, i, s){
