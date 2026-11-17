@@ -1,5 +1,11 @@
 # Journal des modifications
 
+## Version 2.18
+
+- Carte agrandie : le camp s'affiche avec sa couleur.
+- Règles mises à jour : 6 emplacements en Normal et Difficile, Genkidama (une fois par partie, lancée à la main, annulable), règle de la charge, bouton Charger grisé, liens entre combattants, « Si jouée » sur la carte agrandie, adversaires du tournoi (héros MCU).
+- Service worker : cache `dbz-v22`.
+
 ## Version 2.17
 
 - Animation de la carte jouée : seule l'illustration vole (sans le texte). Ta vue reste sur ton plateau pendant l'animation, et le tour de l'adversaire ne démarre qu'à la fin.
