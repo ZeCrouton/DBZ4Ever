@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.6
+
+- L'écran de fin de manche indique la raison : « Les deux plateaux sont pleins » ou « Plus personne ne peut agir ».
+- Service worker : cache `dbz-v9`.
+
 ## Version 2.5
 
 - « Passer » est supprimé. Une manche se termine quand plus personne ne peut agir (pas de carte jouable et Ki au maximum), ou quand les deux plateaux sont pleins.

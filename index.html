@@ -734,7 +734,7 @@ function startTurn(){
   if (!peutAgir(cur)){
     jour(`${nom(cur)} ne peut rien jouer : son tour est sauté.`);
     const autre = 1 - cur;
-    if (!peutAgir(autre)) return endRound();
+    if (!peutAgir(autre)) return endRound('Plus personne ne peut agir.');
     cur = autre;
     return startTurn();
   }
@@ -752,7 +752,7 @@ function afterAction(){
   P[cur].actions++;
   const jouaIA = cur === AI;
   // Plateaux pleins des deux côtés : la manche est finie
-  if (P[HUMAN].slots.every(Boolean) && P[AI].slots.every(Boolean)) return endRound();
+  if (P[HUMAN].slots.every(Boolean) && P[AI].slots.every(Boolean)) return endRound('Les deux plateaux sont pleins.');
   // Sinon le tour passe à l'autre (s'il ne peut rien faire, startTurn le saute)
   cur = 1 - cur;
   if (jouaIA && cur === HUMAN){ pauseVueIA(); return; }
@@ -798,7 +798,7 @@ function onCharger(){
 }
 
 let gainsVictoire = [];
-function endRound(){
+function endRound(raison){
   const tt = [total(HUMAN), total(AI)];
   let winner = null;
   if (tt[0] > tt[1]) winner = HUMAN;
@@ -810,7 +810,7 @@ function endRound(){
   if (P[HUMAN].soutiens >= 3 && !succes.genkidama){ succes.genkidama = true; debloques.push(SUCCES.genkidama); }
   if (debloques.length) ecrire('dbzSucces', succes);
   const head = winner === null ? 'Égalité' : (winner === HUMAN ? 'Tu remportes la manche' : `${oppNom()} remporte la manche`);
-  const text = `Toi ${tt[0]} – ${tt[1]} ${oppNom()}. Manches : ${wins[HUMAN]} – ${wins[AI]}.`;
+  const text = `${raison ? 'Fin de manche : ' + raison + ' ' : ''}Toi ${tt[0]} – ${tt[1]} ${oppNom()}. Manches : ${wins[HUMAN]} – ${wins[AI]}.`;
   jour(`Fin de la manche ${round} : ${tt[0]} – ${tt[1]}.`);
   const matchOver = wins[HUMAN] >= ROUNDS_TO_WIN || wins[AI] >= ROUNDS_TO_WIN || round >= MAX_ROUNDS;
   const html = resumeHTML() + (debloques.length ? `<p class="succes">Succès débloqué : ${debloques.join(', ')}</p>` : '');
