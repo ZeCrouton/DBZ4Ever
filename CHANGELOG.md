@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.10
+
+- Liens entre combattants : un trait relie les cartes liées sur le plateau (violet pour le Tempérament de camp, vert pour les alliés, rouge pour les rivaux face à face). Le contour sur les cartes est retiré, pour garder leur taille et leur lisibilité.
+- Service worker : cache `dbz-v14`.
+
 ## Version 2.9
 
 - Mises à jour : la page est maintenant cherchée d'abord sur Internet, donc une nouvelle version s'affiche dès l'ouverture suivante. La copie en cache ne sert plus qu'hors ligne.

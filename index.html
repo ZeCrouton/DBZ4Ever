@@ -123,7 +123,6 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .menu-note.visible{opacity:1}
 .coeur-fx{position:fixed;font-size:18px;color:#ff5c8a;pointer-events:none;z-index:7;animation:coeurFx 1.4s ease-out forwards}
 @keyframes coeurFx{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
-.card.lien{box-shadow:0 0 0 2px #b08cff,0 0 12px #8e5fd6}
 .card.jouable{box-shadow:0 0 0 2px var(--ok)}
 .slot small,.apercu{display:block;font-size:11px;color:var(--ok);margin-top:4px}
 .apercu{text-align:center;background:var(--surface);border-radius:6px;padding:2px}
@@ -152,6 +151,9 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 @keyframes esquiveFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 .secoue{animation:secoue .45s linear}
 .secoue-long{animation:secoue 2s linear}
+.liens{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible}
+.lien-trait{stroke-width:3;stroke-linecap:round;stroke-dasharray:8 6;opacity:.85;animation:lienFlux 1.2s linear infinite}
+@keyframes lienFlux{to{stroke-dashoffset:-28}}
 .genki-fx{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);pointer-events:none;animation:genkiFade 2s ease-out forwards}
 .genki-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:genkiZoom 2s ease-out}
 .genki-fx p{position:relative;margin:0;padding:0 16px;font-size:clamp(22px,6vw,40px);font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 12px #000}
@@ -1387,8 +1389,60 @@ function cardHTML(id, opts){
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
   const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
   const extra = opts.extra || '';
-  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}${actifs.some(b => b === 'camp' || b === 'allie' || b === 'rival') ? ' lien' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
+
+// Traits entre les combattants liés : Tempérament de camp (violet), alliés (vert), rivaux face à face (rouge)
+const LIEN_COULEUR = { camp: '#8e5fd6', allie: '#2e9e44', rival: '#b3261e' };
+function dessinerLiens(){
+  let svg = document.getElementById('liens');
+  if (!svg){
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'liens';
+    svg.setAttribute('class', 'liens');
+    document.body.appendChild(svg);
+  }
+  svg.innerHTML = '';
+  const ancre = (p, s) => {
+    const el = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
+    const c = el && el.children[s];
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  };
+  const trait = (a, b, type) => {
+    const A = ancre(a.p, a.s), B = ancre(b.p, b.s);
+    if (!A || !B) return;
+    const l = document.createElementNS(svg.namespaceURI, 'line');
+    l.setAttribute('x1', A.x); l.setAttribute('y1', A.y);
+    l.setAttribute('x2', B.x); l.setAttribute('y2', B.y);
+    l.setAttribute('stroke', LIEN_COULEUR[type]);
+    l.setAttribute('class', 'lien-trait');
+    svg.appendChild(l);
+  };
+  const n = P[HUMAN].slots.length;
+  for (const p of [HUMAN, AI]){
+    for (let s = 0; s < n; s++){
+      const a = P[p].slots[s]; if (!a) continue;
+      for (let j = s + 1; j < n; j++){
+        const b = P[p].slots[j]; if (!b) continue;
+        if (CAMP_OF[a.id] && CAMP_OF[a.id] === CAMP_OF[b.id]) trait({ p, s }, { p, s: j }, 'camp');
+        const fa = famOf(a.id), fb = famOf(b.id);
+        if (fa && fb && paire(ALLIES, fa, fb)) trait({ p, s }, { p, s: j }, 'allie');
+      }
+    }
+  }
+  for (let s = 0; s < n; s++){
+    const a = P[HUMAN].slots[s]; if (!a) continue;
+    for (let j = 0; j < n; j++){
+      const b = P[AI].slots[j]; if (!b) continue;
+      const fa = famOf(a.id), fb = famOf(b.id);
+      if (fa && fb && paire(RIVAUX, fa, fb)) trait({ p: HUMAN, s }, { p: AI, s: j }, 'rival');
+    }
+  }
+}
+window.addEventListener('resize', () => dessinerLiens());
+window.addEventListener('scroll', () => dessinerLiens(), { passive: true });
 
 function slotHTML(player, s){
   const inst = P[player].slots[s];
@@ -1433,6 +1487,7 @@ function render(){
   $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;
   $('oppBoard').innerHTML = idx().map(s => slotHTML(AI, s)).join('');
   $('myBoard').innerHTML = idx().map(s => slotHTML(HUMAN, s)).join('');
+  dessinerLiens();
   const monTour = inGame && !over && cur === HUMAN && !pending;
   $('hand').innerHTML = me.hand.map((id, i) => {
     const ok = monTour && jouable(HUMAN, i);
