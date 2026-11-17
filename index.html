@@ -295,7 +295,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
   <button class="journal-bar" id="btnJournal" type="button" hidden></button>
   <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
 </main>
-<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnGenki" type="button" hidden>Genkidama</button><button id="btnAnnGenki" type="button" hidden>Annuler la Genkidama adverse</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
 <div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
@@ -307,7 +307,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Yamcha, Vegeta, Freezer, Cell, Buu, Jiren, Beerus, Goku Ultra Instinct). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>4</b> (Normal) ou <b>5</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte.</li><li><b>Genkidama</b> : dès que ton Ki atteint 12, la Genkidama part. Chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux la lancer. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
 <details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
@@ -365,7 +365,7 @@ const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Esprit d’équipe' };
 const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { nom: 'Dieu', min: 15 }];
 const TUTO = [
   'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de ATT le plus élevé gagne.',
-  'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place. Si tu ne peux plus rien faire, ton tour est sauté.',
+  'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place (+1 à partir de 6 Ki). Si tu ne peux plus rien faire, ton tour est sauté.',
   'Touche une carte de ta main : elle se pose toute seule sur un emplacement libre. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
   'Les cartes jouables sont surlignées, et chacune affiche le gain de ATT avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
 ];
@@ -618,6 +618,8 @@ function ko(p, s){
     const t = strongest(1-p, true);
     if (t >= 0) hit(1-p, t, ex, 'Explosion de ' + CARDS[id].n);
   }
+  // Genkidama en préparation : un KO de l'un de ses combattants pendant le tour adverse l'annule
+  if (P[p].genkiPrete && cur !== p) annulerGenki(p, 'un de ses combattants est mis KO');
 }
 
 /* ---------- Decks ---------- */
@@ -649,7 +651,7 @@ function deckAdversaire(a){
   return shuffle(pool);
 }
 function makePlayer(name, ids){
-  return { name, deck: ids.slice(), hand: [], disc: [], slots: Array(NB).fill(null), ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0 };
+  return { name, deck: ids.slice(), hand: [], disc: [], slots: Array(NB).fill(null), ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0, aCharge: false, genkiPrete: false, genkiUsee: false };
 }
 function draw(p, tour){
   if (!tour && p.hand.length >= HAND_SIZE) return;
@@ -732,12 +734,13 @@ function namekSoin(p){
 function startTurn(){
   if (over) return;
   const p = P[cur];
+  // La Genkidama préparée par ce joueur part maintenant (elle n'a pas été annulée)
+  if (p.genkiPrete){ p.genkiPrete = false; genkidama(cur); }
   p.ki = Math.min(R.kiMax, p.ki + R.kiTour);
   if (p.slots.some(o => o && CAMP_OF[o.id] === 'dieu')){
     p.ki = Math.min(R.kiMax, p.ki + 1);
     jour(`Aura divine : ${nom(cur)} gagne 1 Ki supplémentaire.`);
   }
-  if (p.ki >= R.kiMax) genkidama(cur);
   draw(p, true);
   namekSoin(cur);
   // Rien à poser ni de Ki pour charger : le tour est sauté
@@ -751,15 +754,17 @@ function startTurn(){
   sel = null; pending = null;
   if (cur === HUMAN) msg('À toi de jouer : une carte, Charger ou Fusion.');
   else msg(`${oppNom()} réfléchit…`);
+  if (cur === HUMAN && P[AI].genkiPrete) msg(`${oppNom()} prépare le Genkidama : annule-le en payant ${R.kiMax} Ki, ou en mettant KO un de ses combattants.`);
   render();
   focusTurn();
   if (cur === AI) scheduleAI(900);
 }
 
-function afterAction(){
+function afterAction(estCharge){
   if (over) return;
   avantCoup = null;
   P[cur].actions++;
+  P[cur].aCharge = !!estCharge;
   const jouaIA = cur === AI;
   // Plateaux pleins des deux côtés : la manche est finie
   if (P[HUMAN].slots.every(Boolean) && P[AI].slots.every(Boolean)) return endRound('Les deux plateaux sont pleins.');
@@ -788,10 +793,39 @@ function pauseVueIA(){
 // Un joueur peut agir s'il peut poser une carte, ou charger son Ki
 function peutAgir(p){
   if (P[p].ki < R.kiMax) return true;
+  if (genkiLancable(p) || genkiAnnulable(p)) return true;
   return P[p].hand.some((id, i) => idx().some(s => peutJouer(p, i, s)));
 }
 
-// Charger : +2 Ki à la place de jouer une carte
+// Genkidama : une fois par partie. Lancée à la main à 12 Ki, elle part au début du prochain tour du lanceur,
+// sauf si l'adversaire l'annule : en payant 12 Ki, ou en mettant KO un combattant du lanceur pendant le tour adverse.
+function genkiLancable(p){ return P[p].ki >= R.kiMax && !P[p].genkiUsee && !P[p].genkiPrete; }
+function genkiAnnulable(p){ return P[1-p].genkiPrete && P[p].ki >= R.kiMax; }
+function lancerGenkidama(p){
+  P[p].genkiUsee = true;
+  P[p].genkiPrete = true;
+  jour(`${nom(p)} prépare le Genkidama (Ki maintenu à ${R.kiMax}).`);
+  if (p === HUMAN) msg(`Genkidama lancé : il part au début de ton prochain tour, sauf annulation par ${oppNom()}.`);
+  afterAction(false);
+}
+function annulerParPaiement(p){
+  if (!genkiAnnulable(p)) return;
+  P[p].ki = 0;
+  annulerGenki(1 - p, `${nom(p)} paie ${R.kiMax} Ki`);
+  afterAction(false);
+}
+function annulerGenki(lanceur, raison){
+  P[lanceur].genkiPrete = false;
+  P[lanceur].ki = 0;
+  jour(`Le Genkidama de ${nom(lanceur)} est annulé (${raison}). Son Ki tombe à 0.`);
+}
+// Charge : pas deux charges de suite, sauf si aucune carte n'est jouable
+function chargeAutorisee(p){
+  return !P[p].aCharge || !P[p].hand.some((id, i) => idx().some(s => peutJouer(p, i, s)));
+}
+function peutCharger(p){ return P[p].ki < R.kiMax && chargeAutorisee(p); }
+
+// Charger : +2 Ki sous 6 Ki, +1 au-delà
 // Genkidama : Ki au maximum, l'énergie de tout le monde se rassemble sur l'ennemi
 function genkidama(p){
   if (over) return;
@@ -814,22 +848,24 @@ function genkiFx(){
 
 function charger(p){
   const me = P[p];
-  const gain = Math.min(2, R.kiMax - me.ki);
+  const gain = Math.min(me.ki < 6 ? 2 : 1, R.kiMax - me.ki);
   me.ki += gain;
   jour(`${nom(p)} : charge son Ki (+${gain}).`);
   if (p === HUMAN) msg(`Tu charges ton Ki (+${gain}). ${oppNom()} joue.`);
-  if (me.ki >= R.kiMax) genkidama(p);
-  afterAction();
+  afterAction(true);
 }
 function onCharger(){
   if (over || cur !== HUMAN || pending) return;
   if (P[HUMAN].ki >= R.kiMax){ msg('Ton Ki est déjà au maximum.'); return; }
+  if (!chargeAutorisee(HUMAN)){ msg('Tu as chargé au tour précédent : joue une carte. Charger de nouveau n\'est possible que si tu ne peux rien jouer.'); return; }
   sel = null;
   charger(HUMAN);
 }
 
 let gainsVictoire = [];
 function endRound(raison){
+  // Genkidama encore en préparation à la fin de la manche : elle est perdue
+  P.forEach((p, i) => { if (p.genkiPrete){ p.genkiPrete = false; jour(`${nom(i)} : Genkidama perdu, la manche est finie.`); } });
   const tt = [total(HUMAN), total(AI)];
   let winner = null;
   if (tt[0] > tt[1]) winner = HUMAN;
@@ -1334,9 +1370,12 @@ function aiTurn(){
     const fus = fusionsPossibles(AI);
     if (fus.length){ fusionner(AI, fus[0]); return; }
   }
-  if (style.prudent && total(AI) >= total(HUMAN) + 3 && me.ki < R.kiMax){ charger(AI); return; }
+  // Genkidama de l'adversaire : l'IA peut la payer pour l'annuler
+  if (genkiAnnulable(AI) && Math.random() < 0.6){ annulerParPaiement(AI); return; }
+  const peutC = peutCharger(AI);
+  if (style.prudent && total(AI) >= total(HUMAN) + 3 && peutC){ charger(AI); return; }
   // Beerus : il ne fait rien quand il mène, il attend
-  if (style.trait === 'attentiste' && total(AI) > total(HUMAN) && me.ki < R.kiMax){ charger(AI); return; }
+  if (style.trait === 'attentiste' && total(AI) > total(HUMAN) && peutC){ charger(AI); return; }
   const coups = [];
   me.hand.forEach((id, i) => {
     const c = CARDS[id];
@@ -1349,17 +1388,20 @@ function aiTurn(){
       coups.push({ i, s, sc });
     });
   });
+  // Genkidama : lancée à 12 Ki (toujours si rien d'autre n'est jouable)
+  if (genkiLancable(AI) && (!coups.length || Math.random() < (niveau === 'facile' ? 0.3 : 0.7))){ lancerGenkidama(AI); return; }
   if (!coups.length){
-    if (me.ki < R.kiMax){ charger(AI); return; }
+    if (genkiAnnulable(AI)){ annulerParPaiement(AI); return; }
+    if (peutC){ charger(AI); return; }
     return endRound();
   }
   let choix = coups.reduce((a, b) => (b.sc > a.sc ? b : a));
   // Difficile : sans bon coup et sans être en tête, mieux vaut charger son Ki
-  if (niveau === 'difficile' && choix.sc < 1 && me.ki < R.kiMax && total(AI) <= total(HUMAN)){ charger(AI); return; }
+  if (niveau === 'difficile' && choix.sc < 1 && peutC && total(AI) <= total(HUMAN)){ charger(AI); return; }
   // Buu : parfois imprévisible, il joue un coup au hasard
   if (style.trait === 'chaotique' && coups.length > 1 && Math.random() < 0.3) choix = coups[Math.floor(Math.random() * coups.length)];
   // Beerus : sans coup qui en vaille la peine, il charge son Ki
-  if (style.trait === 'attentiste' && choix.sc < 3 && me.ki < R.kiMax){ charger(AI); return; }
+  if (style.trait === 'attentiste' && choix.sc < 3 && peutC){ charger(AI); return; }
   if (niveau === 'facile' && Math.random() < 0.4) choix = coups[Math.floor(Math.random() * coups.length)];
   playCard(AI, choix.i, choix.s);
 }
@@ -1502,7 +1544,7 @@ function render(){
     }
     return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra: '', attrs: `onclick="onHand(${i})" data-apercu="${esc(apercuTxt)}"` });
   }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
-  $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : 'Gagne +2 Ki à la place de jouer une carte';
+  $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : (!chargeAutorisee(HUMAN) ? 'Tu as chargé au tour précédent : joue une carte d\'abord' : 'Gagne +2 Ki (+1 au-dessus de 6 Ki) à la place de jouer une carte');
   $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
   $('btnFusion').title = 'Fusionne deux combattants liés en payant le Ki';
   $('btnCancel').textContent = pending ? 'Annuler le coup' : (mullMode ? 'Annuler le Mulligan' : 'Annuler la sélection');
@@ -1512,7 +1554,13 @@ function render(){
   $('oppBoard').className = 'row n' + NB;
   $('msg').classList.toggle('alerte', !!pending);
   if (pending) $('msg').classList.add('visible');
-  $('btnCharge').disabled = !monTour || me.ki >= R.kiMax;
+  $('btnCharge').disabled = !monTour || me.ki >= R.kiMax || !chargeAutorisee(HUMAN);
+  const genkiOk = monTour && genkiLancable(HUMAN);
+  $('btnGenki').hidden = !genkiOk;
+  if (genkiOk) $('btnGenki').textContent = `Genkidama (${R.kiMax} Ki)`;
+  const annOk = monTour && genkiAnnulable(HUMAN);
+  $('btnAnnGenki').hidden = !annOk;
+  if (annOk) $('btnAnnGenki').textContent = `Annuler la Genkidama adverse (${R.kiMax} Ki)`;
   const fus = monTour ? fusionsPossibles(HUMAN) : [];
   $('btnFusion').hidden = !fus.length;
   if (fus.length) $('btnFusion').textContent = `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
@@ -1564,6 +1612,8 @@ document.addEventListener('pointerdown', function firstTouch(){
 paintSound();
 
 $('btnCharge').onclick = onCharger;
+$('btnGenki').onclick = () => { if (over || cur !== HUMAN || pending || !genkiLancable(HUMAN)) return; sel = null; lancerGenkidama(HUMAN); };
+$('btnAnnGenki').onclick = () => { if (over || cur !== HUMAN || pending) return; annulerParPaiement(HUMAN); };
 $('btnFusion').onclick = onFusion;
 $('btnMull').onclick = () => {
   if (!mulliganDispo()) return;
