@@ -624,10 +624,13 @@ function hit(p, s, n, src){
   jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) perd ${n} ATT, il lui reste ${Math.max(0, reste)}.`);
   if (reste <= 0) ko(p, s);
 }
+// Cartes mises KO récemment : l'adversaire ne peut pas reposer un autre exemplaire sur la même case
+let koRecents = [];
 function ko(p, s){
   const inst = P[p].slots[s];
   if (!inst) return;
   P[p].slots[s] = null;
+  koRecents.push({ p, s, id: inst.id });
   sfxKo(); vib(40);
   P[p].ki = Math.min(R.kiMax, P[p].ki + 1); // Ki de combat : +1 au propriétaire du combattant KO
   const id = inst.id;
@@ -1543,10 +1546,12 @@ function aiTurn(){
   // Beerus : il ne fait rien quand il mène, il attend
   if (style.trait === 'attentiste' && total(AI) > total(HUMAN) && peutC){ charger(AI); return; }
   const coups = [];
+  // Exemplaire d'une carte mise KO sur cette case : il doit être posé ailleurs, pour que le joueur voie qu'il s'agit d'une autre carte
+  const interdit = (id, s) => koRecents.some(k => k.p === AI && k.id === id && k.s === s);
   me.hand.forEach((id, i) => {
     const c = CARDS[id];
     idx().forEach(s => {
-      if (!peutJouer(AI, i, s)) return;
+      if (!peutJouer(AI, i, s) || interdit(id, s)) return;
       let sc = c.e < 0 ? c.p + (c.a.length ? 1 : 0) : c.p + 3;
       if (c.a.some(([k]) => k === 'rayon')) sc += style.agressif;
       if (niveau === 'difficile') sc = scoreDifficile(id, i, s, style);
@@ -1569,6 +1574,7 @@ function aiTurn(){
   // Beerus : sans coup qui en vaille la peine, il charge son Ki
   if (style.trait === 'attentiste' && choix.sc < 3 && peutC){ charger(AI); return; }
   if (niveau === 'facile' && Math.random() < 0.4) choix = coups[Math.floor(Math.random() * coups.length)];
+  koRecents = [];
   playCard(AI, choix.i, choix.s);
 }
 

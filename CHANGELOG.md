@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.36
+
+- Adversaire : après qu'une carte a été mise KO, il ne peut pas reposer un autre exemplaire de cette carte sur la même case. Il la pose sur une autre case libre, ou charge son Ki si la seule case libre est celle de la carte KO. Cela évite de croire que la carte KO est toujours en jeu.
+- Service worker : cache `dbz-v40`.
+
 ## Version 2.35
 
 - « Nouvelle partie » ouvre d'abord un choix : Commencer la partie, Modifier mon deck, ou Annuler. Après avoir enregistré ou fermé l'éditeur de deck ouvert depuis ce choix, on revient au choix.
