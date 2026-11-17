@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.14
+
+- Charger : le bouton est grisé quand il n'est pas utilisable car tu as chargé au tour précédent. Un clic affiche le pourquoi.
+- Service worker : cache `dbz-v18`.
+
 ## Version 2.13
 
 - Genkidama : apparition plus lente. L'image grandit depuis le centre jusqu'à remplir l'écran, puis s'arrête ; le texte apparaît à la fin.
