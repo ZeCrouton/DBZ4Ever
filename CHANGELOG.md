@@ -19,6 +19,11 @@
 - Aide : listes corrigées pour Assimilation (Cell, Cell parfait, Super Buu) et Explosion (Chaozu, Gotenks, Toppo).
 - Service worker : cache `dbz-v28`.
 
+## Version 2.25
+
+- Liens temporaires (Père fils, Touche pas à ma Bulma !) : le bonus +2 ATT apparaît maintenant dans les bonus actifs de la carte, avec une icône dédiée sur le plateau.
+- Service worker : cache `dbz-v29`.
+
 ## Version 2.21
 
 - ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.
