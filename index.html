@@ -126,6 +126,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .card.jouable{box-shadow:0 0 0 2px var(--ok)}
 .slot small,.apercu{display:block;font-size:11px;color:var(--ok);margin-top:4px}
 .apercu{text-align:center;background:var(--surface);border-radius:6px;padding:2px}
+.zcalc{color:var(--ok);font-weight:600;margin:0 0 8px}
 .resume{text-align:left;margin:10px 0 4px}
 .resume p{margin:0 0 6px;color:var(--muted);font-size:13px}
 .jauge{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
@@ -1013,8 +1014,8 @@ function montrerInfo(o){
   $('inspect').querySelector('.box').classList.toggle('large', !!o.cartes);
   $('inspect').classList.remove('hidden');
 }
-function montrerCarte(id, puiVal, bonusActuels){
-  zoomCarte(id, puiVal, bonusActuels);
+function montrerCarte(id, puiVal, bonusActuels, apercuTxt){
+  zoomCarte(id, puiVal, bonusActuels, apercuTxt);
 }
 // Explications des caractéristiques, reprises des règles
 const CAP_TXT = {
@@ -1050,7 +1051,7 @@ function explique(ex){
   else txt = (CAP_TXT[k] || '') + (v && k !== 'esquive' ? ` Valeur : ${v}.` : '');
   $('zoomExpl').textContent = txt;
 }
-function zoomCarte(id, puiVal, bonusActuels){
+function zoomCarte(id, puiVal, bonusActuels, apercuTxt){
   const c = CARDS[id];
   const v = (puiVal === undefined || puiVal === null || puiVal === '') ? c.p : puiVal;
   const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => BONUS_INFO[b].titre);
@@ -1059,7 +1060,7 @@ function zoomCarte(id, puiVal, bonusActuels){
   const caps = c.a.map(([k, v]) => `<span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
-  $('zoomTxt').innerHTML = `<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}">ATT ${v}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon">Bonus actifs : ${esc(bons.join(' ; '))}</div>` : ''}`;
+  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc">Si jouée : ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}">ATT ${v}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon">Bonus actifs : ${esc(bons.join(' ; '))}</div>` : ''}`;
   $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
   $('zoomCarte').classList.remove('hidden');
 }
@@ -1492,14 +1493,14 @@ function render(){
   $('hand').innerHTML = me.hand.map((id, i) => {
     const ok = monTour && jouable(HUMAN, i);
     const sl = monTour ? emplacementAuto(HUMAN, i) : -1;
-    let extra = '';
+    let apercuTxt = '';
     if (sl >= 0 && peutJouer(HUMAN, i, sl)){
       const a = apercu(i, sl);
       const base = CARDS[id].p, bonusTxt = a.bonus.filter(b => BONUS_COURT[b]).map(b => BONUS_COURT[b]).join(', ');
       const detail = (a.carte > base && bonusTxt) ? ` = ${base} + ${a.carte - base} (${bonusTxt})` : '';
-      extra = `<div class="apercu">ATT ${a.carte}${detail} · ${coutCarte(HUMAN, i, sl)} Ki</div>`;
+      apercuTxt = `ATT ${a.carte}${detail} · ${coutCarte(HUMAN, i, sl)} Ki`;
     }
-    return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra, attrs: `onclick="onHand(${i})"` });
+    return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra: '', attrs: `onclick="onHand(${i})" data-apercu="${esc(apercuTxt)}"` });
   }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
   $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : 'Gagne +2 Ki à la place de jouer une carte';
   $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
@@ -1789,7 +1790,7 @@ document.addEventListener('pointerdown', e => {
     pressFired = true;
     if (navigator.vibrate) navigator.vibrate(15);
     if (el.closest('#inspCartes')) zoomCarte(+el.dataset.cid);
-    else montrerCarte(+el.dataset.cid, el.dataset.pui, el.dataset.bonus ? el.dataset.bonus.split(',').filter(Boolean) : []);
+    else montrerCarte(+el.dataset.cid, el.dataset.pui, el.dataset.bonus ? el.dataset.bonus.split(',').filter(Boolean) : [], el.dataset.apercu || '');
   }, 400);
 });
 document.addEventListener('pointermove', e => {

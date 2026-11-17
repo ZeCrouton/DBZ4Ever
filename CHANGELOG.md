@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.11
+
+- Le calcul de l'attaque (« ATT 6 = 5 + 1 (enragé) · 3 Ki ») n'apparaît plus sur les cartes de la main. Il s'affiche dans la carte agrandie, en appui long, sous « Si jouée ».
+- Service worker : cache `dbz-v15`.
+
 ## Version 2.10
 
 - Liens entre combattants : un trait relie les cartes liées sur le plateau (violet pour le Tempérament de camp, vert pour les alliés, rouge pour les rivaux face à face). Le contour sur les cartes est retiré, pour garder leur taille et leur lisibilité.
