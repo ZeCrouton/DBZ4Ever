@@ -151,6 +151,12 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .esquive-fx{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:44px;font-weight:bold;color:#fff;text-shadow:0 0 8px #6a2c91,0 3px 0 #3b1560;z-index:8;pointer-events:none;white-space:nowrap;animation:esquiveFx 1.8s ease-out forwards}
 @keyframes esquiveFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 .secoue{animation:secoue .45s linear}
+.secoue-long{animation:secoue 2s linear}
+.genki-fx{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);pointer-events:none;animation:genkiFade 2s ease-out forwards}
+.genki-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:genkiZoom 2s ease-out}
+.genki-fx p{position:relative;margin:0;padding:0 16px;font-size:clamp(22px,6vw,40px);font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 12px #000}
+@keyframes genkiFade{0%{opacity:0}15%{opacity:1}85%{opacity:1}100%{opacity:0}}
+@keyframes genkiZoom{from{transform:scale(1.25)}to{transform:scale(1)}}
 @keyframes secoue{0%,100%{transform:translate(0)}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
 @media (prefers-reduced-motion: reduce){.secoue{animation:none}.esquive-fx{animation:none;opacity:1}}
 .journal-bar{display:block;width:100%;margin:0 0 10px;padding:8px 16px;border-radius:999px;font:inherit;font-size:13px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface);border:1px solid var(--muted);cursor:pointer}
@@ -298,7 +304,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Yamcha, Vegeta, Freezer, Cell, Buu, Jiren, Beerus, Goku Ultra Instinct). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>4</b> (Normal) ou <b>5</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (8 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte.</li><li><b>Genkidama</b> : dès que ton Ki atteint 12, la Genkidama part. Chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
 <details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
@@ -352,7 +358,7 @@ const DEFIS = [
   { nom: 'Pas de rayon', noRayon: true },
   { nom: 'Ki max à 6', kiMax: 6 }
 ];
-const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Genkidama' };
+const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Esprit d’équipe' };
 const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { nom: 'Dieu', min: 15 }];
 const TUTO = [
   'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de ATT le plus élevé gagne.',
@@ -453,7 +459,7 @@ let vitesse = lire('dbzVitesse', 'normale');
 /* ---------- Etat de la partie ---------- */
 let P = [], round = 1, wins = [0, 0], first = HUMAN, cur = HUMAN, sel = null, pending = null, over = false;
 let inGame = false, aiTimer = null, pendingAI = false, curBg = 0;
-let R = { kiDebut: 2, kiTour: 1, kiMax: 8, noRayon: false, nom: '' };
+let R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
 const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 6 }, difficile: { nom: 'Difficile', slots: 6 } };
 let niveau = lire('dbzNiveau', 'normal');
 let NB = NIVEAUX[niveau].slots, mullMode = false;
@@ -660,7 +666,7 @@ function newGame(){
   clearTimeout(vueTimer); vueTimer = null;
   pickBg();
   inGame = true; over = false; history.pushState({ g: 1 }, ''); startMusic();
-  R = { kiDebut: 2, kiTour: 1, kiMax: 8, noRayon: false, nom: '' };
+  R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
   if (mode === 'defi'){
     const d = DEFIS[Math.floor(Date.now() / 86400000) % DEFIS.length];
     R = Object.assign(R, d);
@@ -728,6 +734,7 @@ function startTurn(){
     p.ki = Math.min(R.kiMax, p.ki + 1);
     jour(`Aura divine : ${nom(cur)} gagne 1 Ki supplémentaire.`);
   }
+  if (p.ki >= R.kiMax) genkidama(cur);
   draw(p, true);
   namekSoin(cur);
   // Rien à poser ni de Ki pour charger : le tour est sauté
@@ -782,12 +789,33 @@ function peutAgir(p){
 }
 
 // Charger : +2 Ki à la place de jouer une carte
+// Genkidama : Ki au maximum, l'énergie de tout le monde se rassemble sur l'ennemi
+function genkidama(p){
+  if (over) return;
+  const cible = 1 - p;
+  jour(`${nom(p)} : Genkidama ! 3 dégâts à chaque combattant ennemi.`);
+  P[cible].slots.forEach((inst, s) => { if (inst) hit(cible, s, 3, 'Genkidama'); });
+  P[p].ki = 0;
+  genkiFx();
+}
+// Plein écran avec l'image, tremblement de 2 secondes
+function genkiFx(){
+  const el = document.createElement('div');
+  el.className = 'genki-fx';
+  el.innerHTML = '<img src="img/genkidama.jpg" alt=""><p>Ki au maximum : Genkidama !</p>';
+  document.body.appendChild(el);
+  document.body.classList.add('secoue-long');
+  setTimeout(() => document.body.classList.remove('secoue-long'), 2000);
+  setTimeout(() => el.remove(), 2000);
+}
+
 function charger(p){
   const me = P[p];
   const gain = Math.min(2, R.kiMax - me.ki);
   me.ki += gain;
   jour(`${nom(p)} : charge son Ki (+${gain}).`);
   if (p === HUMAN) msg(`Tu charges ton Ki (+${gain}). ${oppNom()} joue.`);
+  if (me.ki >= R.kiMax) genkidama(p);
   afterAction();
 }
 function onCharger(){
@@ -1571,7 +1599,7 @@ $('btnSucc').onclick = () => {
     <p>${suivant ? `Prochain rang : ${suivant.nom} à ${suivant.min} victoires.` : 'Rang maximal atteint.'}</p>
     <ul class="succ">
       <li class="${succes.kaio ? 'ok' : ''}"><b>Kaio-ken</b> : gagner une manche avec 1 ${PUI_ICO} d'écart.${succes.kaio ? ' ✔' : ''}</li>
-      <li class="${succes.genkidama ? 'ok' : ''}"><b>Genkidama</b> : poser 3 cartes avec Soutien dans une même manche.${succes.genkidama ? ' ✔' : ''}</li>
+      <li class="${succes.genkidama ? 'ok' : ''}"><b>Esprit d’équipe</b> : poser 3 cartes avec Soutien dans une même manche.${succes.genkidama ? ' ✔' : ''}</li>
     </ul>
     <h3 class="regle-groupe">Statistiques par deck</h3>
     <ul class="succ">${lignes}</ul>`;
@@ -1663,7 +1691,7 @@ function loadGame(){
     const idsOk = p => [...p.deck, ...p.hand, ...p.disc, ...p.slots.filter(Boolean).map(x => x.id)].every(i => Number.isInteger(i) && i >= 0 && i < CARDS.length);
     if (!d.P.every(idsOk)) return false;   // sauvegarde incompatible : nouvelle partie
     P = d.P; round = d.round; wins = d.wins; first = d.first; cur = d.cur; pending = d.pending; curBg = d.curBg || 0;
-    R = Object.assign({ kiDebut: 2, kiTour: 1, kiMax: 8, noRayon: false, nom: '' }, d.R || {});
+    R = Object.assign({ kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' }, d.R || {});
     advIdx = typeof d.advIdx === 'number' ? d.advIdx : -1;
     sursaut = d.sursaut === undefined ? null : d.sursaut;
     mullUsed = !!d.mullUsed;

@@ -1,5 +1,12 @@
 # Journal des modifications
 
+## Version 2.8
+
+- Ki plafonné à 12 (au lieu de 8).
+- Genkidama : dès que le Ki atteint 12, 3 dégâts à chaque combattant ennemi (les divins sont épargnés), puis le Ki retombe à 0. Écran plein avec l'image, texte « Ki au maximum : Genkidama ! » et tremblement de 2 secondes.
+- Le succès « Genkidama » (3 soutiens dans une manche) est renommé « Esprit d’équipe ».
+- Service worker : cache `dbz-v12`.
+
 ## Version 2.7
 
 - Plateaux de 6 places en niveau Normal et Difficile (3 en Facile, inchangé).
