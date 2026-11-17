@@ -3,7 +3,7 @@
 // chaque nouvelle version s'affiche tout de suite ; la copie en cache ne sert qu'hors ligne.
 // Images et musiques : « cache d'abord » avec mise à jour en arrière-plan.
 // Pour publier une nouvelle version des fichiers, incrémenter VERSION.
-const VERSION = 'dbz-v24';
+const VERSION = 'dbz-v26';
 const STATIQUES = [
   './',
   './index.html',
@@ -69,7 +69,8 @@ const STATIQUES = [
   './img/card-46.jpg',
   './img/card-47.jpg',
   './img/card-48.jpg',
-  './img/card-49.jpg'
+  './img/card-49.jpg',
+  './img/card-50.jpg'
 ];
 
 self.addEventListener('install', event => {

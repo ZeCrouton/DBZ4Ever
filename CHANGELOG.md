@@ -1,4 +1,20 @@
+# v2.22 — 2026-11-17
+
+- Ajout de Goten et de la fusion Goten + Trunks → Gotenks.
+- Correction de la carte Trunks Super Saiyan : évolution de Trunks (et non de Gohan).
+- Renommage de l’ancienne capacité « Absorption » (+2 ATT quand un ennemi est mis KO) en « Assimilation », pour la distinguer de la nouvelle Absorption.
+- Ajout de l’Absorption pour Cell et Super Buu : +1 Ki à chaque attaque qui leur inflige des dégâts, cumulable avec le +1 Ki de KO.
+- Ajout des liens temporaires « Touche pas à ma Bulma ! » et « Père fils » : +2 ATT aux deux cartes pendant deux tours.
+- En dernière manche, un joueur sans cartes peut effectuer une ultime charge si elle permet d’atteindre 12 Ki ; l’adversaire joue ensuite tous ses tours possibles, puis le Genkidama préparé se résout s’il n’a pas été annulé.
+
 # Journal des modifications
+
+## Version 2.21
+
+- ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.
+- Fusion : suppression de la recette incorrecte Trunks + Goku pour Gotenks ; la fusion Gogeta (Goku + Vegeta) reste disponible. Gotenks demeure une carte autonome en attendant l'ajout d'une carte Goten.
+- Nouvelle capacité « Maîtrise du Ki » : Bulma et Babidi rendent +1 Ki à leur entrée en jeu, sans dépasser 12.
+- Service worker : cache `dbz-v25`.
 
 ## Version 2.20
 
