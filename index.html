@@ -386,7 +386,8 @@ const BONUS_INFO = {
   allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
   survie: { titre: 'Survie de l\'univers (tu es mené) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg>' },
   rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
-  lien: { titre: 'Lien temporaire (Père fils, Touche pas à ma Bulma !) : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#e09b27" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/></svg>' },
+  lienPere: { titre: 'Lien Père fils : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#e09b27" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/></svg>' },
+  lienBulma: { titre: 'Lien Touche pas à ma Bulma ! : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#2e9e44" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/></svg>' },
   namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
 };
 const NAMES = {rayon:'Rayon d\'énergie', furie:'Furie', regen:'Régénération', absorb:'Assimilation', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter', esquive:'Esquive', ki:'Maîtrise du Ki', absorbKi:'Absorption', lien:'Lien spécial'};
@@ -552,7 +553,7 @@ const abVal = (id, code) => { const x = CARDS[id].a.find(x => x[0] === code); re
 const famOf = id => FAM_OF[CARDS[id].n] || null;
 
 // ATT de base : carte + bonus - dégâts
-function baseVal(p, s){ const inst = P[p].slots[s]; return inst ? CARDS[inst.id].p + inst.bonus + (inst.lienBonus || 0) - inst.dmg : 0; }
+function baseVal(p, s){ const inst = P[p].slots[s]; return inst ? CARDS[inst.id].p + inst.bonus + 2 * (inst.liensActifs || []).length - inst.dmg : 0; }
 function baseTotal(p){ return idx().reduce((a, s) => a + baseVal(p, s), 0); }
 
 // Détail de l’ATT : valeur et liste des bonus actifs (utilisée pour les icônes)
@@ -562,7 +563,7 @@ function detailATT(p, s, sansCond){
   const sl = P[p].slots, id = inst.id;
   let v = baseVal(p, s);
   const bonus = [];
-  if (inst.lienBonus) bonus.push('lien');
+  [...new Set((inst.liensActifs || []).map(l => l.type === 'bulma' ? 'lienBulma' : 'lienPere'))].forEach(k => bonus.push(k));
   sl.forEach((o, j) => { if (o && j !== s && hasAb(o, 'soutien')){ v += 1; bonus.push('soutien'); } });
   const camp = CAMP_OF[id];
   if (camp){
@@ -822,8 +823,10 @@ function afterAction(estCharge){
   const jouaIA = cur === AI;
   // Les bonus de liens spéciaux durent deux tours du propriétaire.
   P[cur].slots.forEach(o => {
-    if (o && o.lienTours > 0){
-      if (--o.lienTours === 0){ o.lienBonus = 0; jour(`${CARDS[o.id].n} : le bonus de lien temporaire prend fin.`); }
+    if (o && o.liensActifs && o.liensActifs.length){
+      o.liensActifs.forEach(l => l.tours--);
+      const finis = o.liensActifs.filter(l => l.tours <= 0);
+      if (finis.length){ o.liensActifs = o.liensActifs.filter(l => l.tours > 0); jour(`${CARDS[o.id].n} : fin du lien temporaire (${finis.map(l => l.nom).join(', ')}).`); }
     }
   });
   // Plateaux pleins des deux côtés : la manche est finie
@@ -1188,7 +1191,7 @@ $('zoomCarte').querySelector('.box').addEventListener('click', e => {
   explique(z.dataset.ex);
 });
 $('zoomCarte').onclick = e => { e.stopPropagation(); $('zoomCarte').classList.add('hidden'); render(); resumeAI(); };
-const BONUS_COURT = { soutien: 'soutien', camp: 'tempérament', enrage: 'enragé', survie: 'survie', allie: 'allié', rival: 'rival', lien: 'lien temporaire' };
+const BONUS_COURT = { soutien: 'soutien', camp: 'tempérament', enrage: 'enragé', survie: 'survie', allie: 'allié', rival: 'rival', lienPere: 'lien Père fils', lienBulma: 'lien Bulma' };
 const CAMP_LABEL = { saiyan: 'Saiyan', terrien: 'Terrien', namek: 'Namek', demon: 'Démon', dieu: 'Dieu', cyborg: 'Cyborg', ennemis: 'Ennemis jurés', survie: 'Survie de l\'univers' };
 function showInspect(s){
   const inst = P[AI].slots[s];
@@ -1333,7 +1336,9 @@ function activerLiensSpeciaux(p){
     a.liensDeclenches=a.liensDeclenches||[]; b.liensDeclenches=b.liensDeclenches||[];
     if(a.liensDeclenches.includes(key)||b.liensDeclenches.includes(key)) continue;
     a.liensDeclenches.push(key); b.liensDeclenches.push(key);
-    a.lienBonus=2; b.lienBonus=2; a.lienTours=2; b.lienTours=2;
+    const type = lien.key === 'bulma' ? 'bulma' : 'pere';
+    a.liensActifs=(a.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 2 }]);
+    b.liensActifs=(b.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 2 }]);
     jour(`${lien.nom} : ${CARDS[a.id].n} et ${CARDS[b.id].n} gagnent +2 ATT pendant deux tours.`);
   }
 }
@@ -1353,8 +1358,8 @@ function playCard(p, i, s){
   if (ancien) me.disc.push(ancien.id);
   // Une évolution est le même combattant : il garde son identité et ses bonus de lien en cours.
   me.slots[s] = ancien
-    ? { id, dmg: 0, bonus: 0, lienBonus: ancien.lienBonus || 0, lienTours: ancien.lienTours || 0, liensDeclenches: (ancien.liensDeclenches || []).slice(), uid: ancien.uid }
-    : { id, dmg: 0, bonus: 0, lienBonus: 0, lienTours: 0, liensDeclenches: [] };
+    ? { id, dmg: 0, bonus: 0, liensActifs: (ancien.liensActifs || []).slice(), liensDeclenches: (ancien.liensDeclenches || []).slice(), uid: ancien.uid }
+    : { id, dmg: 0, bonus: 0, liensActifs: [], liensDeclenches: [] };
   me.ki -= cout;
   me.hand.splice(i, 1);
   sel = null;

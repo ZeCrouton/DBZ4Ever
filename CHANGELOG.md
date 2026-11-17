@@ -24,6 +24,11 @@
 - Liens temporaires (Père fils, Touche pas à ma Bulma !) : le bonus +2 ATT apparaît maintenant dans les bonus actifs de la carte, avec une icône dédiée sur le plateau.
 - Service worker : cache `dbz-v29`.
 
+## Version 2.26
+
+- Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
+- Service worker : cache `dbz-v31`.
+
 ## Version 2.21
 
 - ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.
