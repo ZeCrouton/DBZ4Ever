@@ -1455,9 +1455,10 @@ function resolveRayon(j){
   const pd = pending;
   pending = null;
   const tgt = P[pd.tp].slots[j];
-  hit(pd.tp, j, pd.n, 'Rayon de ' + pd.name);
+  // Le tir est annoncé avant les dégâts qu'il inflige
   msg(`${pd.name} tire son rayon sur ${tgt ? CARDS[tgt.id].n : 'un combattant'} (${pd.n} dégâts).`);
   jour(`${nom(HUMAN)} : ${pd.name} tire son rayon (${pd.n}).`);
+  hit(pd.tp, j, pd.n, 'Rayon de ' + pd.name);
   afterAction();
 }
 
