@@ -29,6 +29,12 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.40
+
+- Fusion : la carte du résultat (Gogeta ou Gotenks) doit être dans la main pour fusionner. Elle quitte la main et prend la place du premier combattant ; les deux combattants et la carte vont à la défausse. Le coût en Ki ne change pas.
+- Aide « Fusion » mise à jour (les combattants n'ont pas besoin d'être liés).
+- Service worker : cache `dbz-v44`.
+
 ## Version 2.39
 
 - Score fixe : la barre du score (Toi – Ennemi, manches, manche en cours) reste affichée juste sous le bandeau pendant qu'on fait défiler le plateau. Elle remplace l'affichage du score dans le bandeau et dans le bloc d'informations.
