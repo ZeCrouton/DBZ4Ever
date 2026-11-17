@@ -1835,7 +1835,8 @@ $('btnMode').onclick = () => {
 
 
 function renderColl(){
-  $('collCompte').textContent = compteMsg || `Deck : ${deckEdit.length}/${DECK_MAX} · Cartes possédées : ${collection.length}/${CARDS.length}. Le deck sert à la prochaine partie.`;
+  const enCours = inGame && !over ? 'Partie en cours : ce deck sera utilisé à la prochaine partie. ' : '';
+  $('collCompte').textContent = enCours + (compteMsg || `Deck : ${deckEdit.length}/${DECK_MAX} · Cartes possédées : ${collection.length}/${CARDS.length}.${enCours ? '' : ' Le deck sert à la prochaine partie.'}`);
   $('collGrille').innerHTML = CARDS.map((c, i) => {
     const cls = (collection.includes(i) ? '' : 'nope') + (deckEdit.includes(i) ? ' sel' : '');
     return cardHTML(i, { att: c.p, cls: 'coll ' + cls, attrs: `onclick="toggleDeck(${i})"` });
@@ -1861,6 +1862,7 @@ $('btnCollSave').onclick = () => {
   deckPerso = deckEdit.slice();
   ecrire('dbzDeck', deckPerso);
   fermerModal('collModal');
+  if (inGame && !over) msg('Deck enregistré : il sera utilisé à la prochaine partie.');
 };
 $('btnCollReset').onclick = () => {
   deckPerso = null;
