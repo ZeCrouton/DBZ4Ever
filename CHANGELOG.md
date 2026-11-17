@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.16
+
+- Animation quand tu joues une carte : elle sort de ta main, s'affiche agrandie un court instant, puis se pose sur son emplacement. Désactivée si l'option « réduire les animations » est active sur l'appareil.
+- Service worker : cache `dbz-v20`.
+
 ## Version 2.15
 
 - Liens entre combattants : chaque lien a sa propre couleur (au lieu de trois couleurs par type). Une info-bulle indique le type de lien et les deux cartes.

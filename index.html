@@ -1210,6 +1210,32 @@ function scoreDifficile(id, i, s, style){
   return sc;
 }
 
+// Carte jouée par le joueur : elle sort de la main, s'affiche agrandie un court instant, puis se pose sur son emplacement
+function animerCarteJouee(i, s){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const src = document.querySelectorAll('#hand .card')[i];
+  const cible = document.getElementById('myBoard') && document.getElementById('myBoard').children[s];
+  if (!src || !cible) return;
+  const a = src.getBoundingClientRect(), b = cible.getBoundingClientRect();
+  if (!a.width || !b.width) return;
+  const clone = src.cloneNode(true);
+  clone.removeAttribute('onclick'); clone.removeAttribute('id');
+  clone.classList.remove('jouable', 'injouable', 'mull', 'sel');
+  clone.style.cssText = `position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;margin:0;z-index:30;pointer-events:none;transform-origin:center;`;
+  document.body.appendChild(clone);
+  const cx = a.left + a.width / 2, cy = a.top + a.height / 2;
+  const kC = Math.min(220, innerWidth * 0.6) / a.width;   // taille agrandie
+  const dxC = innerWidth / 2 - cx, dyC = innerHeight / 2 - cy;
+  const dxT = (b.left + b.width / 2) - cx, dyT = (b.top + b.height / 2) - cy;
+  const kT = b.width / a.width;
+  const anim = clone.animate([
+    { transform: 'translate(0px,0px) scale(1)', offset: 0, easing: 'cubic-bezier(.2,.7,.3,1)' },
+    { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.3, easing: 'linear' },
+    { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.68, easing: 'cubic-bezier(.5,0,.6,1)' },
+    { transform: `translate(${dxT}px,${dyT}px) scale(${kT})`, offset: 1 }
+  ], { duration: 1400, fill: 'forwards' });
+  anim.onfinish = () => clone.remove();
+}
 function playCard(p, i, s){
   const me = P[p];
   if (p === HUMAN) avantCoup = { P: JSON.parse(JSON.stringify(P)), journal: journal.slice() };
@@ -1221,6 +1247,7 @@ function playCard(p, i, s){
     if (!me.slots[s] || me.slots[s].id !== c.e){ msg(`${c.n} évolue depuis ${CARDS[c.e].n} : place-la sur le combattant correspondant.`); return; }
   }
   if (cout > me.ki){ msg(`Il faut ${cout} Ki pour jouer ${c.n} (tu as ${me.ki}).`); return; }
+  if (p === HUMAN) animerCarteJouee(i, s);
   if (c.e >= 0) me.disc.push(me.slots[s].id);
   me.slots[s] = { id, dmg: 0, bonus: 0 };
   me.ki -= cout;
