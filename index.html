@@ -155,11 +155,12 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .liens{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible}
 .lien-trait{stroke-width:3;stroke-linecap:round;stroke-dasharray:8 6;opacity:.85;animation:lienFlux 1.2s linear infinite}
 @keyframes lienFlux{to{stroke-dashoffset:-28}}
-.genki-fx{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);pointer-events:none;animation:genkiFade 2s ease-out forwards}
-.genki-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:genkiZoom 2s ease-out}
-.genki-fx p{position:relative;margin:0;padding:0 16px;font-size:clamp(22px,6vw,40px);font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 12px #000}
-@keyframes genkiFade{0%{opacity:0}15%{opacity:1}85%{opacity:1}100%{opacity:0}}
-@keyframes genkiZoom{from{transform:scale(1.25)}to{transform:scale(1)}}
+.genki-fx{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#000;overflow:hidden;pointer-events:none;animation:genkiFade 2.4s linear forwards}
+.genki-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(.2);opacity:0;animation:genkiZoom 1.3s cubic-bezier(.25,.6,.35,1) .1s forwards}
+.genki-fx p{position:relative;margin:0;padding:0 16px;opacity:0;animation:genkiTexte .4s ease 1.5s forwards;font-size:clamp(22px,6vw,40px);font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 12px #000}
+@keyframes genkiFade{0%,85%{opacity:1}100%{opacity:0}}
+@keyframes genkiZoom{from{transform:scale(.2);opacity:1}to{transform:scale(1);opacity:1}}
+@keyframes genkiTexte{from{opacity:0}to{opacity:1}}
 @keyframes secoue{0%,100%{transform:translate(0)}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
 @media (prefers-reduced-motion: reduce){.secoue{animation:none}.esquive-fx{animation:none;opacity:1}}
 .journal-bar{display:block;width:100%;margin:0 0 10px;padding:8px 16px;border-radius:999px;font:inherit;font-size:13px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface);border:1px solid var(--muted);cursor:pointer}
@@ -307,7 +308,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Yamcha, Vegeta, Freezer, Cell, Buu, Jiren, Beerus, Goku Ultra Instinct). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>4</b> (Normal) ou <b>5</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux la lancer. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand deux combattants liés sont sur ton plateau. Elle les réunit en un seul (Gogeta, Gotenks) en payant du Ki.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 8.</p></div></details>
 <details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="pui-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="puissance"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
@@ -734,7 +735,7 @@ function namekSoin(p){
 function startTurn(){
   if (over) return;
   const p = P[cur];
-  // La Genkidama préparée par ce joueur part maintenant (elle n'a pas été annulée)
+  // Le Genkidama préparé par ce joueur part maintenant (elle n'a pas été annulée)
   if (p.genkiPrete){ p.genkiPrete = false; genkidama(cur); }
   p.ki = Math.min(R.kiMax, p.ki + R.kiTour);
   if (p.slots.some(o => o && CAMP_OF[o.id] === 'dieu')){
@@ -843,7 +844,7 @@ function genkiFx(){
   document.body.appendChild(el);
   document.body.classList.add('secoue-long');
   setTimeout(() => document.body.classList.remove('secoue-long'), 2000);
-  setTimeout(() => el.remove(), 2000);
+  setTimeout(() => el.remove(), 2400);
 }
 
 function charger(p){
@@ -1388,7 +1389,7 @@ function aiTurn(){
       coups.push({ i, s, sc });
     });
   });
-  // Genkidama : lancée à 12 Ki (toujours si rien d'autre n'est jouable)
+  // Genkidama : lancé à 12 Ki (toujours si rien d'autre n'est jouable)
   if (genkiLancable(AI) && (!coups.length || Math.random() < (niveau === 'facile' ? 0.3 : 0.7))){ lancerGenkidama(AI); return; }
   if (!coups.length){
     if (genkiAnnulable(AI)){ annulerParPaiement(AI); return; }

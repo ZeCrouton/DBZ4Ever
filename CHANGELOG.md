@@ -1,12 +1,18 @@
 # Journal des modifications
 
+## Version 2.13
+
+- Genkidama : apparition plus lente. L'image grandit depuis le centre jusqu'à remplir l'écran, puis s'arrête ; le texte apparaît à la fin.
+- Accord corrigé : « le Genkidama » (et non « la »).
+- Service worker : cache `dbz-v17`.
+
 ## Version 2.12
 
-- Genkidama une fois par partie : à 12 Ki, tu la lances à la main (plus de déclenchement automatique). Elle part au début de ton prochain tour : 3 dégâts à chaque combattant ennemi (les divins sont épargnés), puis ton Ki retombe à 0.
+- Genkidama une fois par partie : à 12 Ki, tu le lances à la main (plus de déclenchement automatique). Elle part au début de ton prochain tour : 3 dégâts à chaque combattant ennemi (les divins sont épargnés), puis ton Ki retombe à 0.
 - Annulation par l'adversaire, de deux façons : il paie 12 Ki, ou il met KO un combattant du lanceur pendant son tour. Le Ki du lanceur est alors perdu.
-- Une Genkidama encore en préparation est perdue si la manche se termine.
+- Un Genkidama encore en préparation est perdue si la manche se termine.
 - Charge : +2 Ki sous 6 Ki, +1 Ki au-delà. Pas deux charges de suite, sauf si aucune carte n'est jouable.
-- IA : elle lance et annule la Genkidama selon la difficulté.
+- IA : elle lance et annule le Genkidama selon la difficulté.
 - Service worker : cache `dbz-v16`.
 
 ## Version 2.11
