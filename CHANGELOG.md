@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.15
+
+- Liens entre combattants : chaque lien a sa propre couleur (au lieu de trois couleurs par type). Une info-bulle indique le type de lien et les deux cartes.
+- Service worker : cache `dbz-v19`.
+
 ## Version 2.14
 
 - Charger : le bouton est grisé quand il n'est pas utilisable car tu as chargé au tour précédent. Un clic affiche le pourquoi.

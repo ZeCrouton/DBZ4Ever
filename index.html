@@ -1437,8 +1437,10 @@ function cardHTML(id, opts){
   return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-pui="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="Puissance">${PUI_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
 
-// Traits entre les combattants liés : Tempérament de camp (violet), alliés (vert), rivaux face à face (rouge)
-const LIEN_COULEUR = { camp: '#8e5fd6', allie: '#2e9e44', rival: '#b3261e' };
+// Traits entre les combattants liés : chaque lien a sa propre couleur (teintes réparties au nombre d'or, bien distinctes)
+const LIEN_NOM = { camp: 'Tempérament de camp', allie: 'Alliés', rival: 'Rivaux' };
+let lienN = 0;
+function couleurLien(){ return `hsl(${Math.round((lienN++ * 137.508) % 360)}, 85%, 62%)`; }
 function dessinerLiens(){
   let svg = document.getElementById('liens');
   if (!svg){
@@ -1448,6 +1450,7 @@ function dessinerLiens(){
     document.body.appendChild(svg);
   }
   svg.innerHTML = '';
+  lienN = 0;
   const ancre = (p, s) => {
     const el = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
     const c = el && el.children[s];
@@ -1461,8 +1464,11 @@ function dessinerLiens(){
     const l = document.createElementNS(svg.namespaceURI, 'line');
     l.setAttribute('x1', A.x); l.setAttribute('y1', A.y);
     l.setAttribute('x2', B.x); l.setAttribute('y2', B.y);
-    l.setAttribute('stroke', LIEN_COULEUR[type]);
+    l.setAttribute('stroke', couleurLien());
     l.setAttribute('class', 'lien-trait');
+    const titre = document.createElementNS(svg.namespaceURI, 'title');
+    titre.textContent = `${LIEN_NOM[type]} : ${CARDS[P[a.p].slots[a.s].id].n} – ${CARDS[P[b.p].slots[b.s].id].n}`;
+    l.appendChild(titre);
     svg.appendChild(l);
   };
   const n = P[HUMAN].slots.length;
