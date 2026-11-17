@@ -362,6 +362,7 @@ header.top .scoretop{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;min-wi
 <div class="over hidden" id="bouleModal"><div class="box"><h2 style="margin-top:0">Collection et succès</h2><div class="actions"><button class="primary" id="btnColl" type="button">Collection et deck</button><button class="primary" id="btnSucc" type="button">Succès et rangs</button></div><button id="btnBouleClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="tutoModal"><div class="box"><h2 id="tutoTitre" style="margin-top:0"></h2><p id="tutoTxt"></p><button class="primary" id="tutoBtn" type="button">Suivant</button></div></div>
 <div class="over hidden" id="collModal"><div class="box rules-box coll-box"><h2 style="margin-top:0">Collection et deck</h2><p id="collCompte"></p><div class="collgrid" id="collGrille"></div><div class="actions"><button class="primary" id="btnCollSave" type="button">Enregistrer le deck</button><button id="btnCollReset" type="button">Réinitialiser</button><button id="btnCollClose" type="button">Fermer</button></div></div></div>
+<div class="over hidden" id="newModal"><div class="box"><h2 style="margin-top:0">Nouvelle partie</h2><p>Que veux-tu faire avant de commencer ?</p><div class="actions"><button class="primary" id="btnNewStart" type="button">Commencer la partie</button><button id="btnNewDeck" type="button">Modifier mon deck</button><button id="btnNewAnnul" type="button">Annuler</button></div></div></div>
 <div class="over hidden" id="succModal"><div class="box rules-box"><h2 style="margin-top:0">Succès et rangs</h2><div id="succContenu"></div><button class="primary" id="btnSuccClose" type="button">Fermer</button></div></div>
 
 <script>
@@ -1115,7 +1116,7 @@ function fermerModal(id){
   resumeAI();
 }
 function askQuit(){
-  showOver('Quitter la partie ?', 'La partie en cours sera perdue.', 'Quitter', () => { inGame = false; newGame(); }, { stayLabel: 'Continuer' });
+  showOver('Quitter la partie ?', 'La partie en cours sera perdue.', 'Quitter', () => { inGame = false; proposerNouvellePartie(); }, { stayLabel: 'Continuer' });
 }
 function montrerInfo(o){
   const im = $('inspImg');
@@ -1806,7 +1807,20 @@ $('btnNiveau').onclick = () => {
   menuNote(`Niveau ${NIVEAUX[niveau].nom} : appliqué à la prochaine partie.`);
   render();
 };
-$('btnNew').onclick = () => { if (inGame && !over) askQuit(); else newGame(); };
+$('btnNew').onclick = () => { if (inGame && !over) askQuit(); else proposerNouvellePartie(); };
+// Choix au lancement d'une nouvelle partie : commencer, modifier le deck, ou annuler
+let apresDeck = false;
+function proposerNouvellePartie(){ $('newModal').classList.remove('hidden'); }
+$('btnNewStart').onclick = () => { $('newModal').classList.add('hidden'); newGame(); };
+$('btnNewAnnul').onclick = () => $('newModal').classList.add('hidden');
+$('btnNewDeck').onclick = () => { $('newModal').classList.add('hidden'); apresDeck = true; ouvrirCollection(); };
+function ouvrirCollection(){
+  compteMsg = '';
+  deckEdit = deckEditionDepart();
+  renderColl();
+  $('collModal').classList.remove('hidden');
+}
+function retourAuChoix(){ if (apresDeck){ apresDeck = false; proposerNouvellePartie(); } }
 $('btnOver').onclick = onOverButton;
 $('btnStay').onclick = onStay;
 $('btnCancel').onclick = () => {
@@ -1853,16 +1867,14 @@ function toggleDeck(i){
 }
 $('btnColl').onclick = () => {
   $('bouleModal').classList.add('hidden');
-  compteMsg = '';
-  deckEdit = deckEditionDepart();
-  renderColl();
-  $('collModal').classList.remove('hidden');
+  ouvrirCollection();
 };
 $('btnCollSave').onclick = () => {
   deckPerso = deckEdit.slice();
   ecrire('dbzDeck', deckPerso);
   fermerModal('collModal');
   if (inGame && !over) msg('Deck enregistré : il sera utilisé à la prochaine partie.');
+  retourAuChoix();
 };
 $('btnCollReset').onclick = () => {
   deckPerso = null;
@@ -1871,7 +1883,7 @@ $('btnCollReset').onclick = () => {
   compteMsg = 'Deck réinitialisé : à chaque partie, 20 cartes sont tirées au hasard dans ta collection.';
   renderColl();
 };
-$('btnCollClose').onclick = () => fermerModal('collModal');
+$('btnCollClose').onclick = () => { fermerModal('collModal'); retourAuChoix(); };
 
 $('btnBoule').onclick = () => $('bouleModal').classList.remove('hidden');
 $('btnBouleClose').onclick = () => fermerModal('bouleModal');
