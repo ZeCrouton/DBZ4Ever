@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.30
+
+- Genkidama : l'illustration s'affiche en entier (plus de recadrage sur le ventre de Goku). Le tremblement d'écran n'en déplace plus l'affichage.
+- Service worker : cache `dbz-v34`.
+
 ## Version 2.29
 
 - Le défi du jour en cours reste affiché en haut de l'écran pendant toute la partie, même si le bouton Mode a été changé.
