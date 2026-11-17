@@ -1155,7 +1155,15 @@ function explique(ex){
   if (t === 'att') txt = `ATT : puissance d’attaque du combattant. Valeur de base : ${k}, actuelle : ${v} (bonus compris). Quand elle tombe à 0, il est mis KO.`;
   else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
   else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
-  else txt = (CAP_TXT[k] || '') + (v && k !== 'esquive' ? ` Valeur : ${v}.` : '');
+  else {
+    // Capacité : nom en gras, puis la valeur sur une ligne à part
+    const d = CAP_TXT[k] || '';
+    const i = d.indexOf(' : ');
+    const titre = i > 0 ? `<b>${esc(d.slice(0, i))} :</b> ${esc(d.slice(i + 3))}` : esc(d);
+    const val = (v && k !== 'esquive') ? `<p><b>Valeur :</b> ${esc(v)}.</p>` : '';
+    $('zoomExpl').innerHTML = `<p>${titre}</p>${val}`;
+    return;
+  }
   $('zoomExpl').textContent = txt;
 }
 function zoomCarte(id, attVal, bonusActuels, apercuTxt){

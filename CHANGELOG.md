@@ -9,6 +9,11 @@
 
 # Journal des modifications
 
+## Version 2.23
+
+- Explication d'une capacité : le nom de la capacité est en gras, et la valeur (« Valeur : ») se lit sur une ligne à part.
+- Service worker : cache `dbz-v27`.
+
 ## Version 2.21
 
 - ATT : harmonisation du vocabulaire dans le code, les libellés et les règles.
