@@ -126,7 +126,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .card.jouable{box-shadow:0 0 0 2px var(--ok)}
 .slot small,.apercu{display:block;font-size:11px;color:var(--ok);margin-top:4px}
 .apercu{text-align:center;background:var(--surface);border-radius:6px;padding:2px}
-.zcalc{color:var(--ok);font-weight:600;margin:0 0 8px}
+.zcalc{color:var(--ok);font-weight:600;margin:0 0 10px;line-height:1.5}
 .resume{text-align:left;margin:10px 0 4px}
 .resume p{margin:0 0 6px;color:var(--muted);font-size:13px}
 .jauge{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
@@ -169,11 +169,15 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .journal-liste{text-align:left;font-size:13px;max-height:60vh;overflow:auto;padding-left:22px;margin:8px 0}
 .journal-liste li{margin:4px 0}
 .zk{cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:8px;border:1px dashed var(--muted)}
-.zstats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-size:14px;margin:4px 0}
-.zcaps{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.zstats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:14px;margin:6px 0 12px;line-height:1.6}
+.zstats .camp-chip{font-size:13px;padding:3px 9px;margin:0}
+.zsec{text-align:center;font-size:15px;margin:12px 0 4px}
+.zcaps{display:flex;flex-direction:column;align-items:center;gap:12px;margin:6px 0}
+.zcap{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.4}
+.zcap b{font-size:15px}
 .zcaps .zk svg{width:22px;height:22px;display:block}
 .zexpl{font-size:13px;min-height:3.2em;margin:6px 0}
-.zbon{font-size:12px;text-align:center;margin-top:2px}
+.zbon{font-size:13px;text-align:center;margin-top:12px;line-height:1.6}
 .regle-groupe{font-size:15px;margin:16px 0 6px;color:var(--ki)}
 .collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
 .collgrid .card{width:auto;padding:4px}
@@ -1101,10 +1105,10 @@ function zoomCarte(id, puiVal, bonusActuels, apercuTxt){
   const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => BONUS_INFO[b].titre);
   const camp = CAMP_OF[id] ? `<span class="zk camp-chip c-${CAMP_OF[id]}" data-ex="camp:${CAMP_OF[id]}">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
   const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>` : '';
-  const caps = c.a.map(([k, v]) => `<span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span>`).join('') || '<span>Aucune capacité</span>';
+  const caps = c.a.map(([k, v]) => `<div class="zcap"><span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span><b>${NAMES[k]}</b></div>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
-  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc">Si jouée : ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}">ATT ${v}</span><span class="zk" data-ex="ki">Ki ${c.k}</span>${camp}${evo}</div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon">Bonus actifs : ${esc(bons.join(' ; '))}</div>` : ''}`;
+  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc"><b>Si jouée :</b> ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}"><b>ATT</b> ${v}</span><span class="zk" data-ex="ki"><b>Ki</b> ${c.k}</span>${camp}${evo}</div><div class="zsec"><b>Capacités</b></div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon"><b>Bonus actifs :</b> ${esc(bons.join(' ; '))}</div>` : ''}`;
   $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
   $('zoomCarte').classList.remove('hidden');
 }

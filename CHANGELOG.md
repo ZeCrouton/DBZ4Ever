@@ -1,5 +1,10 @@
 # Journal des modifications
 
+## Version 2.19
+
+- Carte agrandie plus lisible : libellés en gras (camp, ATT, Ki, Capacités, noms des capacités, bonus actifs), chaque capacité sur sa ligne avec son nom, et plus d'espace entre les éléments.
+- Service worker : cache `dbz-v23`.
+
 ## Version 2.18
 
 - Carte agrandie : le camp s'affiche avec sa couleur.
