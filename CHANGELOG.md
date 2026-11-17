@@ -29,6 +29,15 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.28
+
+- Pointillés : plus aucun trait entre les combattants des deux joueurs. Seuls les liens entre combattants d'un même joueur sont tracés.
+- Liens temporaires (Père fils, Touche pas à ma Bulma!) : le trait n'apparaît que pendant les deux tours du bonus.
+- Couleurs des liens stables d'un tour à l'autre (elles dépendent désormais du type de lien et des cartes, et non plus de l'ordre de dessin).
+- Carte agrandie : chaque bonus actif s'affiche dans une couleur différente.
+- Aide « Les camps » mise à jour (liens entre combattants).
+- Service worker : cache `dbz-v32`.
+
 ## Version 2.27
 
 - Liens temporaires : le bonus dure bien deux tours après celui de la pose. Il disparaissait auparavant dès la fin du tour suivant.
