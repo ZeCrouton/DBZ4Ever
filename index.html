@@ -115,6 +115,10 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .dock .hand .card .st{font-size:10px}
 .dock .hand .card.sel{transform:scale(1.44);transform-origin:50% 100%;z-index:2}
 @media (max-width:480px){.dock .hand .card{width:auto}}
+/* Main agrandie (▲) : les cartes passent à la ligne, en proportions normales ; la liste défile verticalement */
+.dock:not(.reduit) .hand{flex-wrap:wrap;align-content:flex-start;overflow-y:auto;max-height:50vh;justify-content:center;-webkit-overflow-scrolling:touch}
+.dock:not(.reduit) .hand .card{flex:0 0 calc(33.33% - 6px);width:calc(33.33% - 6px);max-width:none;min-width:0}
+@media (min-width:600px){.dock:not(.reduit) .hand .card{flex:0 0 calc(20% - 6px);width:calc(20% - 6px)}}
 
 /* Ajouts : menus, cartes jouables, aperçu, résumé de fin de manche, collection, succès */
 .menu{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 8px}
