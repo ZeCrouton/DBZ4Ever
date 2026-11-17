@@ -480,6 +480,7 @@ let deckCle = null; // identifiant du deck de la partie en cours (statistiques p
 let succes = lire('dbzSucces', { kaio: false, genkidama: false });
 let tournoi = lire('dbzTournoi', { etape: 0 });
 let mode = lire('dbzMode', 'rapide');
+let partieMode = mode; // mode de la partie en cours (le bouton Mode ne change qu'à la partie suivante)
 let vitesse = lire('dbzVitesse', 'normale');
 
 /* ---------- Etat de la partie ---------- */
@@ -696,12 +697,13 @@ function newGame(){
   clearTimeout(vueTimer); vueTimer = null;
   pickBg();
   inGame = true; over = false; finDerniere = null; history.pushState({ g: 1 }, ''); startMusic();
+  partieMode = mode;
   R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
   if (mode === 'defi'){
     const d = DEFIS[Math.floor(Date.now() / 86400000) % DEFIS.length];
     R = Object.assign(R, d);
   }
-  advIdx = mode === 'tournoi' ? Math.min(tournoi.etape, ADVERSAIRES.length - 1) : -1;
+  advIdx = partieMode === 'tournoi' ? Math.min(tournoi.etape, ADVERSAIRES.length - 1) : -1;
   const deckIA = advIdx >= 0 ? deckAdversaire(ADVERSAIRES[advIdx]) : deckAleatoire();
   NB = NIVEAUX[niveau].slots; mullMode = false;
   P = [makePlayer('Toi', deckJoueur()), makePlayer(oppNom(), deckIA)];
@@ -954,7 +956,7 @@ function endRound(raison){
     const issue = wins[HUMAN] > wins[AI] ? 'victoire' : (wins[HUMAN] < wins[AI] ? 'defaite' : 'nul');
     bilanMatch(issue);
     let extra = '';
-    if (mode === 'tournoi'){
+    if (partieMode === 'tournoi'){
       if (issue === 'victoire'){
         const gains = recompenses(adv());
         gainsVictoire = gains;
@@ -1662,8 +1664,8 @@ function slotHTML(player, s){
 }
 
 function modeInfo(){
-  if (mode === 'tournoi') return `<span>Tournoi <b>${Math.min(tournoi.etape + 1, ADVERSAIRES.length)}/${ADVERSAIRES.length}</b></span>`;
-  if (mode === 'defi' && R.nom) return `<span>Défi <b>${esc(R.nom)}</b></span>`;
+  if (partieMode === 'tournoi') return `<span>Tournoi <b>${Math.min(tournoi.etape + 1, ADVERSAIRES.length)}/${ADVERSAIRES.length}</b></span>`;
+  if (R.nom) return `<span>Défi <b>${esc(R.nom)}</b></span>`;
   return '';
 }
 
@@ -1734,7 +1736,7 @@ function render(){
   ajusterMarge();
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
   $('msg').classList.toggle('alerte', !!pending);
-  $('btnMode').textContent = `Mode : ${MODES[mode]}`;
+  $('btnMode').textContent = `Mode : ${MODES[inGame && !over ? partieMode : mode]}`;
   persist();
 }
 
@@ -1952,7 +1954,7 @@ function focusTurn(){
 const modalOpen = () => !!document.querySelector('.over:not(.hidden)');
 function persist(){
   try {
-    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, advIdx, sursaut, mullUsed, journal, NB, deckCle }));
+    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, partieMode, advIdx, sursaut, mullUsed, journal, NB, deckCle }));
     else localStorage.removeItem(SAVE_KEY);
   } catch (e) {}
 }
@@ -1964,6 +1966,7 @@ function loadGame(){
     if (!d.P.every(idsOk)) return false;   // sauvegarde incompatible : nouvelle partie
     P = d.P; round = d.round; wins = d.wins; first = d.first; cur = d.cur; pending = d.pending; curBg = d.curBg || 0;
     R = Object.assign({ kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' }, d.R || {});
+    partieMode = d.partieMode || mode;
     advIdx = typeof d.advIdx === 'number' ? d.advIdx : -1;
     sursaut = d.sursaut === undefined ? null : d.sursaut;
     mullUsed = !!d.mullUsed;

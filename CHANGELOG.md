@@ -29,6 +29,13 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.29
+
+- Le défi du jour en cours reste affiché en haut de l'écran pendant toute la partie, même si le bouton Mode a été changé.
+- Le bouton Mode affiche le mode de la partie en cours ; le changement ne prend effet qu'à la partie suivante.
+- Correction : un changement de mode en cours de partie ne fausse plus la progression du tournoi.
+- Service worker : cache `dbz-v33`.
+
 ## Version 2.28
 
 - Pointillés : plus aucun trait entre les combattants des deux joueurs. Seuls les liens entre combattants d'un même joueur sont tracés.
