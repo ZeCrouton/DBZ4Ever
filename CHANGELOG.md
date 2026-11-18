@@ -29,6 +29,11 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.46
+
+- Carte zoomée : une section « Liens » décrit les liens à effet de la carte (Amour de Yamcha, Père spirituel, Duel, etc.).
+- Service worker : cache `dbz-v50`.
+
 ## Version 2.45
 
 - Duel et Vengeance : Goku Black n'est pas concerné (il n'est pas Goku pour ces liens).

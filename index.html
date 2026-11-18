@@ -195,6 +195,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .zsec{text-align:center;font-size:15px;margin:12px 0 4px}
 .zcaps{display:flex;flex-direction:column;align-items:center;gap:12px;margin:6px 0}
 .zcap{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.4}
+.zliens{margin:10px 0 0;font-size:14px;line-height:1.5;display:grid;gap:4px}
 .zcap b{font-size:15px}
 .zcaps .zk svg{width:22px;height:22px;display:block}
 .zexpl{font-size:14px;line-height:1.5;min-height:3.2em;margin:6px 0}
@@ -492,6 +493,25 @@ const LIENS_EFFETS = [
   { key: 'couple', nom: 'Couple', ok: (a, b) => nomC(a) === 'Krillin' && nomC(b) === 'C-18' },
 ];
 function lienEffet(a, b){ return LIENS_EFFETS.find(l => l.ok(a, b) || l.ok(b, a)); }
+// Texte des liens pour la carte zoomée (cartes concernées par nom)
+const GOKU_DUEL = ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant'];
+const VEGETA_DUEL = ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego'];
+const LIENS_INFO = [
+  { nom: 'Amour de Yamcha', cartes: ['Yamcha', 'Bulma'], texte: 'Yamcha reçoit les rayons visant Bulma, une fois par tour adverse.' },
+  { nom: 'Serviteur', cartes: ['Whis', 'Beerus'], texte: 'Whis reçoit les rayons visant Beerus, une fois par tour adverse.' },
+  { nom: 'Père spirituel', cartes: ['Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2'], texte: 'Piccolo soigne 1 dégât à Gohan en début de ton tour.' },
+  { nom: 'Maître sorcier', cartes: ['Babidi', 'Dabra'], texte: 'Babidi gagne 1 Ki en début de ton tour tant que Dabra est en jeu.' },
+  { nom: "Amis d'enfance", cartes: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black', 'Krillin'], texte: "Quand l'un est mis KO, l'autre gagne 1 Ki (tous deux en jeu)." },
+  { nom: 'Universe 6', cartes: ['Kale', 'Caulifla'], texte: "Quand l'un est posé, l'autre gagne 1 Ki." },
+  { nom: 'Couple', cartes: ['Krillin', 'C-18'], texte: 'Le premier dégât reçu par chacun est réduit de 1.' },
+  { nom: 'Duel', cartes: [...GOKU_DUEL, ...VEGETA_DUEL], texte: "Un rayon entre Goku et Vegeta inflige 1 dégât de plus, quel que soit le plateau." },
+  { nom: 'Vengeance', cartes: ['Broly', ...GOKU_DUEL], texte: "Un rayon de Broly contre Goku inflige 1 dégât de plus, quel que soit le plateau." },
+];
+function lienInfosCarte(id){
+  const n = CARDS[id].n;
+  const lignes = LIENS_INFO.filter(l => l.cartes.includes(n));
+  return lignes.length ? `<div class="zliens"><b>Liens</b>${lignes.map(l => `<div><b>${esc(l.nom)}</b> : ${esc(l.texte)}</div>`).join('')}</div>` : '';
+}
 // Protections : un rayon visant le second est reçu par le premier (une fois par tour adverse, rayons seulement)
 const PROTECTIONS = [['Yamcha', 'Bulma'], ['Whis', 'Beerus']];
 function protecteurDe(p, s){
@@ -1299,7 +1319,7 @@ function zoomCarte(id, attVal, bonusActuels, apercuTxt){
   const caps = c.a.map(([k, v]) => `<div class="zcap"><span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span><b>${NAMES[k]}</b></div>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
-  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc"><b>Si jouée :</b> ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}"><b>ATT</b> ${v}</span><span class="zk" data-ex="ki"><b>Ki</b> ${c.k}</span>${camp}${evo}</div><div class="zsec"><b>Capacités</b></div><div class="zcaps">${caps}</div>${bons.length ? `<div class="zbon"><b>Bonus actifs :</b> ${bons.join(' ; ')}</div>` : ''}`;
+  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc"><b>Si jouée :</b> ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}"><b>ATT</b> ${v}</span><span class="zk" data-ex="ki"><b>Ki</b> ${c.k}</span>${camp}${evo}</div><div class="zsec"><b>Capacités</b></div><div class="zcaps">${caps}</div>${lienInfosCarte(id)}${bons.length ? `<div class="zbon"><b>Bonus actifs :</b> ${bons.join(' ; ')}</div>` : ''}`;
   $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
   $('zoomCarte').classList.remove('hidden');
 }
