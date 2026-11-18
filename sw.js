@@ -3,7 +3,7 @@
 // chaque nouvelle version s'affiche tout de suite ; la copie en cache ne sert qu'hors ligne.
 // Images et musiques : « cache d'abord » avec mise à jour en arrière-plan.
 // Pour publier une nouvelle version des fichiers, incrémenter VERSION.
-const VERSION = 'dbz-v47';
+const VERSION = 'dbz-v48';
 const STATIQUES = [
   './',
   './index.html',

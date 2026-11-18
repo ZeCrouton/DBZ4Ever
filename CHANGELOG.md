@@ -29,6 +29,13 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.44
+
+- Nouveaux liens à effet (en plus des liens existants) : Amour de Yamcha (Yamcha protège Bulma), Serviteur (Whis protège Beerus), Père spirituel (Piccolo soigne Gohan en début de tour), Maître sorcier (Babidi gagne 1 Ki en début de tour avec Dabra), Amis d'enfance (Goku et Krillin : quand l'un est mis KO, l'autre gagne 1 Ki), Universe 6 (Kale et Caulifla : quand l'un est posé, l'autre gagne 1 Ki), Couple (Krillin et C-18 : le premier dégât reçu par chacun est réduit de 1).
+- Protection : un rayon visant Bulma ou Beerus est reçu par Yamcha ou Whis, une fois par tour adverse. Le Genkidama n'est pas redirigé.
+- Duel (Goku contre Vegeta) et Vengeance (Broly contre Goku) : un rayon entre ces combattants inflige 1 dégât de plus, quel que soit le plateau. Annoncé dans le journal, sans trait à l'écran.
+- Service worker : cache `dbz-v48`.
+
 ## Version 2.43
 
 - Correction : un combattant dont l'ATT tombe à 0 ou moins (par exemple quand un bonus Enragé disparaît) est désormais mis KO immédiatement, au lieu de rester en jeu avec 0 ATT.
