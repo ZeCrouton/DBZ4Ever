@@ -43,6 +43,9 @@ main{padding:12px 16px 24px;max-width:960px;margin:0 auto}
 .card .st .att-ico{width:13px;height:13px;vertical-align:-2px;margin-right:3px;display:inline-block}
 /* ATT touchée : clignote pendant 3 secondes */
 .badge-fus{background:#7b3fc4}
+.jr-bleu{color:#2563eb;font-weight:600}
+.jr-violet{color:#7e22ce;font-weight:600}
+@media (prefers-color-scheme: dark){.jr-bleu{color:#60a5fa}.jr-violet{color:#c084fc}}
 .card .st .att-clig{animation:attClig 3s linear 1}
 @keyframes attClig{0%,100%{opacity:1}10%,30%,50%,70%,90%{opacity:.15}}
 .card .ev{font-size:10px;color:var(--muted);margin-top:4px}
@@ -331,7 +334,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Hawkeye, Iron Man, Thor, Spider-Man, Hulk, Captain America, Doctor Strange, Wanda). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>6</b> (Normal) ou <b>6</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer. Le bouton est grisé quand tu ne peux pas charger ce tour-ci : touche-le pour voir pourquoi.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Ton Ki reste à 12 pendant la préparation. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum sans Genkidama à lancer ou à annuler), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : la carte du résultat (Gogeta blue ou Vegetto) doit être dans ta main, et Goku et Vegeta doivent être sur ton plateau. Elle coûte 7 Ki, prend la place de Goku, et la carte de la main, Goku et Vegeta vont à la défausse. Ces cartes ne se posent jamais seules.</li></ul><p><b>Dernière manche :</b> si tu n’as plus aucune carte dans la main, la pioche et la défausse, tu peux bénéficier d’une ultime charge si elle suffit à atteindre 12 Ki. Le Genkidama préparé se déclenche après que l’adversaire a joué tous ses tours possibles.</p><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 12.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer. Le bouton est grisé quand tu ne peux pas charger ce tour-ci : touche-le pour voir pourquoi.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Ton Ki reste à 12 pendant la préparation. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum sans Genkidama à lancer ou à annuler), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : la carte du résultat (Gogeta blue ou Vegetto) doit être dans ta main, et Goku et Vegeta doivent être sur ton plateau. Elle coûte 7 Ki, prend la place de Goku, et la carte de la main, Goku et Vegeta vont à la défausse. Ces cartes ne se posent jamais seules. Goku Black et Goku enfant ne fusionnent pas.</li></ul><p><b>Dernière manche :</b> si tu n’as plus aucune carte dans la main, la pioche et la défausse, tu peux bénéficier d’une ultime charge si elle suffit à atteindre 12 Ki. Le Genkidama préparé se déclenche après que l’adversaire a joué tous ses tours possibles.</p><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 12.</p></div></details>
 <details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li><li><b>Carte de fusion</b> (Gogeta blue, Vegetto) : elle ne se pose jamais seule, seulement par fusion.</li><li><b>Vegeta Majin</b> : elle ne se pose que si Babidi est sur ton plateau.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
@@ -556,6 +559,21 @@ function esquiveFx(){
   setTimeout(() => el.remove(), 1800);
 }
 function sfxKo(){ sfx(330, 150, 'sawtooth'); }
+// Mise en forme du journal : noms des joueurs en gras, attaques en bleu, fusions et évolutions en violet
+const ATTAQUES_JOURNAL = ["Rayon d'énergie", 'Double rayon', 'Genkidama', 'Onde de choc', 'Explosion', 'Furie', 'Régénération', 'Assimilation', 'Scouter', 'Maîtrise du Ki', 'Barrière cyborg', 'Sursaut du héros', 'Rayon', 'rayon'];
+const reEchap = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function formaterJournal(t){
+  const joueurs = ['Toi', oppNom()].map(reEchap);
+  const re = new RegExp(`(?<!\\p{L})(?:(${joueurs.join('|')})|(${ATTAQUES_JOURNAL.map(reEchap).join('|')}))(?!\\p{L})`, 'gu');
+  let out = '', last = 0, m;
+  while ((m = re.exec(t))){
+    out += esc(t.slice(last, m.index));
+    out += m[1] ? `<b>${esc(m[1])}</b>` : `<span class="jr-bleu">${esc(m[2])}</span>`;
+    last = re.lastIndex;
+  }
+  out += esc(t.slice(last));
+  return /fusion|\(évolution\)/i.test(t) ? `<span class="jr-violet">${out}</span>` : out;
+}
 function jour(t){ journal.unshift(t); if (journal.length > 500) journal.length = 500; }
 const idx = () => Array.from({ length: NB }, (_, k) => k);
 const adv = () => (advIdx >= 0 ? ADVERSAIRES[advIdx] : null);
@@ -1488,7 +1506,7 @@ function resolveRayon(j){
 
 // Fusions possibles pour un joueur
 // Goku Black ne fusionne pas avec Vegeta (Gogeta blue et Vegetto sont issus de Goku et Vegeta « purs »)
-const FUSION_EXCLU = ['Goku Black'];
+const FUSION_EXCLU = ['Goku Black', 'Son Goku enfant'];
 function fusionsPossibles(p){
   const me = P[p], out = [];
   FUSIONS.forEach(f => {
@@ -1734,11 +1752,11 @@ function rendreJournalBarre(){
   const b = $('btnJournal');
   if (!b) return;
   b.hidden = !inGame;
-  b.textContent = 'Journal : ' + (journal.length ? journal[0] : 'aucune action pour l\'instant');
+  b.innerHTML = 'Journal : ' + (journal.length ? formaterJournal(journal[0]) : 'aucune action pour l\'instant');
 }
 function ouvrirJournal(){
   const ol = $('journalListe');
-  ol.innerHTML = journal.length ? journal.slice().reverse().map(t => `<li>${esc(t)}</li>`).join('') : '<li>Aucune action pour l\'instant.</li>';
+  ol.innerHTML = journal.length ? journal.slice().reverse().map(t => `<li>${formaterJournal(t)}</li>`).join('') : '<li>Aucune action pour l\'instant.</li>';
   $('journalModal').classList.remove('hidden');
   ol.scrollTop = ol.scrollHeight;
 }

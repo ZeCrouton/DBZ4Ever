@@ -29,6 +29,12 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.42
+
+- Goku enfant ne peut pas fusionner.
+- Journal : noms des joueurs en gras, noms des attaques (Rayon d'énergie, Genkidama, etc.) en bleu, fusions et évolutions en violet.
+- Service worker : cache `dbz-v46`.
+
 ## Version 2.41
 
 - Noms et images : la carte à l'image de Gogeta s'appelle Gogeta blue ; celle à l'image de Vegetto Super Saiyan s'appelle Vegetto Super Saiyan ; Vegeta en combat devient Vegeta Super Saiyan.
