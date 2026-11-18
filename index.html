@@ -854,6 +854,12 @@ function startTurn(){
   if (cur === AI) scheduleAI(900);
 }
 
+// Un combattant dont l'ATT tombe à 0 ou moins (bonus perdu, total qui change) est mis KO, même si le coup ne l'a pas touché
+function koSiSansAtt(){
+  [HUMAN, AI].forEach(p => idx().forEach(s => {
+    if (P[p].slots[s] && att(p, s) <= 0) ko(p, s);
+  }));
+}
 function afterAction(estCharge){
   if (over) return;
   // Carte du joueur encore en vol : la suite attend la fin de l'animation (cur bloqué pendant ce temps)
@@ -863,6 +869,7 @@ function afterAction(estCharge){
     return;
   }
   avantCoup = null;
+  koSiSansAtt();
   P[cur].actions++;
   P[cur].aCharge = !!estCharge;
   const jouaIA = cur === AI;
