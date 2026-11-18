@@ -457,7 +457,7 @@ Object.keys(CAMPS).forEach(camp => CAMPS[camp].forEach(n => { if (ID[n] !== unde
 
 /* Familles : Rivalités entre combattants liés. Alliés = +1 si un allié est présent du même côté. Rivaux = +1 si un rival est en face. */
 const FAMILLES = {
-  goku: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black'],
+  goku: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant'], // Goku Black n'est pas Goku (c'est Zamasu dans son corps)
   vegeta: ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego'],
   gohan: ['Son Gohan', 'Gohan Super Saiyan 2'],
   piccolo: ['Piccolo'],
@@ -501,7 +501,7 @@ const LIENS_INFO = [
   { nom: 'Serviteur', cartes: ['Whis', 'Beerus'], texte: 'Whis reçoit les rayons visant Beerus, une fois par tour adverse.' },
   { nom: 'Père spirituel', cartes: ['Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2'], texte: 'Piccolo soigne 1 dégât à Gohan en début de ton tour.' },
   { nom: 'Maître sorcier', cartes: ['Babidi', 'Dabra'], texte: 'Babidi gagne 1 Ki en début de ton tour tant que Dabra est en jeu.' },
-  { nom: "Amis d'enfance", cartes: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black', 'Krillin'], texte: "Quand l'un est mis KO, l'autre gagne 1 Ki (tous deux en jeu)." },
+  { nom: "Amis d'enfance", cartes: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Krillin'], texte: "Quand l'un est mis KO, l'autre gagne 1 Ki (tous deux en jeu)." },
   { nom: 'Universe 6', cartes: ['Kale', 'Caulifla'], texte: "Quand l'un est posé, l'autre gagne 1 Ki." },
   { nom: 'Couple', cartes: ['Krillin', 'C-18'], texte: 'Le premier dégât reçu par chacun est réduit de 1.' },
   { nom: 'Duel', cartes: [...GOKU_DUEL, ...VEGETA_DUEL], texte: "Un rayon entre Goku et Vegeta inflige 1 dégât de plus, quel que soit le plateau." },
@@ -522,11 +522,9 @@ function protecteurDe(p, s){
 // Liens d'attaque (Duel, Vengeance) : +1 dégât au rayon, quel que soit le plateau de chaque combattant
 function bonusRayon(att, tgtP, tgtS){
   const t = P[tgtP].slots[tgtS]; if (!att || !t) return null;
-  // Goku Black n'est pas Goku pour ces liens (c'est Zamasu dans son corps)
-  const goku = id => famOf(id) === 'goku' && nomC(id) !== 'Goku Black';
   const fa = famOf(att.id), ft = famOf(t.id);
-  if ((goku(att.id) && ft === 'vegeta') || (fa === 'vegeta' && goku(t.id))) return 'Duel';
-  if (nomC(att.id) === 'Broly' && goku(t.id)) return 'Vengeance';
+  if ((fa === 'goku' && ft === 'vegeta') || (fa === 'vegeta' && ft === 'goku')) return 'Duel';
+  if (nomC(att.id) === 'Broly' && ft === 'goku') return 'Vengeance';
   return null;
 }
 const paire = (liste, a, b) => !!a && !!b && liste.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
