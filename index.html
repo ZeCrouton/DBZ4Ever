@@ -502,9 +502,11 @@ function protecteurDe(p, s){
 // Liens d'attaque (Duel, Vengeance) : +1 dégât au rayon, quel que soit le plateau de chaque combattant
 function bonusRayon(att, tgtP, tgtS){
   const t = P[tgtP].slots[tgtS]; if (!att || !t) return null;
+  // Goku Black n'est pas Goku pour ces liens (c'est Zamasu dans son corps)
+  const goku = id => famOf(id) === 'goku' && nomC(id) !== 'Goku Black';
   const fa = famOf(att.id), ft = famOf(t.id);
-  if ((fa === 'goku' && ft === 'vegeta') || (fa === 'vegeta' && ft === 'goku')) return 'Duel';
-  if (nomC(att.id) === 'Broly' && ft === 'goku') return 'Vengeance';
+  if ((goku(att.id) && ft === 'vegeta') || (fa === 'vegeta' && goku(t.id))) return 'Duel';
+  if (nomC(att.id) === 'Broly' && goku(t.id)) return 'Vengeance';
   return null;
 }
 const paire = (liste, a, b) => !!a && !!b && liste.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
