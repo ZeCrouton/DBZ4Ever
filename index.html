@@ -42,6 +42,7 @@ main{padding:12px 16px 24px;max-width:960px;margin:0 auto}
 .card .st .rdot svg{width:100%;height:100%;display:block}
 .card .st .att-ico{width:13px;height:13px;vertical-align:-2px;margin-right:3px;display:inline-block}
 /* ATT touchée : clignote pendant 3 secondes */
+.badge-fus{background:#7b3fc4}
 .card .st .att-clig{animation:attClig 3s linear 1}
 @keyframes attClig{0%,100%{opacity:1}10%,30%,50%,70%,90%{opacity:.15}}
 .card .ev{font-size:10px;color:var(--muted);margin-top:4px}
@@ -330,8 +331,8 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Hawkeye, Iron Man, Thor, Spider-Man, Hulk, Captain America, Doctor Strange, Wanda). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
 <details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>6</b> (Normal) ou <b>6</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
 <details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
-<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer. Le bouton est grisé quand tu ne peux pas charger ce tour-ci : touche-le pour voir pourquoi.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Ton Ki reste à 12 pendant la préparation. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum sans Genkidama à lancer ou à annuler), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : apparaît quand la carte du résultat (Gogeta ou Gotenks) est dans ta main et que ses deux combattants sont sur ton plateau (Goku et Vegeta pour Gogeta, Goten et Trunks pour Gotenks). Elle coûte le Ki indiqué ; la carte de la main et les deux combattants vont à la défausse. Elle réunit Goku et Vegeta en Gogeta, ou Goten et Trunks en Gotenks, en payant du Ki.</li></ul><p><b>Dernière manche :</b> si tu n’as plus aucune carte dans la main, la pioche et la défausse, tu peux bénéficier d’une ultime charge si elle suffit à atteindre 12 Ki. Le Genkidama préparé se déclenche après que l’adversaire a joué tous ses tours possibles.</p><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 12.</p></div></details>
-<details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte (<b>+1 Ki</b> à partir de 6 Ki). Pas deux charges de suite, sauf si tu ne peux rien jouer. Le bouton est grisé quand tu ne peux pas charger ce tour-ci : touche-le pour voir pourquoi.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Ton Ki reste à 12 pendant la préparation. Il part au début de ton prochain tour : chaque combattant ennemi subit 3 dégâts (les divins sont épargnés), puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour. Si la manche se termine avant, il est perdu.</li><li><b>Tour sauté</b> : si tu n'as plus rien à poser (plus de carte jouable, Ki au maximum sans Genkidama à lancer ou à annuler), ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : la carte du résultat (Gogeta blue ou Vegetto) doit être dans ta main, et Goku et Vegeta doivent être sur ton plateau. Elle coûte 7 Ki, prend la place de Goku, et la carte de la main, Goku et Vegeta vont à la défausse. Ces cartes ne se posent jamais seules.</li></ul><p><b>Dernière manche :</b> si tu n’as plus aucune carte dans la main, la pioche et la défausse, tu peux bénéficier d’une ultime charge si elle suffit à atteindre 12 Ki. Le Genkidama préparé se déclenche après que l’adversaire a joué tous ses tours possibles.</p><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 12.</p></div></details>
+<details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li><li><b>Carte de fusion</b> (Gogeta blue, Vegetto) : elle ne se pose jamais seule, seulement par fusion.</li><li><b>Vegeta Majin</b> : elle ne se pose que si Babidi est sur ton plateau.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins, comme Beerus.</p></div></details>
 <h3 class="regle-groupe">Le combat</h3>
 <details class="aide"><summary>La <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
 <details class="aide"><summary>Combat : KO et Ki de combat</summary><div class="aide-corps"><p>Un combattant est <b>mis KO</b> quand sa <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> tombe à 0 ou moins. Il part à la défausse, sauf s'il a la Régénération. Les dégâts ne durent que pour la manche en cours.</p><p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b>.</p></div></details>
@@ -368,11 +369,12 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 <div class="over hidden" id="bouleModal"><div class="box"><h2 style="margin-top:0">Collection et succès</h2><div class="actions"><button class="primary" id="btnColl" type="button">Collection et deck</button><button class="primary" id="btnSucc" type="button">Succès et rangs</button></div><button id="btnBouleClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="tutoModal"><div class="box"><h2 id="tutoTitre" style="margin-top:0"></h2><p id="tutoTxt"></p><button class="primary" id="tutoBtn" type="button">Suivant</button></div></div>
 <div class="over hidden" id="collModal"><div class="box rules-box coll-box"><h2 style="margin-top:0">Collection et deck</h2><p id="collCompte"></p><div class="collgrid" id="collGrille"></div><div class="actions"><button class="primary" id="btnCollSave" type="button">Enregistrer le deck</button><button id="btnCollReset" type="button">Réinitialiser</button><button id="btnCollClose" type="button">Fermer</button></div></div></div>
+<div class="over hidden" id="fusionModal"><div class="box"><h2 style="margin-top:0">Quelle fusion ?</h2><p>Goku et Vegeta peuvent fusionner de deux façons. Choisis.</p><div class="actions" id="fusionChoix"></div></div></div>
 <div class="over hidden" id="newModal"><div class="box"><h2 style="margin-top:0">Nouvelle partie</h2><p>Que veux-tu faire avant de commencer ?</p><div class="actions"><button class="primary" id="btnNewStart" type="button">Commencer la partie</button><button id="btnNewDeck" type="button">Modifier mon deck</button><button id="btnNewAnnul" type="button">Annuler</button></div></div></div>
 <div class="over hidden" id="succModal"><div class="box rules-box"><h2 style="margin-top:0">Succès et rangs</h2><div id="succContenu"></div><button class="primary" id="btnSuccClose" type="button">Fermer</button></div></div>
 
 <script>
-const CARDS = [{"n": "Son Goku", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-00.jpg"}, {"n": "Goku Super Saiyan", "p": 8, "k": 4, "e": 0, "a": [["rayon", 4]], "img": "img/card-01.jpg"}, {"n": "Vegeta", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-02.jpg"}, {"n": "Vegeta en combat", "p": 8, "k": 4, "e": 2, "a": [["rayon", 4]], "img": "img/card-03.jpg"}, {"n": "Son Gohan", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-04.jpg"}, {"n": "Gohan Super Saiyan 2", "p": 8, "k": 4, "e": 4, "a": [["furie", 0], ["rayon", 4]], "img": "img/card-05.jpg"}, {"n": "Piccolo", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-06.jpg"}, {"n": "Krillin", "p": 3, "k": 2, "e": -1, "a": [["soutien", 0], ["esquive", 5]], "img": "img/card-07.jpg"}, {"n": "Yamcha", "p": 2, "k": 1, "e": -1, "a": [["furie", 1]], "img": "img/card-08.jpg"}, {"n": "Tenshinhan", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-09.jpg"}, {"n": "Chaozu", "p": 2, "k": 1, "e": -1, "a": [["explosion", 2]], "img": "img/card-10.jpg"}, {"n": "Bulma", "p": 1, "k": 1, "e": -1, "a": [["scouter", 1], ["ki", 1]], "img": "img/card-11.jpg"}, {"n": "Tortue Géniale", "p": 2, "k": 1, "e": -1, "a": [["rayon", 3]], "img": "img/card-12.jpg"}, {"n": "Oolong", "p": 1, "k": 1, "e": -1, "a": [], "img": "img/card-13.jpg"}, {"n": "Puar", "p": 1, "k": 1, "e": -1, "a": [], "img": "img/card-14.jpg"}, {"n": "Yajirobé", "p": 2, "k": 1, "e": -1, "a": [], "img": "img/card-15.jpg"}, {"n": "C-18", "p": 6, "k": 3, "e": -1, "a": [["soutien", 1]], "img": "img/card-16.jpg"}, {"n": "C-17", "p": 7, "k": 4, "e": -1, "a": [["rayon", 4], ["esquive", 10]], "img": "img/card-17.jpg"}, {"n": "C-16", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-18.jpg"}, {"n": "Cell", "p": 6, "k": 3, "e": -1, "a": [["absorb", 0], ["absorbKi", 1]], "img": "img/card-19.jpg"}, {"n": "Cell parfait", "p": 9, "k": 5, "e": 19, "a": [["absorb", 0], ["rayon", 5]], "img": "img/card-20.jpg"}, {"n": "Freezer", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-21.jpg"}, {"n": "Freezer (forme finale)", "p": 7, "k": 4, "e": 21, "a": [["rayon", 4]], "img": "img/card-22.jpg"}, {"n": "Golden Freezer", "p": 9, "k": 5, "e": 22, "a": [["rayon", 5]], "img": "img/card-23.jpg"}, {"n": "Majin Buu", "p": 6, "k": 3, "e": -1, "a": [["regen", 0]], "img": "img/card-24.jpg"}, {"n": "Kid Buu", "p": 8, "k": 4, "e": 24, "a": [["regen", 0]], "img": "img/card-25.jpg"}, {"n": "Super Buu", "p": 9, "k": 5, "e": 25, "a": [["absorb", 0], ["absorbKi", 1]], "img": "img/card-26.jpg"}, {"n": "Dabra", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-27.jpg"}, {"n": "Babidi", "p": 2, "k": 1, "e": -1, "a": [["soutien", 1], ["ki", 1]], "img": "img/card-28.jpg"}, {"n": "Vegeta Majin", "p": 9, "k": 5, "e": 2, "a": [["rayon", 5]], "img": "img/card-29.jpg"}, {"n": "Son Goku enfant", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-30.jpg"}, {"n": "Trunks", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-31.jpg"}, {"n": "Trunks Super Saiyan", "p": 7, "k": 4, "e": 31, "a": [["rayon", 4]], "img": "img/card-32.jpg"}, {"n": "Gotenks", "p": 8, "k": 4, "e": -1, "a": [["explosion", 3], ["esquive", 10]], "img": "img/card-33.jpg"}, {"n": "Vegetto", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["esquive", 10]], "img": "img/card-34.jpg"}, {"n": "Gogeta", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["esquive", 10]], "img": "img/card-35.jpg"}, {"n": "Goku Super Saiyan Blue", "p": 9, "k": 5, "e": 1, "a": [["rayon", 5], ["esquive", 15]], "img": "img/card-36.jpg"}, {"n": "Zamasu", "p": 8, "k": 4, "e": -1, "a": [["rayon", 4]], "img": "img/card-37.jpg"}, {"n": "Goku Black", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["esquive", 15]], "img": "img/card-38.jpg"}, {"n": "Hit", "p": 8, "k": 4, "e": -1, "a": [["regen", 1], ["esquive", 25]], "img": "img/card-39.jpg"}, {"n": "Beerus", "p": 10, "k": 5, "e": -1, "a": [["divin", 0], ["esquive", 20]], "img": "img/card-40.jpg"}, {"n": "Whis", "p": 8, "k": 4, "e": -1, "a": [["divin", 0]], "img": "img/card-41.jpg"}, {"n": "Broly", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5]], "img": "img/card-42.jpg"}, {"n": "Jiren", "p": 10, "k": 5, "e": -1, "a": [["onde", 1]], "img": "img/card-43.jpg"}, {"n": "Toppo", "p": 9, "k": 5, "e": -1, "a": [["explosion", 2]], "img": "img/card-44.jpg"}, {"n": "Kale", "p": 7, "k": 4, "e": -1, "a": [["furie", 0]], "img": "img/card-45.jpg"}, {"n": "Caulifla", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-46.jpg"}, {"n": "Kefla", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5]], "img": "img/card-47.jpg"}, {"n": "Goku Ultra Instinct", "p": 10, "k": 5, "e": 36, "a": [["rayon", 5], ["esquive", 30]], "img": "img/card-48.jpg"}, {"n": "Vegeta Ultra Ego", "p": 10, "k": 5, "e": 2, "a": [["rayon", 5], ["esquive", 15]], "img": "img/card-49.jpg"}, {"n": "Goten", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-50.jpg"}];
+const CARDS = [{"n": "Son Goku", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-00.jpg"}, {"n": "Goku Super Saiyan", "p": 8, "k": 4, "e": 0, "a": [["rayon", 4]], "img": "img/card-01.jpg"}, {"n": "Vegeta", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-02.jpg"}, {"n": "Vegeta Super Saiyan", "p": 8, "k": 4, "e": 2, "a": [["rayon", 4]], "img": "img/card-03.jpg"}, {"n": "Son Gohan", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-04.jpg"}, {"n": "Gohan Super Saiyan 2", "p": 8, "k": 4, "e": -1, "a": [["furie", 0], ["rayon", 4]], "img": "img/card-05.jpg"}, {"n": "Piccolo", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-06.jpg"}, {"n": "Krillin", "p": 3, "k": 2, "e": -1, "a": [["soutien", 0], ["esquive", 5]], "img": "img/card-07.jpg"}, {"n": "Yamcha", "p": 2, "k": 1, "e": -1, "a": [["furie", 1]], "img": "img/card-08.jpg"}, {"n": "Tenshinhan", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-09.jpg"}, {"n": "Chaozu", "p": 2, "k": 1, "e": -1, "a": [["explosion", 2]], "img": "img/card-10.jpg"}, {"n": "Bulma", "p": 1, "k": 1, "e": -1, "a": [["scouter", 1], ["ki", 1]], "img": "img/card-11.jpg"}, {"n": "Tortue Géniale", "p": 2, "k": 1, "e": -1, "a": [["rayon", 3]], "img": "img/card-12.jpg"}, {"n": "Oolong", "p": 1, "k": 1, "e": -1, "a": [], "img": "img/card-13.jpg"}, {"n": "Puar", "p": 1, "k": 1, "e": -1, "a": [], "img": "img/card-14.jpg"}, {"n": "Yajirobé", "p": 2, "k": 1, "e": -1, "a": [], "img": "img/card-15.jpg"}, {"n": "C-18", "p": 6, "k": 3, "e": -1, "a": [["soutien", 1]], "img": "img/card-16.jpg"}, {"n": "C-17", "p": 7, "k": 4, "e": -1, "a": [["rayon", 4], ["esquive", 10]], "img": "img/card-17.jpg"}, {"n": "C-16", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-18.jpg"}, {"n": "Cell", "p": 6, "k": 3, "e": -1, "a": [["absorb", 0], ["absorbKi", 1]], "img": "img/card-19.jpg"}, {"n": "Cell parfait", "p": 9, "k": 5, "e": 19, "a": [["absorb", 0], ["rayon", 5]], "img": "img/card-20.jpg"}, {"n": "Freezer", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-21.jpg"}, {"n": "Freezer (forme finale)", "p": 7, "k": 4, "e": 21, "a": [["rayon", 4]], "img": "img/card-22.jpg"}, {"n": "Golden Freezer", "p": 9, "k": 5, "e": 22, "a": [["rayon", 5]], "img": "img/card-23.jpg"}, {"n": "Majin Buu", "p": 6, "k": 3, "e": -1, "a": [["regen", 0]], "img": "img/card-24.jpg"}, {"n": "Kid Buu", "p": 8, "k": 4, "e": 24, "a": [["regen", 0]], "img": "img/card-25.jpg"}, {"n": "Super Buu", "p": 9, "k": 5, "e": 25, "a": [["absorb", 0], ["absorbKi", 1]], "img": "img/card-26.jpg"}, {"n": "Dabra", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-27.jpg"}, {"n": "Babidi", "p": 2, "k": 1, "e": -1, "a": [["soutien", 1], ["ki", 1]], "img": "img/card-28.jpg"}, {"n": "Vegeta Majin", "p": 9, "k": 5, "e": 2, "a": [["rayon", 5]], "img": "img/card-29.jpg"}, {"n": "Son Goku enfant", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-30.jpg"}, {"n": "Trunks", "p": 5, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-31.jpg"}, {"n": "Trunks Super Saiyan", "p": 7, "k": 4, "e": 31, "a": [["rayon", 4]], "img": "img/card-32.jpg"}, {"n": "Gotenks", "p": 8, "k": 4, "e": -1, "a": [["explosion", 3], ["esquive", 10]], "img": "img/card-33.jpg"}, {"n": "Vegetto", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["double", 2], ["ki", 4], ["esquive", 10]], "img": "img/card-34.jpg"}, {"n": "Vegetto Super Saiyan", "p": 9, "k": 5, "e": 34, "a": [["rayon", 5], ["esquive", 10]], "img": "img/card-35.jpg"}, {"n": "Gogeta blue", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["double", 2], ["ki", 4], ["esquive", 15]], "img": "img/card-36.jpg"}, {"n": "Zamasu", "p": 8, "k": 4, "e": -1, "a": [["rayon", 4]], "img": "img/card-37.jpg"}, {"n": "Goku Black", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5], ["esquive", 15]], "img": "img/card-38.jpg"}, {"n": "Hit", "p": 8, "k": 4, "e": -1, "a": [["regen", 1], ["esquive", 25]], "img": "img/card-39.jpg"}, {"n": "Beerus", "p": 10, "k": 5, "e": -1, "a": [["divin", 0], ["esquive", 20]], "img": "img/card-40.jpg"}, {"n": "Whis", "p": 8, "k": 4, "e": -1, "a": [["divin", 0]], "img": "img/card-41.jpg"}, {"n": "Broly", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5]], "img": "img/card-42.jpg"}, {"n": "Jiren", "p": 10, "k": 5, "e": -1, "a": [["onde", 1]], "img": "img/card-43.jpg"}, {"n": "Toppo", "p": 9, "k": 5, "e": -1, "a": [["explosion", 2]], "img": "img/card-44.jpg"}, {"n": "Kale", "p": 7, "k": 4, "e": -1, "a": [["furie", 0]], "img": "img/card-45.jpg"}, {"n": "Caulifla", "p": 6, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "img/card-46.jpg"}, {"n": "Kefla", "p": 9, "k": 5, "e": -1, "a": [["rayon", 5]], "img": "img/card-47.jpg"}, {"n": "Goku Ultra Instinct", "p": 10, "k": 5, "e": 1, "a": [["rayon", 5], ["esquive", 30]], "img": "img/card-48.jpg"}, {"n": "Vegeta Ultra Ego", "p": 10, "k": 5, "e": 2, "a": [["rayon", 5], ["esquive", 15]], "img": "img/card-49.jpg"}, {"n": "Goten", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "img/card-50.jpg"}];
 const BGS = ["img/bg-0.jpg", "img/bg-1.jpg", "img/bg-2.jpg", "img/bg-3.jpg", "img/bg-4.jpg"];
 /* ---------- Réglages et constantes ---------- */
 const HUMAN = 0, AI = 1, HAND_SIZE = 5, MAX_ROUNDS = 3, ROUNDS_TO_WIN = 2, DECK_MAX = 20;
@@ -406,8 +408,9 @@ const BONUS_INFO = {
   lienBulma: { titre: 'Lien Touche pas à ma Bulma ! : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#2e9e44" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/></svg>' },
   namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
 };
-const NAMES = {rayon:'Rayon d\'énergie', furie:'Furie', regen:'Régénération', absorb:'Assimilation', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter', esquive:'Esquive', ki:'Maîtrise du Ki', absorbKi:'Absorption', lien:'Lien spécial'};
+const NAMES = {rayon:'Rayon d\'énergie', double:'Double rayon', furie:'Furie', regen:'Régénération', absorb:'Assimilation', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter', esquive:'Esquive', ki:'Maîtrise du Ki', absorbKi:'Absorption', lien:'Lien spécial'};
 const ICONS = {
+  double:'<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5" fill="#29a3f0"/><circle cx="16" cy="12" r="5" fill="#29a3f0"/></svg>',
   rayon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>',
   furie:'<svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg>',
   regen:'<svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg>',
@@ -425,19 +428,19 @@ const ICONS = {
 /* Adversaires du mode Tournoi, dans l'ordre. Chacun a son deck (équipe) et son style. */
 const ADVERSAIRES = [
   { nom: 'Hawkeye', equipe: ['Yamcha', 'Tenshinhan', 'Krillin', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé', 'Son Goku enfant'], style: { prudent: true, agressif: 0 } },
-  { nom: 'Iron Man', equipe: ['Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Goku Super Saiyan', 'Son Goku', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Gogeta'], style: { prudent: false, agressif: 2, trait: 'fier' } },
+  { nom: 'Iron Man', equipe: ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Goku Super Saiyan', 'Son Goku', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Vegetto Super Saiyan'], style: { prudent: false, agressif: 2, trait: 'fier' } },
   { nom: 'Thor', equipe: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer', 'Dabra', 'Babidi', 'Zamasu', 'Goku Black', 'Hit'], style: { prudent: false, agressif: 1, trait: 'calculateur' } },
   { nom: 'Spider-Man', equipe: ['Cell', 'Cell parfait', 'C-16', 'C-17', 'C-18', 'Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2', 'Hit'], style: { prudent: false, agressif: 1, trait: 'parfait' } },
   { nom: 'Hulk', equipe: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi', 'Krillin', 'Tenshinhan', 'Yamcha'], style: { prudent: false, agressif: 0, trait: 'chaotique' } },
   { nom: 'Captain America', equipe: ['Jiren', 'Broly', 'Toppo', 'Kale', 'Caulifla', 'Kefla', 'Hit', 'Goku Ultra Instinct'], style: { prudent: false, agressif: 2, trait: 'imperturbable' } },
-  { nom: 'Doctor Strange', equipe: ['Beerus', 'Whis', 'Toppo', 'Zamasu', 'Goku Black', 'Goku Super Saiyan Blue', 'Hit'], style: { prudent: false, agressif: 1, trait: 'attentiste' } },
-  { nom: 'Wanda', equipe: ['Goku Ultra Instinct', 'Goku Super Saiyan Blue', 'Son Goku', 'Vegeta Ultra Ego', 'Whis', 'Gogeta', 'Vegetto', 'Kefla'], style: { prudent: false, agressif: 1, trait: 'instinct' } }
+  { nom: 'Doctor Strange', equipe: ['Beerus', 'Whis', 'Toppo', 'Zamasu', 'Goku Black', 'Gogeta blue', 'Hit'], style: { prudent: false, agressif: 1, trait: 'attentiste' } },
+  { nom: 'Wanda', equipe: ['Goku Ultra Instinct', 'Gogeta blue', 'Son Goku', 'Vegeta Ultra Ego', 'Whis', 'Vegetto Super Saiyan', 'Vegetto', 'Kefla'], style: { prudent: false, agressif: 1, trait: 'instinct' } }
 ];
 
 /* Tempéraments : camp de chaque combattant. 2 cartes du même camp = +1 ATT à chacune. */
 const CAMPS = {
   cyborg: ['C-16', 'C-17', 'C-18'],
-  saiyan: ['Son Goku', 'Goku Super Saiyan', 'Goku Super Saiyan Blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Vegeta Ultra Ego', 'Son Gohan', 'Gohan Super Saiyan 2', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Gogeta', 'Broly', 'Kale', 'Caulifla', 'Kefla'],
+  saiyan: ['Son Goku', 'Goku Super Saiyan', 'Gogeta blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego', 'Son Gohan', 'Gohan Super Saiyan 2', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Vegetto Super Saiyan', 'Broly', 'Kale', 'Caulifla', 'Kefla'],
   terrien: ['Krillin', 'Tenshinhan', 'Yamcha', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé'],
   namek: ['Piccolo'],
   demon: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi'],
@@ -450,8 +453,8 @@ Object.keys(CAMPS).forEach(camp => CAMPS[camp].forEach(n => { if (ID[n] !== unde
 
 /* Familles : Rivalités entre combattants liés. Alliés = +1 si un allié est présent du même côté. Rivaux = +1 si un rival est en face. */
 const FAMILLES = {
-  goku: ['Son Goku', 'Goku Super Saiyan', 'Goku Super Saiyan Blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black'],
-  vegeta: ['Vegeta', 'Vegeta en combat', 'Vegeta Majin', 'Vegeta Ultra Ego'],
+  goku: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Goku Black'],
+  vegeta: ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego'],
   gohan: ['Son Gohan', 'Gohan Super Saiyan 2'],
   piccolo: ['Piccolo'],
   krillin: ['Krillin'],
@@ -466,7 +469,7 @@ Object.keys(FAMILLES).forEach(f => FAMILLES[f].forEach(n => { FAM_OF[n] = f; }))
 const ALLIES = [['goku', 'vegeta'], ['gohan', 'piccolo'], ['krillin', 'tenshinhan'], ['trunks', 'goku'], ['trunks', 'vegeta'], ['gohan', 'trunks']];
 const LIENS_SPECIAUX = [
   { key: 'bulma', nom: 'Touche pas à ma Bulma !', a: n => FAM_OF[n] === 'vegeta', b: n => n === 'Bulma' },
-  { key: 'pere-fils-goku', nom: 'Père fils', a: n => ['Son Goku','Goku Super Saiyan','Goku Super Saiyan Blue','Goku Ultra Instinct'].includes(n), b: n => ['Son Gohan','Gohan Super Saiyan 2','Goten'].includes(n) },
+  { key: 'pere-fils-goku', nom: 'Père fils', a: n => ['Son Goku','Goku Super Saiyan','Goku Ultra Instinct'].includes(n), b: n => ['Son Gohan','Gohan Super Saiyan 2','Goten'].includes(n) },
   { key: 'pere-fils-vegeta', nom: 'Père fils', a: n => FAM_OF[n] === 'vegeta', b: n => FAM_OF[n] === 'trunks' }
 ];
 function lienSpecial(aId,bId){
@@ -478,9 +481,11 @@ const paire = (liste, a, b) => !!a && !!b && liste.some(([x, y]) => (x === a && 
 
 /* Fusions : deux combattants sur le plateau deviennent un seul. */
 const FUSIONS = [
-  { a: 'goku', b: 'vegeta', ki: 5, res: 'Gogeta', nom: 'Gogeta' },
-  { a: 'goten', b: 'trunks', ki: 4, res: 'Gotenks', nom: 'Gotenks' },
+  { a: 'goku', b: 'vegeta', ki: 7, res: 'Gogeta blue', nom: 'Gogeta blue' },
+  { a: 'goku', b: 'vegeta', ki: 7, res: 'Vegetto', nom: 'Vegetto' },
 ];
+// Cartes de fusion : jamais posées seules, seulement en fusionnant (comme une évolution sur son combattant)
+const FUSION_RES = FUSIONS.map(f => f.res);
 
 /* ---------- Sauvegardes locales ---------- */
 const lire = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v === null || v === undefined) ? d : v; } catch (e) { return d; } };
@@ -1146,6 +1151,7 @@ function montrerCarte(id, attVal, bonusActuels, apercuTxt){
 // Explications des caractéristiques, reprises des règles
 const CAP_TXT = {
   rayon: "Rayon d'énergie : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.",
+  double: 'Double rayon : à son entrée en jeu, son rayon touche deux combattants ennemis différents (tu choisis les deux cibles).',
   furie: 'Furie : ce combattant gagne +1 chaque fois qu\'un de tes combattants est mis KO.',
   regen: 'Régénération : une fois par manche, quand ce combattant est mis KO, il retourne dans ta main.',
   absorb: 'Assimilation : ce combattant gagne +2 ATT chaque fois qu\'un combattant ennemi est mis KO.', absorbKi: 'Absorption : gagne +1 Ki lorsqu\'il subit des dégâts, même s\'il survit.',
@@ -1155,7 +1161,7 @@ const CAP_TXT = {
   onde: 'Onde de choc : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.',
   scouter: "Scouter : à sa pose, tu vois la main de l'adversaire.",
   esquive: "Chance d'esquiver l'attaque ennemie.",
-  ki: "Maîtrise du Ki : à son entrée en jeu, cette carte rend 1 Ki (sans dépasser 12).",
+  ki: "Maîtrise du Ki : à son entrée en jeu, cette carte rend le Ki indiqué par sa valeur (sans dépasser 12).",
   absorbKi: "Absorption : gagne +1 Ki chaque fois que ce combattant subit des dégâts, même s’il survit. Le +1 Ki de KO reste cumulable."
 };
 // Caractéristiques de chaque camp, reprises des règles
@@ -1199,7 +1205,7 @@ function zoomCarte(id, attVal, bonusActuels, apercuTxt){
   const v = (attVal === undefined || attVal === null || attVal === '') ? c.p : attVal;
   const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => `<span style="color:${BONUS_COULEUR[b] || '#222'};font-weight:600">${esc(BONUS_INFO[b].titre)}</span>`);
   const camp = CAMP_OF[id] ? `<span class="zk camp-chip c-${CAMP_OF[id]}" data-ex="camp:${CAMP_OF[id]}">Camp ${CAMP_LABEL[CAMP_OF[id]]}</span>` : '';
-  const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>` : '';
+  const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>${c.n === 'Vegeta Majin' ? ' <span class="zk">Nécessite Babidi sur ton plateau.</span>' : ''}` : (FUSION_RES.includes(c.n) ? '<span class="zk">Carte de fusion : se pose seulement par fusion.</span>' : '');
   const caps = c.a.map(([k, v]) => `<div class="zcap"><span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span><b>${NAMES[k]}</b></div>`).join('') || '<span>Aucune capacité</span>';
   $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
   $('zoomName').textContent = c.n;
@@ -1261,6 +1267,7 @@ function onSlot(player, s){
   if (pending){
     if (player === pending.tp && P[player].slots[s]){
       if (hasAb(P[player].slots[s], 'divin')){ msg('Ce combattant est Divin : le rayon ne peut pas le toucher.'); return; }
+      if ((pending.deja || []).includes(s)){ msg('Ce combattant a déjà été touché par ce rayon : choisis un autre combattant.'); return; }
       resolveRayon(s);
     }
   }
@@ -1275,6 +1282,8 @@ function coutCarte(p, i, s){
 }
 function peutJouer(p, i, s){
   const me = P[p], c = CARDS[me.hand[i]];
+  if (FUSION_RES.includes(c.n)) return false;
+  if (c.n === 'Vegeta Majin' && !me.slots.some(x => x && CARDS[x.id].n === 'Babidi')) return false;
   if (c.e < 0){ if (me.slots[s] !== null) return false; }
   else if (!me.slots[s] || me.slots[s].id !== c.e) return false;
   return coutCarte(p, i, s) <= me.ki;
@@ -1430,6 +1439,7 @@ function effetsEntree(p, id){
   const onde = abVal(id, 'onde');
   if (onde) idx().forEach(j => hit(opp, j, onde, 'Onde de choc de ' + CARDS[id].n));
   const rayon = abVal(id, 'rayon');
+  const nbCibles = abVal(id, 'double') ? 2 : 1;
   if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
     if (p === HUMAN){
       // Un combattant Divin ne peut pas être touché : sans cible valide, pas de choix à faire
@@ -1437,17 +1447,19 @@ function effetsEntree(p, id){
         msg(`${CARDS[id].n} : tous les combattants ennemis sont Divin, le rayon n'a pas de cible.`);
         return false;
       }
-      pending = { n: rayon, tp: opp, name: CARDS[id].n };
-      msg(`${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
+      pending = { n: rayon, tp: opp, name: CARDS[id].n, reste: nbCibles - 1, deja: [] };
+      msg(nbCibles > 1 ? `${CARDS[id].n} : touche deux combattants ennemis, chacun subit ${rayon} dégâts.` : `${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
       render();
       focusCible();
       return true;
     }
-    const t = strongest(opp, true);
-    if (t >= 0){
-      msg(`${CARDS[id].n} tire son rayon sur ${CARDS[P[opp].slots[t].id].n}.`);
+    // Adversaire : ses cibles sont les combattants les plus forts (distincts)
+    const cibles = P[opp].slots.map((x, k) => (x && !hasAb(x, 'divin')) ? k : -1).filter(k => k >= 0)
+      .sort((a, b) => att(opp, b) - att(opp, a)).slice(0, nbCibles);
+    if (cibles.length){
+      msg(`${CARDS[id].n} tire son rayon sur ${cibles.map(k => CARDS[P[opp].slots[k].id].n).join(' et ')}.`);
       jour(`${nom(p)} : ${CARDS[id].n} tire son rayon (${rayon}).`);
-      hit(opp, t, rayon, 'Rayon de ' + CARDS[id].n);
+      cibles.forEach(t => hit(opp, t, rayon, 'Rayon de ' + CARDS[id].n));
     }
   }
   return false;
@@ -1462,16 +1474,25 @@ function resolveRayon(j){
   msg(`${pd.name} tire son rayon sur ${tgt ? CARDS[tgt.id].n : 'un combattant'} (${pd.n} dégâts).`);
   jour(`${nom(HUMAN)} : ${pd.name} tire son rayon (${pd.n}).`);
   hit(pd.tp, j, pd.n, 'Rayon de ' + pd.name);
+  // Double rayon : une deuxième cible, distincte de la première
+  const deja = [...pd.deja, j];
+  if (pd.reste > 0 && P[pd.tp].slots.some((x, k) => x && !deja.includes(k) && !hasAb(x, 'divin'))){
+    pending = { ...pd, reste: pd.reste - 1, deja };
+    msg(`Choisis la deuxième cible de ${pd.name}.`);
+    render();
+    focusCible();
+    return;
+  }
   afterAction();
 }
 
 // Fusions possibles pour un joueur
-// Goku Black ne fusionne pas avec Vegeta (Gogeta est issu de Goku et Vegeta « purs »)
+// Goku Black ne fusionne pas avec Vegeta (Gogeta blue et Vegetto sont issus de Goku et Vegeta « purs »)
 const FUSION_EXCLU = ['Goku Black'];
 function fusionsPossibles(p){
   const me = P[p], out = [];
   FUSIONS.forEach(f => {
-    // La carte du résultat (Gogeta, Gotenks) doit être dans la main
+    // La carte du résultat (Gogeta blue ou Vegetto) doit être dans la main
     const hi = me.hand.indexOf(ID[f.res]);
     if (hi < 0) return;
     for (let i = 0; i < NB; i++) for (let j = 0; j < NB; j++){
@@ -1501,7 +1522,15 @@ function onFusion(){
   if (over || cur !== HUMAN || pending) return;
   const fus = fusionsPossibles(HUMAN);
   if (!fus.length){ msg('Aucune fusion possible pour le moment.'); return; }
-  fusionner(HUMAN, fus[0]);
+  if (fus.length === 1){ fusionner(HUMAN, fus[0]); return; }
+  choisirFusion(fus);
+}
+function choisirFusion(fus){
+  const box = $('fusionChoix');
+  box.innerHTML = fus.map((o, k) => `<button class="primary" type="button" data-k="${k}">${esc(o.f.nom)} (${o.f.ki} Ki)</button>`).join('') + '<button type="button" id="btnFusionAnnul">Annuler</button>';
+  box.querySelectorAll('button[data-k]').forEach(b => b.onclick = () => { $('fusionModal').classList.add('hidden'); fusionner(HUMAN, fus[+b.dataset.k]); });
+  $('btnFusionAnnul').onclick = () => $('fusionModal').classList.add('hidden');
+  $('fusionModal').classList.remove('hidden');
 }
 
 // Mulligan : échange une carte de la main, une seule fois, en début de partie
@@ -1615,7 +1644,7 @@ function cardHTML(id, opts){
   const namek = camp === 'namek' ? `<span class="ic bon" title="${esc(BONUS_INFO.namek.titre)}">${BONUS_INFO.namek.svg}</span>` : '';
   const chip = camp ? `<div class="camp-chip c-${camp}">${CAMP_LABEL[camp]}</div>` : '';
   const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
-  const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : '';
+  const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : (FUSION_RES.includes(c.n) ? `<span class="badge-evo badge-fus" title="Carte de fusion">FUSION</span>` : '');
   const extra = opts.extra || '';
   return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-att="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="ATT"${opts.clig != null ? ` class="att-clig" style="animation-delay:-${Math.round(opts.clig)}ms"` : ''}>${ATT_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
 }
@@ -1763,7 +1792,7 @@ function render(){
   if (annOk) $('btnAnnGenki').textContent = `Annuler la Genkidama adverse (${R.kiMax} Ki)`;
   const fus = monTour ? fusionsPossibles(HUMAN) : [];
   $('btnFusion').hidden = !fus.length;
-  if (fus.length) $('btnFusion').textContent = `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
+  if (fus.length) $('btnFusion').textContent = fus.length > 1 ? 'Fusion : choisir' : `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
   $('btnMull').hidden = !mulliganDispo();
   ajusterMarge();
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
@@ -2139,9 +2168,9 @@ $('btnAddHome').onclick = () => {
   }
 };
 
-// Les Scouters : Vegeta et Vegeta en combat révèlent la main adverse
+// Les Scouters : Vegeta et Vegeta Super Saiyan révèlent la main adverse
 CARDS[ID['Vegeta']].a.push(['scouter', 0]);
-CARDS[ID['Vegeta en combat']].a.push(['scouter', 0]);
+CARDS[ID['Vegeta Super Saiyan']].a.push(['scouter', 0]);
 
 if (!loadGame()) newGame();
 

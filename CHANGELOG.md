@@ -29,6 +29,17 @@
 - Liens temporaires : « Touche pas à ma Bulma ! » et « Père fils » sont deux bonus distincts. Chaque carte n'affiche que les liens qui la concernent, avec leur propre libellé. Un combattant lié aux deux reçoit les deux bonus (+2 ATT chacun), chacun avec sa durée de deux tours.
 - Service worker : cache `dbz-v31`.
 
+## Version 2.41
+
+- Noms et images : la carte à l'image de Gogeta s'appelle Gogeta blue ; celle à l'image de Vegetto Super Saiyan s'appelle Vegetto Super Saiyan ; Vegeta en combat devient Vegeta Super Saiyan.
+- Fusions : Gogeta blue et Vegetto se fusionnent à partir de Goku et Vegeta, au coût de 7 Ki. Elles ne se posent jamais seules. Si les deux sont possibles, le jeu propose le choix.
+- Gogeta blue et Vegetto : à leur entrée en jeu, +4 Ki et leur rayon touche deux combattants adverses différents (tu choisis les deux cibles).
+- Vegetto Super Saiyan est une évolution de Vegetto. Goku Ultra Instinct évolue depuis Goku Super Saiyan.
+- Gohan Super Saiyan 2 et Gotenks deviennent des cartes normales.
+- Vegeta Majin ne se pose que si Babidi est sur ton plateau (indiqué dans l'aide et sur la carte).
+- Les cartes de fusion portent la mention FUSION.
+- Service worker : cache `dbz-v45`.
+
 ## Version 2.40
 
 - Fusion : la carte du résultat (Gogeta ou Gotenks) doit être dans la main pour fusionner. Elle quitte la main et prend la place du premier combattant ; les deux combattants et la carte vont à la défausse. Le coût en Ki ne change pas.
