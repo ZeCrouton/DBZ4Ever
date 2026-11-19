@@ -216,7 +216,10 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .collgrid .card .nm{min-height:0;font-size:10px}
 .collgrid .card .ev,.collgrid .card .icons{display:none}
 .coll.nope{opacity:.35;filter:grayscale(1)}
-.coll.sel{outline:3px solid var(--ok);outline-offset:2px}
+.coll.sel{outline:3px solid #1e5fb8;outline-offset:2px}
+.collgrid .card{position:relative}
+/* Coche bleue sur les cartes du deck */
+.coll.sel::after{content:'✓';position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:#1e5fb8;color:#fff;font-size:15px;font-weight:700;line-height:24px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.5);pointer-events:none;z-index:2}
 .coll-box{max-width:620px}
 .succ{text-align:left;font-size:14px;line-height:1.5}
 .succ li.ok{color:var(--ok)}
