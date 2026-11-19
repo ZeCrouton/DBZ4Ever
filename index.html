@@ -2276,7 +2276,7 @@ function render(){
   ajusterMarge();
   $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
   $('msg').classList.toggle('alerte', !!pending);
-  $('btnMode').textContent = `Mode : ${MODES[inGame && !over ? partieMode : mode]}`;
+  $('btnMode').textContent = `Mode : ${MODES[mode]}${inGame && !over && mode !== partieMode ? ' (prochaine partie)' : ''}`;
   persist();
 }
 
