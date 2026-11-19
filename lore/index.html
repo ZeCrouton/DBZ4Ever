@@ -176,6 +176,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 @media (prefers-reduced-motion: reduce){.confettis{display:none}.gain-titre,.gain{animation:none}}
 .journal{text-align:left;font-size:13px;padding-left:18px;max-height:50vh;overflow:auto}
 .journal li{margin:3px 0}
+.jr-vert{color:var(--ok);font-weight:600}
 .esquive-fx{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:44px;font-weight:bold;color:#fff;text-shadow:0 0 8px #6a2c91,0 3px 0 #3b1560;z-index:8;pointer-events:none;white-space:nowrap;animation:esquiveFx 1.8s ease-out forwards}
 @keyframes esquiveFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
 .secoue{animation:secoue .45s linear}
@@ -667,11 +668,13 @@ const ATTAQUES_JOURNAL = ["Rayon d'énergie", 'Double rayon', 'Genkidama', 'Onde
 const reEchap = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 function formaterJournal(t){
   const joueurs = ['Toi', oppNom()].map(reEchap);
-  const re = new RegExp(`(?<!\\p{L})(?:(${joueurs.join('|')})|(${ATTAQUES_JOURNAL.map(reEchap).join('|')}))(?!\\p{L})`, 'gu');
+  // Noms des cartes (les plus longs d'abord, pour que « Vegeta Super Saiyan » gagne sur « Vegeta »)
+  const cartes = CARDS.map(c => c.n).sort((a, b) => b.length - a.length).map(reEchap);
+  const re = new RegExp(`(?<!\\p{L})(?:(${joueurs.join('|')})|(${ATTAQUES_JOURNAL.map(reEchap).join('|')})|(${cartes.join('|')}))(?!\\p{L})`, 'gu');
   let out = '', last = 0, m;
   while ((m = re.exec(t))){
     out += esc(t.slice(last, m.index));
-    out += m[1] ? `<b>${esc(m[1])}</b>` : `<span class="jr-bleu">${esc(m[2])}</span>`;
+    out += m[1] ? `<b>${esc(m[1])}</b>` : m[2] ? `<span class="jr-bleu">${esc(m[2])}</span>` : `<span class="jr-vert">${esc(m[3])}</span>`;
     last = re.lastIndex;
   }
   out += esc(t.slice(last));
