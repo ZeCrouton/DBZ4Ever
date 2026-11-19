@@ -92,6 +92,8 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin || req.headers.has('range')) return;
   // Page principale : réseau d'abord (toujours la dernière version), cache seulement hors ligne
   const chemin = new URL(req.url).pathname;
+  // Version de test « lore/ » : servie directement par le réseau, sans toucher au cache de la version principale
+  if (chemin.includes('/lore/')) return;
   if (req.mode === 'navigate' || chemin.endsWith('/') || chemin.endsWith('/index.html')){
     event.respondWith(
       fetch(req.url, { cache: 'no-cache' })

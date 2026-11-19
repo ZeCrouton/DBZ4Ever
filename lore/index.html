@@ -1,0 +1,2596 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DBZ4Ever Lore (version de test)</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icon-192.png">
+<meta name="theme-color" content="#f47c20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DBZ Tournoi">
+<style>
+:root{--bg:#f4f5f7;--surface:#ffffff;--text:#1d1f24;--muted:#5f6670;--border:#d9dde3;--you:#1e5fb8;--you-bg:#e4eefb;--ai:#b3261e;--ai-bg:#fbe7e5;--ki:#c77700;--danger:#b3261e;--ok:#2e7d32}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#15171c;--surface:#1f2229;--text:#eceef2;--muted:#9aa3ae;--border:#363b45;--you:#7fb2ff;--you-bg:#1a2438;--ai:#ff8a80;--ai-bg:#3a1f22;--ki:#ffc94d;--danger:#ff8a80;--ok:#81c784}}
+:root[data-theme="dark"]{--bg:#15171c;--surface:#1f2229;--text:#eceef2;--muted:#9aa3ae;--border:#363b45;--you:#7fb2ff;--you-bg:#1a2438;--ai:#ff8a80;--ai-bg:#3a1f22;--ki:#ffc94d;--danger:#ff8a80;--ok:#81c784}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg) center/cover fixed no-repeat;color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:15px;position:relative;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:var(--bg);opacity:.8;z-index:-1}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+header h1{font-size:18px;margin:0}
+.status{display:flex;flex-wrap:wrap;gap:12px;font-size:14px;color:var(--muted)}
+.status b{color:var(--text)}
+.score-tot{font-size:17px;font-weight:bold;color:var(--text);width:100%;text-align:center}
+.score-tot b{color:var(--ki);font-size:20px}
+main{padding:12px 16px 24px;max-width:960px;margin:0 auto}
+.board{border:2px solid;border-radius:12px;padding:10px;margin-bottom:12px}
+.board.p0{background:linear-gradient(180deg,#fff6ea,#ffe2bd);border-color:#f47c20;box-shadow:0 0 0 1px #ffd21f inset}
+.board.p1{background:linear-gradient(180deg,#f5eefc,#dcc6f3);border-color:#6a2c91;box-shadow:0 0 0 1px #c49bff inset}
+.board h2{font-size:14px;margin:0 0 8px;font-weight:bold}
+.board.p0 h2{color:#c0500a}
+.board.p1 h2{color:#6a2c91}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.card{width:112px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:6px;cursor:pointer;text-align:center;user-select:none}
+.card img{width:100%;height:auto;display:block;border-radius:8px}
+.card .nm{font-size:12px;font-weight:bold;margin:6px 0 4px;min-height:30px;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.card .st{display:flex;justify-content:space-between;font-size:12px}
+.card .st span:first-child{color:var(--danger);font-weight:bold}
+.card .st span:last-child{color:var(--ki);font-weight:bold}
+.att-ico{width:1.05em;height:1.05em;vertical-align:-0.15em;display:inline-block;fill:none}
+.card .st .rdot{display:inline-block;width:9px;height:9px;align-self:center}
+.card .st .rdot svg{width:100%;height:100%;display:block}
+.card .st .att-ico{width:13px;height:13px;vertical-align:-2px;margin-right:3px;display:inline-block}
+/* ATT touchée : clignote pendant 3 secondes */
+.badge-fus{background:#7b3fc4}
+.jr-bleu{color:#2563eb;font-weight:600}
+.jr-violet{color:#7e22ce;font-weight:600}
+@media (prefers-color-scheme: dark){.jr-bleu{color:#60a5fa}.jr-violet{color:#c084fc}}
+.card .st .att-clig{animation:attClig 3s linear 1}
+@keyframes attClig{0%,100%{opacity:1}10%,30%,50%,70%,90%{opacity:.15}}
+.card .ev{font-size:10px;color:var(--muted);margin-top:4px}
+/* Combattant blessé : son ATT est mise en évidence (fond jaune) tant qu'il a perdu des points */
+.card.blesse .st span:first-child{background:#ffd34d;color:#4a1500;border-radius:6px;padding:0 5px;box-shadow:0 0 0 2px #e07b00}
+.icons{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:4px;min-height:18px}
+.ic{display:inline-flex;align-items:center;gap:1px;font-size:11px;color:var(--text)}
+.ic svg{width:18px;height:18px;display:block}
+.card.sel{outline:3px solid var(--you);outline-offset:2px}
+.card.target{outline:3px solid var(--ok);outline-offset:2px}
+.slot{width:112px;min-height:150px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;padding:6px;cursor:pointer;text-align:center;background:var(--surface)}
+.slot.target{border-color:var(--ok);color:var(--ok);border-style:solid}
+.hand{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;border:2px solid var(--you);background:var(--you-bg);border-radius:12px;padding:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+button{font:inherit;font-size:14px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+button.primary{background:var(--you);border-color:var(--you);color:#fff}
+#msg{min-height:44px;font-size:14px;text-align:center;padding:8px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--border);margin-bottom:12px}
+details{font-size:14px;color:var(--muted);margin-top:12px;background:var(--surface);border-radius:8px;padding:8px 12px}
+details p{margin:6px 0;color:var(--text)}
+details .leg{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--text)}
+details .leg svg{width:20px;height:20px;flex:none}
+.over{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:5}
+.over .box{background:var(--surface);border-radius:12px;padding:24px;max-width:380px;text-align:center}
+.hidden{display:none}
+@media (max-width:480px){.card,.slot{width:30vw;max-width:112px}.card .nm{font-size:11px}}
+/* Disposition mobile façon Yen4Ever : barre en haut, main fixe en bas, plateau au centre */
+body{padding-top:84px;padding-bottom:300px}
+header.top{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:nowrap}
+.score-fixe{position:fixed;top:46px;left:0;right:0;z-index:6;display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;padding:5px 12px;background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-align:center}
+.score-fixe[hidden]{display:none}
+.score-fixe b{color:var(--ki)}
+.score-tot-fixe{font-size:15px;font-weight:bold;color:var(--text)}
+.score-tot-fixe b{font-size:17px}
+header.top h1{font-size:16px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+header.top .tools{display:flex;gap:6px;flex:0 0 auto}
+header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
+.status{justify-content:center;margin:0 0 10px;font-size:13px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -6px 14px rgba(0,0,0,.18);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}
+.dock #msg{min-height:0;padding:6px 10px;margin:0 0 6px;font-size:13px}
+.handhead{font-size:13px;margin:0 0 4px;color:var(--you)}
+.dock .hand{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:8px;gap:8px;border-radius:10px;-webkit-overflow-scrolling:touch}
+.dock .hand .card{width:84px;flex:0 0 auto;padding:4px}
+.dock .hand .card .nm{font-size:10px;min-height:0;margin:4px 0 2px}
+.dock .hand .card .ev{display:none}
+.dock .hand .card .icons{min-height:0}
+.dock .hand .card.sel{transform:translateY(-8px);outline:3px solid var(--you);outline-offset:2px}
+.dock .actions{margin:6px 0 0;gap:6px}
+.dock .actions button{padding:6px 10px;font-size:13px}
+@media (max-width:480px){.dock .hand .card{width:76px}}
+.over{z-index:7}
+.rules-box{max-width:520px;max-height:85vh;overflow:auto;text-align:left}
+.rules-box p{margin:6px 0;color:var(--text);font-size:14px}
+.rules-box .leg{display:flex;align-items:center;gap:8px;margin:4px 0;color:var(--text);font-size:14px}
+.rules-box .leg svg{width:20px;height:20px;flex:none}
+.rules-box button{margin-top:8px}
+#inspImg{width:150px;height:auto;border-radius:10px;display:block;margin:0 auto 10px}
+#inspect{cursor:pointer}
+#zoomCarte{cursor:pointer;z-index:12}
+#zoomImg{width:220px;max-width:70vw;height:auto;border-radius:10px;display:block;margin:0 auto 10px}
+.insp-hint{font-size:12px;color:var(--muted)}
+#inspect .box.large{max-width:420px;max-height:90vh;overflow:auto}
+.inspcartes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.inspcartes .card{width:78px;padding:4px;cursor:default}
+.inspcartes .card .nm{font-size:10px;min-height:26px;margin:4px 0 3px}
+.inspcartes .card .st{font-size:11px}
+.inspcartes .capa{font-size:9px;color:var(--muted);line-height:1.2;margin-top:3px}
+/* Main du joueur au premier plan ; carte agrandie non tronquée ; zoom +20 % */
+.board{scroll-margin-top:90px}
+.dock{z-index:8}
+.over{z-index:9}
+
+.dock .hand .card{position:relative}
+.dock .hand .card.sel{transform:scale(1.44);transform-origin:50% 100%;z-index:2}
+#inspImg{width:180px}
+/* Main compacte : pas de défilement, les cartes se partagent la largeur ; seule la carte agrandie dépasse du cadre */
+.dock .hand{overflow:visible;flex-wrap:nowrap;justify-content:center;gap:6px;padding:8px}
+.dock .hand .card{flex:1 1 0;min-width:0;width:auto;max-width:84px;padding:4px}
+.dock .hand .card .st{font-size:10px}
+.dock .hand .card.sel{transform:scale(1.44);transform-origin:50% 100%;z-index:2}
+@media (max-width:480px){.dock .hand .card{width:auto}}
+/* Main agrandie (▲) : les cartes passent à la ligne, en proportions normales ; la liste défile verticalement */
+.dock:not(.reduit) .hand{flex-wrap:wrap;align-content:flex-start;overflow-y:auto;max-height:50vh;justify-content:center;-webkit-overflow-scrolling:touch}
+.dock:not(.reduit) .hand .card{flex:0 0 calc(33.33% - 6px);width:calc(33.33% - 6px);max-width:none;min-width:0}
+@media (min-width:600px){.dock:not(.reduit) .hand .card{flex:0 0 calc(20% - 6px);width:calc(20% - 6px)}}
+/* Illustrations en entier : hauteur réduite (62 px) seulement dans la main repliée */
+.dock.reduit .hand .card img{height:62px;object-fit:cover}
+.dock:not(.reduit) .hand .card img{height:auto;object-fit:contain}
+/* Le défilement s'arrête sur une ligne entière : aucun visage coupé en haut ou en bas */
+.dock:not(.reduit) .hand{scroll-snap-type:y proximity;scroll-padding:8px 0}
+.dock:not(.reduit) .hand .card{scroll-snap-align:start}
+
+/* Ajouts : menus, cartes jouables, aperçu, résumé de fin de manche, collection, succès */
+.menu{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 8px}
+.menu button,.actions button{padding:6px 10px;font-size:13px}
+.menu-note{min-height:20px;margin:-4px 0 8px;text-align:center;font-size:13px;opacity:0;transition:opacity .3s}
+.menu-note.visible{opacity:1}
+.coeur-fx{position:fixed;font-size:18px;color:#ff5c8a;pointer-events:none;z-index:7;animation:coeurFx 1.4s ease-out forwards}
+@keyframes coeurFx{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
+.card.jouable{box-shadow:0 0 0 2px var(--ok)}
+.slot small,.apercu{display:block;font-size:11px;color:var(--ok);margin-top:4px}
+.apercu{text-align:center;background:var(--surface);border-radius:6px;padding:2px}
+.zcalc{color:var(--ok);font-weight:600;margin:0 0 10px;line-height:1.5}
+.resume{text-align:left;margin:10px 0 4px}
+.resume p{margin:0 0 6px;color:var(--muted);font-size:13px}
+.jauge{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.jauge span{width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.barre{flex:1;height:12px;background:var(--border);border-radius:6px;overflow:hidden}
+.barre i{display:block;height:100%;width:0;background:var(--ki);border-radius:6px;transition:width 1s ease;box-shadow:0 0 10px var(--ki);animation:aura 1.6s ease-in-out infinite alternate}
+@keyframes aura{from{box-shadow:0 0 4px var(--ki)}to{box-shadow:0 0 14px var(--ki)}}
+.jauge b{min-width:24px;text-align:right}
+.succes{color:var(--ok);font-weight:bold;font-size:14px}
+.fete{position:relative;overflow:hidden;margin:4px 0 6px;padding-top:4px}
+.confettis{position:absolute;inset:0;pointer-events:none}
+.confettis i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;opacity:0;animation:confettiTombe 2.8s ease-in forwards}
+@keyframes confettiTombe{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(300px) rotate(600deg)}}
+.gain-titre{font-weight:bold;color:var(--ki);text-align:center;margin:6px 0;animation:victPop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes victPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.gains{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.gain{animation:victMonte .5s ease-out both}
+@keyframes victMonte{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.confettis{display:none}.gain-titre,.gain{animation:none}}
+.journal{text-align:left;font-size:13px;padding-left:18px;max-height:50vh;overflow:auto}
+.journal li{margin:3px 0}
+.esquive-fx{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);font-size:44px;font-weight:bold;color:#fff;text-shadow:0 0 8px #6a2c91,0 3px 0 #3b1560;z-index:8;pointer-events:none;white-space:nowrap;animation:esquiveFx 1.8s ease-out forwards}
+@keyframes esquiveFx{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+.secoue{animation:secoue .45s linear}
+.secoue-long{animation:secoue 2s linear}
+.liens{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible}
+.lien-trait{stroke-width:3;stroke-linecap:round;stroke-dasharray:8 6;opacity:.85;animation:lienFlux 1.2s linear infinite}
+@keyframes lienFlux{to{stroke-dashoffset:-28}}
+.grise{opacity:.4;filter:grayscale(1);cursor:not-allowed}
+.genki-fx{position:fixed;inset:0;z-index:20;display:flex;font-family:Arial,Helvetica,sans-serif;align-items:center;justify-content:center;background:#000;overflow:hidden;pointer-events:none;animation:genkiFade 2.4s linear forwards}
+.genki-fx img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:scale(.2);opacity:0;animation:genkiZoom 1.3s cubic-bezier(.25,.6,.35,1) .1s forwards}
+.genki-fx p{position:relative;margin:0;padding:0 16px;opacity:0;animation:genkiTexte .4s ease 1.5s forwards;font-size:clamp(22px,6vw,40px);font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 12px #000}
+@keyframes genkiFade{0%,85%{opacity:1}100%{opacity:0}}
+@keyframes genkiZoom{from{transform:scale(.2);opacity:1}to{transform:scale(1);opacity:1}}
+@keyframes genkiTexte{from{opacity:0}to{opacity:1}}
+@keyframes secoue{0%,100%{transform:translate(0)}20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,-1px)}}
+@media (prefers-reduced-motion: reduce){.secoue{animation:none}.esquive-fx{animation:none;opacity:1}}
+.journal-bar{display:block;width:100%;margin:0 0 10px;padding:8px 16px;border-radius:999px;font:inherit;font-size:13px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface);border:1px solid var(--muted);cursor:pointer}
+.journal-bar[hidden]{display:none}
+.journal-liste{text-align:left;font-size:13px;max-height:60vh;overflow:auto;padding-left:22px;margin:8px 0}
+.journal-liste li{margin:4px 0}
+.zk{cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:8px;border:1px dashed var(--muted)}
+.zstats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:14px;margin:6px 0 12px;line-height:1.6}
+.zstats .camp-chip{font-size:13px;padding:3px 9px;margin:0}
+.zsec{text-align:center;font-size:15px;margin:12px 0 4px}
+.zcaps{display:flex;flex-direction:column;align-items:center;gap:12px;margin:6px 0}
+.zcap{display:flex;align-items:center;gap:10px;font-size:15px;line-height:1.4}
+.zliens{margin:10px 0 0;font-size:14px;line-height:1.5;display:grid;gap:4px}
+.zcap b{font-size:15px}
+.zcaps .zk svg{width:22px;height:22px;display:block}
+.zexpl{font-size:14px;line-height:1.5;min-height:3.2em;margin:6px 0}
+.zexpl p{margin:0 0 10px}
+.zexpl p:last-child{margin-bottom:0}
+.zbon{font-size:13px;text-align:center;margin-top:12px;line-height:1.6}
+.regle-groupe{font-size:15px;margin:16px 0 6px;color:var(--ki)}
+.collgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:55vh;overflow:auto;padding:4px}
+.collgrid .card{width:auto;padding:4px}
+.collgrid .card img{height:auto}
+.collgrid .card .nm{min-height:0;font-size:10px}
+.collgrid .card .ev,.collgrid .card .icons{display:none}
+.coll.nope{opacity:.35;filter:grayscale(1)}
+.coll.sel{outline:3px solid var(--ok);outline-offset:2px}
+.coll-box{max-width:620px}
+.succ{text-align:left;font-size:14px;line-height:1.5}
+.succ li.ok{color:var(--ok)}
+#overSummary[hidden]{display:none}
+
+/* Carte d'évolution : bordure violette et badge ÉVO, visibles aussi dans la main */
+.card{position:relative}
+.card.evo{border:2px solid #7b3fc4;box-shadow:0 0 0 1px #d9c4f5 inset}
+.badge-evo{position:absolute;top:-6px;left:-6px;background:#7b3fc4;color:#fff;font-size:10px;font-weight:bold;letter-spacing:.5px;padding:2px 6px;border-radius:8px;z-index:3;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.collgrid .card .badge-evo{font-size:9px;padding:1px 4px}
+
+/* Ki affiché en permanence au-dessus de la main */
+.kibadge{color:var(--ki);font-weight:bold;font-size:15px}
+.card{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+
+/* Cartes : aucune sélection de texte, aucune image glissable, aucun menu natif sur appui long */
+.card, .card *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
+.card img{pointer-events:none}
+.over, .over *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ic.bon svg{width:16px;height:16px}
+.icons.bons{margin-top:2px}
+.slot small{font-size:11px}
+.camps{line-height:1;text-align:center}
+.camp-chip{display:inline-block;font-size:9px;font-weight:bold;color:#fff;border-radius:6px;padding:1px 5px;margin:2px auto 0;letter-spacing:.3px}
+.camp-chip.c-saiyan{background:#e0662a}
+.camp-chip.c-terrien{background:#c77700}
+.camp-chip.c-namek{background:#2e9e44}
+.camp-chip.c-demon{background:#b0307a}
+.camp-chip.c-dieu{background:#8a6d00}
+.camp-chip.c-cyborg{background:#4f6a84}
+.camp-chip.c-ennemis{background:#7a1f1f}
+.camp-chip.c-survie{background:#1f6e8c}
+.camp-chip.c-boss{background:#7a1f1f}
+.camp-chip.c-u6{background:#5a3ea8}
+.camp-chip.c-u11{background:#1f6e8c}
+.camp-chip + .camp-chip{margin-left:2px}
+.ic.bon.pot{opacity:.35;filter:grayscale(.7)}
+.dock .hand .card .camp-chip{font-size:8px}
+.dock .hand .card .icons{min-height:0}
+.dock .hand .card .ic svg,.ic svg{width:20px;height:20px}
+.board.vu{outline:3px solid var(--ki);outline-offset:3px}
+.board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
+@keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
+.board{scroll-margin-top:90px}
+#msg.alerte{color:#b3261e;font-weight:bold;animation:alerteClig 1.6s steps(1,end) infinite}
+@keyframes alerteClig{0%{opacity:1}50%{opacity:.25}}
+.handline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px}
+.handline .handhead{margin:0}
+.handline button{padding:4px 10px;font-size:13px}
+.handbtns{display:flex;gap:6px;flex:0 0 auto}
+
+/* Ergonomie : messages en bulle, score fixe, cartes injouables, cibles */
+.dock #msg{position:fixed;top:84px;left:8px;right:8px;margin:0 auto;max-width:560px;z-index:6;opacity:0;pointer-events:none;transition:opacity .3s;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;box-shadow:0 4px 12px rgba(0,0,0,.25);text-align:center;min-height:0}
+.dock #msg.visible{opacity:1}
+.dock .card.injouable{opacity:.55;filter:grayscale(.4)}
+.card.nontarget{opacity:.4;filter:grayscale(.6)}
+.card.target{outline:3px solid var(--ok);outline-offset:2px}
+.board{scroll-margin-top:90px}
+
+/* Cadre de la main réduit : illustrations, ATT et Ki ; le reste apparaît en glissant la poignée */
+.poignee{touch-action:none;cursor:grab;display:flex;justify-content:center;padding:4px 0 6px}
+.poignee span{display:block;width:48px;height:5px;border-radius:3px;background:var(--muted);opacity:.6}
+.dock.reduit .hand .card .nm,
+.dock.reduit .hand .card .icons,
+.dock.reduit .hand .card .ev,
+.dock.reduit .hand .card .camp-chip{display:none}
+.dock.reduit .hand .card{padding:3px}
+
+
+/* Poignée compacte : même ligne, sans hauteur supplémentaire pour le plateau */
+.poignee{position:relative;height:22px;padding:0;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab}
+.poignee span{width:56px;height:6px;margin:0}
+.poignee button{position:absolute;right:6px;top:0;bottom:0;margin:auto 0;height:20px;padding:0 8px;font-size:12px;line-height:18px}
+
+/* Plateau : 3, 4, 5 ou 6 emplacements ; les cartes se resserrent pour tenir sur téléphone */
+.row.n4 .card,.row.n4 .slot{width:22vw;max-width:112px}
+.row.n5 .card,.row.n5 .slot{width:17vw;max-width:112px}
+.row.n5 .card .nm{font-size:10px}
+.row.n6 .card,.row.n6 .slot{width:14vw;max-width:100px}
+.row.n6 .card .nm{font-size:9px}
+/* Cartes du plateau à l'horizontale : image à gauche (flottante), texte qui se place à côté. 2 par ligne sur téléphone, 4 en paysage */
+.board .row .card.hz{display:flow-root;width:calc(50% - 5px);max-width:none;text-align:left;padding:6px}
+.board .row .card.hz > img{float:left;width:38%;margin:0 8px 4px 0}
+.board .row .card.hz .nm{min-height:0;justify-content:flex-start;margin:0 0 4px;font-size:12px}
+.board .row .card.hz .camp-chip{margin:0 0 4px}
+.board .row .card.hz .icons{justify-content:flex-start;margin-top:2px}
+.board .row .slot{width:calc(50% - 5px);max-width:none;min-height:70px}
+@media (min-width:640px){
+  .board .row .card.hz,.board .row .slot{width:calc(25% - 8px)}
+  .board .row.n5 .card.hz,.board .row.n5 .slot{width:calc(20% - 8px)}
+  .board .row.n6 .card.hz,.board .row.n6 .slot{width:calc(16.6% - 8px)}
+}
+.card.mull{outline:3px dashed var(--ki);outline-offset:2px}
+.boule{padding:3px 6px;line-height:0}
+.boule img{width:30px;height:30px;border-radius:50%;display:block}
+
+/* Aide : chaque titre est un bouton qui déplie son explication */
+.aide{margin:6px 0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.aide summary{cursor:pointer;padding:10px 12px;font-weight:bold;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.aide summary::-webkit-details-marker{display:none}
+.aide summary::after{content:'＋';color:var(--you);font-size:18px}
+.aide[open] summary::after{content:'−'}
+.aide[open] summary{border-bottom:1px solid var(--border)}
+.aide-corps{padding:8px 12px 10px;font-size:14px}
+.aide-corps ul{padding-left:18px;margin:6px 0}
+.aide-corps li{margin:4px 0}
+.aide-intro{color:var(--muted);font-size:13px;margin:0 0 8px}
+.board .row.n3 .card.hz,.board .row.n3 .slot{width:calc(33% - 8px)}
+@media (max-width:639px){.board .row.n3 .card.hz,.board .row.n3 .slot{width:calc(50% - 5px)}}
+</style>
+</head>
+<body>
+<header class="top"><h1>DBZ Lore (test)</h1><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
+<div id="scoreFixe" class="score-fixe" hidden></div>
+<main>
+  <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnBoule" type="button" class="boule" title="Collection et succès"><img src="../icons/dragonball.webp" alt="Collection et succès"></button></div>
+  <div class="status" id="status"></div>
+  <section class="board p1"><h2 id="oppTitle"></h2><div class="row" id="oppBoard"></div></section>
+  <button class="journal-bar" id="btnJournal" type="button" hidden></button>
+  <section class="board p0"><h2 id="myTitle"></h2><div class="row" id="myBoard"></div></section>
+</main>
+<footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnGenki" type="button" hidden>Genkidama</button><button id="btnAnnGenki" type="button" hidden>Annuler la Genkidama adverse</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
+<div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
+<div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
+<div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
+<div class="over hidden" id="zoomCarte"><div class="box"><img id="zoomImg" alt=""><h2 id="zoomName" style="margin:0"></h2><div id="zoomTxt"></div><p id="zoomExpl" class="zexpl">Touche une caractéristique pour l'expliquer.</p><p class="insp-hint">Touchez pour fermer</p></div></div>
+<div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles et aide</h2>
+<p class="aide-intro">Touche un titre pour afficher son explication.</p>
+<h3 class="regle-groupe">La partie</h3>
+<details class="aide"><summary>Le but</summary><div class="aide-corps"><p>Gagne <b>2 manches sur 3</b>. La partie s'arrête dès qu'un joueur a gagné 2 manches, ou après 3 manches. Si les deux joueurs ont le même nombre de manches à la fin, la partie est <b>nulle</b> ; en tournoi, le même adversaire est rejoué.</p><p><b>Améliorer ton deck en mode Tournoi</b> : tu progresses en battant les adversaires, pas en mettant leurs combattants KO.</p><ul><li>À la fin d'une partie gagnée contre l'adversaire du moment, tu reçois <b>2 nouvelles cartes</b>. Elles sont tirées en priorité parmi les combattants de cet adversaire que tu ne possèdes pas encore.</li><li>Si tu possèdes déjà tous ses combattants, les cartes sont tirées parmi toutes celles qui te manquent. Les cartes avec une faible ATT sont tirées plus souvent.</li><li>Tu affrontes ensuite l'adversaire suivant. Après le dernier, le tournoi est gagné et repart du premier.</li></ul><p>Un combattant mis KO ne te rapporte pas de carte, seulement 1 Ki. Les nouvelles cartes entrent dans ton deck automatiquement, sauf si tu as enregistré un deck personnalisé.</p></div></details>
+<details class="aide"><summary>Modes de jeu</summary><div class="aide-corps"><ul><li><b>Rapide</b> : une partie contre l'ordinateur.</li><li><b>Tournoi</b> : 8 adversaires à la suite (Hawkeye, Iron Man, Thor, Spider-Man, Hulk, Captain America, Doctor Strange, Wanda). Battre un adversaire te rapporte 2 cartes. Une défaite te ramène au premier adversaire.</li><li><b>Défi du jour</b> : une règle spéciale change chaque jour (Ki de départ à 4, Ki par tour à 3, pas de rayon, ou Ki max à 6).</li></ul><p><b>Niveau</b> : Facile (3 emplacements, l'ordinateur joue plus au hasard), Normal (6 emplacements), Difficile (6 emplacements, l'ordinateur évalue chaque coup selon son effet réel). Le niveau s'applique à la prochaine partie.</p></div></details>
+<details class="aide"><summary>Mise en place</summary><div class="aide-corps"><p>Chaque joueur pioche 5 cartes. Ton plateau compte <b>3 emplacements</b> (niveau Facile), <b>6</b> (Normal) ou <b>6</b> (Difficile). Chaque manche commence avec <b>2 Ki</b>.</p><p><b>Sursaut du héros</b> : le perdant d'une manche gagne <b>+1 Ki</b> et commence la manche suivante.</p></div></details>
+<details class="aide"><summary>Mulligan</summary><div class="aide-corps"><p>Au premier tour de la première manche, tu peux échanger <b>une</b> carte de ta main : touche le bouton <b>Mulligan</b>, puis la carte à changer. Une seule fois par partie.</p></div></details>
+<details class="aide"><summary>Ton tour</summary><div class="aide-corps"><p>Au début de ton tour, tu gagnes <b>1 Ki</b> (12 au maximum) et tu pioches <b>une carte</b>. Ensuite, tu fais <b>une seule action</b> :</p><ul><li><b>Jouer une carte</b> : touche-la dans ta main. Elle paie son coût en Ki et se pose toute seule sur un emplacement libre. Les plus grands combattants coûtent jusqu'à 8 Ki : il faut parfois patienter pour les poser.</li><li><b>Charger</b> : gagne <b>+2 Ki</b> au lieu de jouer une carte. Charger sert aussi à passer ton tour. Pas deux charges de suite, sauf si tu ne peux rien jouer.</li><li><b>Genkidama</b> (une fois par partie) : à 12 Ki, tu peux le lancer. Il part au début de ton prochain tour : chaque combattant ennemi subit <b>6 dégâts</b>, puis ton Ki retombe à 0. L'adversaire peut l'annuler en payant 12 Ki, ou en mettant KO un de tes combattants pendant son tour.</li><li><b>Tour sauté</b> : si tu ne peux plus rien faire, ton tour passe. La manche se termine quand plus personne ne peut agir, ou quand les deux plateaux sont pleins.</li><li><b>Fusion</b> : la carte du résultat doit être dans ta main et les deux combattants sur ton plateau. Goku + Vegeta → <b>Gogeta blue</b> (7 Ki, fusion de 3 tours) ou <b>Vegetto</b> (6 Ki, permanent) ; Goten + Trunks → <b>Gotenks</b> (4 Ki) ; Kale + Caulifla → <b>Kefla</b> (5 Ki). Goku Black et Goku enfant ne fusionnent pas.</li></ul><p>Le Ki non dépensé reste d'un tour à l'autre, dans la limite de 12.</p></div></details>
+<details class="aide"><summary>Pourquoi une carte est grisée ?</summary><div class="aide-corps"><p>Une carte grisée dans ta main, c'est qu'elle <b>ne peut pas être jouée maintenant</b>. Il y a trois raisons possibles :</p><ul><li><b>Pas assez de Ki</b> : son coût est supérieur à ton Ki. Charger te rapproche de ce coût.</li><li><b>Pas d'emplacement</b> : ton plateau est plein. Attends qu'un combattant soit mis KO.</li><li><b>Évolution sans son combattant</b> : une évolution se pose sur le combattant qu'elle fait évoluer. Si ce combattant n'est pas sur ton plateau, elle reste grisée.</li><li><b>Carte de fusion</b> (Gogeta blue, Vegetto, Gotenks, Kefla) : elle ne se pose jamais seule, seulement par fusion.</li><li><b>Vegeta Majin</b> : elle ne se pose que si Babidi est sur ton plateau.</li></ul><p>Une carte en couleur (avec un contour vert) est jouable. Si ce n'est pas ton tour, toutes les cartes sont grisées.</p><p><b>Pendant un rayon</b>, les combattants ennemis grisés ne peuvent pas être visés. C'est le cas des Divins (Beerus, Whis), sauf si le rayon vient d'un Dieu.</p></div></details>
+<h3 class="regle-groupe">Le combat</h3>
+<details class="aide"><summary>La <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> et la manche</summary><div class="aide-corps"><p><b><svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></b> = la force d'un combattant, écrite sur sa carte. À la fin d'une manche, on additionne la <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> de tous tes combattants et celle de l'adversaire. <b>Le total le plus élevé gagne la manche.</b> En cas d'égalité, personne ne gagne.</p></div></details>
+<details class="aide"><summary>Combat : KO et Ki de combat</summary><div class="aide-corps"><p>Un combattant est <b>mis KO</b> quand sa <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> tombe à 0 ou moins. Il part à la défausse, sauf s'il a la Régénération. Les dégâts ne durent que pour la manche en cours.</p><p>Chaque fois qu'un de <b>tes</b> combattants est mis KO, tu gagnes <b>1 Ki</b>.</p></div></details>
+<h3 class="regle-groupe">Les cartes</h3>
+<details class="aide"><summary>Lire une carte</summary><div class="aide-corps"><ul><li><b>Nom</b> : en haut de la carte.</li><li><b>Camps</b> : les étiquettes colorées (Saiyan, Terrien, Namek, Démon, Dieu, Cyborg, Boss, Univers 6, Univers 11). Une carte peut en avoir plusieurs. Certaines capacités dépendent du camp, comme le Saiyan enragé.</li><li><b>ATT</b> (chiffre rouge avec l'icône <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>) : l’ATT de base du combattant, sans les bonus.</li><li><b>Ki</b> (chiffre orange) : le coût pour poser la carte.</li><li><b>Icônes en bas</b> : les capacités de la carte, expliquées dans « Capacités sur les cartes » ci-dessous.</li><li><b>ÉVO</b> (badge violet) : carte d'évolution, à poser sur le combattant qu'elle remplace.</li><li><b>Si jouée</b> : touche une carte de ta main longuement. La carte agrandie indique l’ATT qu'elle aurait sur un emplacement libre, avec le détail de ses bonus, et son coût en Ki.</li></ul></div></details>
+<details class="aide"><summary>Les camps</summary><div class="aide-corps"><p>Chaque combattant appartient à <b>un ou plusieurs camps</b>, selon le manga (Broly : Saiyan et Boss ; Piccolo : Namek et Démon ; Gohan : Saiyan et Terrien...).</p><p><b>Tempérament</b> : un combattant gagne <b>+1 ATT par camp</b> qu'il partage avec au moins un allié, <b>+2 au maximum</b>.</p><div id="aideCamps"></div><p>Liens à effet : <b>Amour de Yamcha</b> et <b>Serviteur</b> (Yamcha protège Bulma, Whis protège Beerus), <b>Père spirituel</b>, <b>Maître sorcier</b>, <b>Amis d'enfance</b>, <b>Universe 6</b>, <b>Couple</b>, <b>Duel</b> et <b>Vengeance</b>. Rivaux : Gohan / Cell, Goku / Freezer, Vegeta / Freezer, Goku / Jiren, Goku / Hit, Gohan / Buu.</p></div></details>
+<details class="aide"><summary>Capacités sur les cartes</summary><div class="aide-corps"><p>Les icônes en bas de la carte indiquent ses capacités. Le chiffre à côté d'une icône est sa valeur. Touche longuement une carte pour lire le détail.</p><div id="aideCaps"></div></div></details>
+<details class="aide"><summary>Pourquoi une icône est grisée ?</summary><div class="aide-corps"><p>Les icônes de bonus sous une carte montrent les bonus de <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> que cette carte peut recevoir :</p><ul><li><b>En couleur</b> : le bonus est <b>actif</b> maintenant.</li><li><b>Grisée</b> : le bonus est <b>possible</b>, mais pas actif. Il dépend de ce qui est sur ton plateau.</li></ul><p>Exemple : Trunks est grisé pour « Allié » tant qu'aucun allié n'est posé à côté de lui.</p></div></details>
+<details class="aide"><summary>Bonus de <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></summary><div class="aide-corps"><p>La <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> affichée peut dépasser la valeur de base. Chaque carte affiche son <b>camp</b> (étiquette colorée sous le nom). Touche une carte longuement pour voir le détail de ses bonus.</p><div class="leg"><svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg><span><b>Soutien</b> : tes autres combattants gagnent +1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg><span><b>Tempérament de camp</b> : deux cartes du même camp sur ton plateau donnent +1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> à chacune. Camps : Saiyan, Terrien, Namek, Démon, Dieu.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg><span><b>Saiyan enragé</b> : un Saiyan gagne +1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg><span><b>Allié à côté</b> : +1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si un allié est sur ton plateau (Goku + Vegeta, Gohan + Piccolo, Krillin + Tenshinhan, Trunks + Goku ou Vegeta, Gohan + Trunks). Les liens spéciaux <b>Touche pas à ma Bulma !</b> (Vegeta + Bulma) et <b>Père fils</b> (Goku adulte + Gohan ou Goten, Vegeta + Trunks) donnent +2 ATT à chacun pendant deux tours.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg><span><b>Survie de l'univers</b> : si ton total est inférieur à celui de l'adversaire (les bonus Enragé et Survie ne comptent pas dans ce total), +1 ATT à chaque combattant de ce camp.</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg><span><b>Rival en face</b> : +1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> si un rival est en face (Gohan face à Cell, Goku ou Vegeta face à Freezer).</span></div>
+<div class="leg"><svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg><span><b>Namek</b> (Piccolo) : en début de ton tour, tes combattants blessés se soignent de 1 dégât.</span></div>
+</div></details>
+<details class="aide"><summary>Évolution</summary><div class="aide-corps"><p>Une évolution (par exemple Goku → Goku Super Saiyan) se pose <b>directement sur le combattant qu'elle remplace</b>. Tu ne paies que la <b>différence de Ki</b> entre les deux formes. Elle soigne aussi entièrement le combattant remplacé. Les cartes d'évolution portent le badge violet <b>ÉVO</b>.</p></div></details>
+<h3 class="regle-groupe">Interface et progression</h3>
+<details class="aide"><summary>Commandes</summary><div class="aide-corps"><ul><li><b>Lire une carte</b> : touche-la longuement. Tu vois sa <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>, son coût, ses capacités et ses bonus actifs.</li><li><b>Agrandir la main</b> : glisse la poignée (la petite barre en haut de la main) vers le haut. Vers le bas, elle se réduit.</li><li><b>Boule de Dragon</b> : collection et succès.</li><li><b>Annuler le coup</b> : pendant un choix de cible, annule la carte posée.</li></ul></div></details>
+<details class="aide"><summary>Collection et deck</summary><div class="aide-corps"><p>La <b>collection</b> est l'ensemble des cartes que tu possèdes. Au départ, tu as les cartes simples. Tu en gagnes <b>2 nouvelles</b> après chaque adversaire battu en mode Tournoi.</p><p>Ouvre-la avec la <b>boule de Dragon</b>, puis « Collection et deck » :</p><ul><li>Les cartes <b>en couleur</b> sont possédées. Les cartes <b>grisées</b> ne le sont pas encore.</li><li>Touche une carte possédée pour l'ajouter au <b>deck</b>, ou la retirer. Le deck fait <b>20 cartes au maximum</b>.</li><li><b>Enregistrer le deck</b> le garde pour les prochaines parties. <b>Réinitialiser</b> supprime ton deck : à chaque partie, 20 cartes sont alors tirées <b>au hasard dans toute ta collection</b>, évolutions comprises.</li></ul></div></details>
+<details class="aide"><summary>Succès et rangs</summary><div class="aide-corps"><p>Ouvre-les avec la <b>boule de Dragon</b>, puis « Succès et rangs ».</p><p><b>Rangs</b> : ils dépendent du nombre de <b>victoires</b> (parties gagnées) : Terrien dès le début, Super Saiyan à 5 victoires, Dieu à 15.</p><p><b>Série</b> : le nombre de victoires consécutives. La meilleure série est gardée.</p><p><b>Succès</b> :</p><ul><li><b>Kaio-ken</b> : gagner une manche avec 1 <svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true" role="img" aria-label="ATT"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="#15142A" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg> d'écart.</li><li><b>Esprit d'équipe</b> : poser 3 cartes avec Soutien dans une même manche.</li></ul></div></details><button class="primary" id="btnTutoRevoir" type="button">Revoir le tutoriel</button>
+<button class="primary" id="btnRulesClose" type="button">Fermer</button></div></div>
+<div class="over hidden" id="bouleModal"><div class="box"><h2 style="margin-top:0">Collection et succès</h2><div class="actions"><button class="primary" id="btnColl" type="button">Collection et deck</button><button class="primary" id="btnSucc" type="button">Succès et rangs</button></div><button id="btnBouleClose" type="button">Fermer</button></div></div>
+<div class="over hidden" id="tutoModal"><div class="box"><h2 id="tutoTitre" style="margin-top:0"></h2><p id="tutoTxt"></p><button class="primary" id="tutoBtn" type="button">Suivant</button></div></div>
+<div class="over hidden" id="collModal"><div class="box rules-box coll-box"><h2 style="margin-top:0">Collection et deck</h2><p id="collCompte"></p><div class="collgrid" id="collGrille"></div><div class="actions"><button class="primary" id="btnCollSave" type="button">Enregistrer le deck</button><button id="btnCollReset" type="button">Réinitialiser</button><button id="btnCollClose" type="button">Fermer</button></div></div></div>
+<div class="over hidden" id="fusionModal"><div class="box"><h2 style="margin-top:0">Quelle fusion ?</h2><p>Goku et Vegeta peuvent fusionner de deux façons. Choisis.</p><div class="actions" id="fusionChoix"></div></div></div>
+<div class="over hidden" id="newModal"><div class="box"><h2 style="margin-top:0">Nouvelle partie</h2><p>Que veux-tu faire avant de commencer ?</p><div class="actions"><button class="primary" id="btnNewStart" type="button">Commencer la partie</button><button id="btnNewDeck" type="button">Modifier mon deck</button><button id="btnNewAnnul" type="button">Annuler</button></div></div></div>
+<div class="over hidden" id="succModal"><div class="box rules-box"><h2 style="margin-top:0">Succès et rangs</h2><div id="succContenu"></div><button class="primary" id="btnSuccClose" type="button">Fermer</button></div></div>
+
+<script>
+const CARDS = [{"n": "Son Goku", "p": 7, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "../img/card-00.jpg"}, {"n": "Goku Super Saiyan", "p": 13, "k": 5, "e": 0, "a": [["rayon", 5]], "img": "../img/card-01.jpg"}, {"n": "Vegeta", "p": 8, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "../img/card-02.jpg"}, {"n": "Vegeta Super Saiyan", "p": 13, "k": 5, "e": 2, "a": [["rayon", 5]], "img": "../img/card-03.jpg"}, {"n": "Son Gohan", "p": 5, "k": 2, "e": -1, "a": [["rayon", 3], ["furie", 3]], "img": "../img/card-04.jpg"}, {"n": "Gohan Super Saiyan 2", "p": 16, "k": 6, "e": 4, "a": [["rayon", 5], ["furie", 2]], "img": "../img/card-05.jpg"}, {"n": "Piccolo", "p": 8, "k": 3, "e": -1, "a": [["rayon", 4], ["percant", 0]], "img": "../img/card-06.jpg"}, {"n": "Krillin", "p": 4, "k": 2, "e": -1, "a": [["rayon", 3], ["percant", 0]], "img": "../img/card-07.jpg"}, {"n": "Yamcha", "p": 3, "k": 1, "e": -1, "a": [["furie", 1]], "img": "../img/card-08.jpg"}, {"n": "Tenshinhan", "p": 5, "k": 2, "e": -1, "a": [["taiyoken", 0]], "img": "../img/card-09.jpg"}, {"n": "Chaozu", "p": 2, "k": 1, "e": -1, "a": [["explosion", 4]], "img": "../img/card-10.jpg"}, {"n": "Bulma", "p": 1, "k": 1, "e": -1, "a": [["scouter", 1], ["ki", 1]], "img": "../img/card-11.jpg"}, {"n": "Tortue Géniale", "p": 3, "k": 2, "e": -1, "a": [["mafuba", 12]], "img": "../img/card-12.jpg"}, {"n": "Oolong", "p": 1, "k": 1, "e": -1, "a": [["leurre", 0]], "img": "../img/card-13.jpg"}, {"n": "Puar", "p": 1, "k": 1, "e": -1, "a": [["copie", 0]], "img": "../img/card-14.jpg"}, {"n": "Yajirobé", "p": 2, "k": 1, "e": -1, "a": [["senzu", 0]], "img": "../img/card-15.jpg"}, {"n": "C-18", "p": 10, "k": 4, "e": -1, "a": [], "img": "../img/card-16.jpg"}, {"n": "C-17", "p": 11, "k": 4, "e": -1, "a": [["barriere", 2], ["esquive", 10]], "img": "../img/card-17.jpg"}, {"n": "C-16", "p": 9, "k": 4, "e": -1, "a": [["explosion", 6]], "img": "../img/card-18.jpg"}, {"n": "Cell", "p": 10, "k": 4, "e": -1, "a": [["cellabs", 0]], "img": "../img/card-19.jpg"}, {"n": "Cell parfait", "p": 16, "k": 6, "e": 19, "a": [["rayon", 6], ["regen", 1]], "img": "../img/card-20.jpg"}, {"n": "Freezer", "p": 8, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "../img/card-21.jpg"}, {"n": "Freezer (forme finale)", "p": 12, "k": 5, "e": 21, "a": [["rayon", 5]], "img": "../img/card-22.jpg"}, {"n": "Golden Freezer", "p": 17, "k": 7, "e": 22, "a": [["rayon", 6]], "img": "../img/card-23.jpg"}, {"n": "Majin Buu", "p": 13, "k": 5, "e": -1, "a": [["bonbon", 5], ["regen", 1]], "img": "../img/card-24.jpg"}, {"n": "Kid Buu", "p": 18, "k": 7, "e": 26, "a": [["regen", 2]], "img": "../img/card-25.jpg"}, {"n": "Super Buu", "p": 16, "k": 6, "e": 24, "a": [["absorbAllie", 0]], "img": "../img/card-26.jpg"}, {"n": "Dabra", "p": 8, "k": 3, "e": -1, "a": [["petrif", 8]], "img": "../img/card-27.jpg"}, {"n": "Babidi", "p": 1, "k": 2, "e": -1, "a": [["sorcier", 2]], "img": "../img/card-28.jpg"}, {"n": "Vegeta Majin", "p": 15, "k": 5, "e": 2, "a": [["rayon", 5], ["finalexp", 5]], "img": "../img/card-29.jpg"}, {"n": "Son Goku enfant", "p": 3, "k": 1, "e": -1, "a": [["ozaru", 4]], "img": "../img/card-30.jpg"}, {"n": "Trunks", "p": 6, "k": 3, "e": -1, "a": [["rayon", 3], ["epee", 0]], "img": "../img/card-31.jpg"}, {"n": "Trunks Super Saiyan", "p": 12, "k": 4, "e": 31, "a": [["rayon", 4], ["epee", 0]], "img": "../img/card-32.jpg"}, {"n": "Gotenks", "p": 15, "k": 4, "e": -1, "a": [["explosion", 5], ["esquive", 10]], "img": "../img/card-33.jpg"}, {"n": "Vegetto", "p": 19, "k": 6, "e": -1, "a": [["rayon", 7], ["double", 2], ["esquive", 10]], "img": "../img/card-34.jpg"}, {"n": "Vegetto Super Saiyan", "p": 21, "k": 8, "e": 34, "a": [["rayon", 7], ["double", 2], ["temps", 3], ["esquive", 10]], "img": "../img/card-35.jpg"}, {"n": "Gogeta blue", "p": 22, "k": 7, "e": -1, "a": [["rayon", 7], ["double", 2], ["temps", 3], ["esquive", 15]], "img": "../img/card-36.jpg"}, {"n": "Zamasu", "p": 13, "k": 5, "e": -1, "a": [["rayon", 4], ["immortel", 0]], "img": "../img/card-37.jpg"}, {"n": "Goku Black", "p": 17, "k": 7, "e": -1, "a": [["rayon", 6], ["esquive", 15]], "img": "../img/card-38.jpg"}, {"n": "Hit", "p": 15, "k": 6, "e": -1, "a": [["rayon", 5], ["percant", 0], ["esquive", 35]], "img": "../img/card-39.jpg"}, {"n": "Beerus", "p": 20, "k": 8, "e": -1, "a": [["divin", 0], ["hakai", 0]], "img": "../img/card-40.jpg"}, {"n": "Whis", "p": 22, "k": 8, "e": -1, "a": [["divin", 0], ["retour", 0]], "img": "../img/card-41.jpg"}, {"n": "Broly", "p": 18, "k": 7, "e": -1, "a": [["rayon", 6], ["legendaire", 6]], "img": "../img/card-42.jpg"}, {"n": "Jiren", "p": 20, "k": 8, "e": -1, "a": [["onde", 2], ["solitaire", 0]], "img": "../img/card-43.jpg"}, {"n": "Toppo", "p": 17, "k": 7, "e": -1, "a": [["rayon", 8]], "img": "../img/card-44.jpg"}, {"n": "Kale", "p": 7, "k": 3, "e": -1, "a": [["furie", 2]], "img": "../img/card-45.jpg"}, {"n": "Caulifla", "p": 8, "k": 3, "e": -1, "a": [["rayon", 4]], "img": "../img/card-46.jpg"}, {"n": "Kefla", "p": 18, "k": 5, "e": -1, "a": [["rayon", 6]], "img": "../img/card-47.jpg"}, {"n": "Goku Ultra Instinct", "p": 21, "k": 8, "e": 1, "a": [["rayon", 5], ["esquive", 40], ["contre", 4]], "img": "../img/card-48.jpg"}, {"n": "Vegeta Ultra Ego", "p": 20, "k": 8, "e": 2, "a": [["rayon", 5], ["ultraego", 3]], "img": "../img/card-49.jpg"}, {"n": "Goten", "p": 5, "k": 2, "e": -1, "a": [["rayon", 3]], "img": "../img/card-50.jpg"}];
+const BGS = ["../img/bg-0.jpg", "../img/bg-1.jpg", "../img/bg-2.jpg", "../img/bg-3.jpg", "../img/bg-4.jpg"];
+/* ---------- Réglages et constantes ---------- */
+const HUMAN = 0, AI = 1, HAND_SIZE = 5, MAX_ROUNDS = 3, ROUNDS_TO_WIN = 2, DECK_MAX = 20;
+const ID = {};
+CARDS.forEach((c, i) => { ID[c.n] = i; });
+const MODES = { rapide: 'Rapide', tournoi: 'Tournoi', defi: 'Défi du jour' };
+const VITESSES = { lent: ['Lente', 1400], normale: ['Normale', 900], rapide: ['Rapide', 450] };
+const DEFIS = [
+  { nom: 'Ki de départ à 4', kiDebut: 4 },
+  { nom: 'Ki par tour à 3', kiTour: 3 },
+  { nom: 'Pas de rayon', noRayon: true },
+  { nom: 'Ki max à 6', kiMax: 6 }
+];
+const SUCCES = { kaio: 'Kaio-ken', genkidama: 'Esprit d’équipe' };
+const RANGS = [{ nom: 'Terrien', min: 0 }, { nom: 'Super Saiyan', min: 5 }, { nom: 'Dieu', min: 15 }];
+const TUTO = [
+  'But : gagne 2 manches sur 3. À la fin d\'une manche, le total de ATT le plus élevé gagne.',
+  'Chaque tour, tu gagnes du Ki. Joue une carte en payant son coût, ou touche Charger pour +2 Ki à la place (Charger sert aussi à passer ton tour). Si tu ne peux plus rien faire, ton tour est sauté.',
+  'Touche une carte de ta main : elle se pose toute seule sur un emplacement libre. Une évolution se pose sur son combattant et ne paie que la différence de Ki. Touche une carte longuement pour la lire.',
+  'Les cartes jouables sont surlignées, et chacune affiche le gain de ATT avant de la poser. Scouter révèle la main adverse. Mulligan échange une carte au début de la partie.'
+];
+
+const BONUS_INFO = {
+  sorcier: { titre: 'Sorcier (Babidi) : +2 ATT aux Démons alliés', svg: '<svg viewBox="0 0 24 24"><path d="M12 2l3 7h-6zM6 22l6-13 6 13z" fill="#b0307a"/></svg>' },
+  petrifie: { titre: 'Pétrifié (Dabra) : aucun bonus ni soin', svg: '<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="#8a8a8a"/></svg>' },
+  soutien: { titre: 'Soutien (Krillin) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>' },
+  camp: { titre: 'Tempérament : +1 ATT par camp partagé avec un allié (maximum +2)', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.5" fill="#6a2c91"/><circle cx="16" cy="12" r="4.5" fill="#6a2c91"/></svg>' },
+  enrage: { titre: 'Saiyan enragé : tu es mené, +1 ATT', svg: '<svg viewBox="0 0 24 24"><polygon points="12,2 17,11 14,11 19,22 5,9 10,9 7,2" fill="#d7261e"/></svg>' },
+  allie: { titre: 'Allié à côté (Goku + Vegeta, Gohan + Piccolo...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="16" cy="12" r="4" fill="none" stroke="#2e9e44" stroke-width="2.5"/></svg>' },
+  survie: { titre: 'Univers 11, dernier rempart (tu es mené) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#1f6e8c"/></svg>' },
+  rival: { titre: 'Rival en face (Gohan / Cell, Goku / Freezer...) : +1 ATT', svg: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19" stroke="#b3261e" stroke-width="3"/></svg>' },
+  lienPere: { titre: 'Lien Père fils : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#e09b27" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#e09b27" stroke-width="2"/></svg>' },
+  lienBulma: { titre: 'Lien Touche pas à ma Bulma ! : +2 ATT pendant deux tours', svg: '<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#2e9e44" stroke-width="3" stroke-linecap="round"/><circle cx="6" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/><circle cx="18" cy="12" r="3.5" fill="none" stroke="#2e9e44" stroke-width="2"/></svg>' },
+  namek: { titre: 'Namek : en début de tour, soigne 1 dégât à tes combattants blessés', svg: '<svg viewBox="0 0 24 24"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z" fill="#2e9e44" opacity=".75"/></svg>' }
+};
+const NAMES = {rayon:'Rayon d\'énergie', double:'Double rayon', furie:'Furie', regen:'Régénération', absorb:'Assimilation', soutien:'Soutien', divin:'Divin', explosion:'Explosion', onde:'Onde de choc', scouter:'Scouter', esquive:'Esquive', ki:'Maîtrise du Ki', absorbKi:'Absorption', lien:'Lien spécial', percant:'Attaque perçante', taiyoken:'Taiyoken', mafuba:'Mafuba', leurre:'Métamorphose (leurre)', copie:'Métamorphose', senzu:'Senzu', sorcier:'Sorcier', ozaru:'Ozaru', epee:'Épée', petrif:'Crachat pétrifiant', bonbon:'Bonbon', immortel:'Immortel', barriere:'Barrière', cellabs:'Absorption des androïdes', absorbAllie:'Absorption', finalexp:'Final Explosion', temps:'Fusion temporaire', legendaire:'Super Saiyan légendaire', solitaire:'Solitaire', ultraego:'Ultra Ego', hakai:'Hakai', retour:'Retour temporel', contre:'Contre-attaque'};
+const ICONS = {
+  percant:'<svg viewBox="0 0 24 24"><path d="M2 12h16" stroke="#29a3f0" stroke-width="3"/><path d="M15 6l7 6-7 6" fill="#29a3f0"/></svg>',
+  taiyoken:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ffd400"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5M4 4l3.5 3.5M16.5 16.5L20 20M4 20l3.5-3.5M16.5 7.5L20 4" stroke="#e0a800" stroke-width="2"/></svg>',
+  mafuba:'<svg viewBox="0 0 24 24"><rect x="7" y="9" width="10" height="12" rx="2" fill="#2e7d32"/><path d="M12 2c-4 3-4 6 0 7" stroke="#2e7d32" stroke-width="2" fill="none"/></svg>',
+  leurre:'<svg viewBox="0 0 24 24"><circle cx="9" cy="10" r="5" fill="#c77700"/><circle cx="15" cy="14" r="5" fill="none" stroke="#c77700" stroke-width="2" stroke-dasharray="2 2"/></svg>',
+  copie:'<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5" fill="#29a3f0"/><circle cx="16" cy="12" r="5" fill="none" stroke="#29a3f0" stroke-width="2" stroke-dasharray="2 2"/></svg>',
+  senzu:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="6" ry="8" fill="#5aa832"/><path d="M12 5v14" stroke="#2e6b14" stroke-width="1.5"/></svg>',
+  sorcier:'<svg viewBox="0 0 24 24"><path d="M12 2l3 7h-6zM6 22l6-13 6 13z" fill="#b0307a"/></svg>',
+  ozaru:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#f3e9a0"/><circle cx="9" cy="10" r="1.5" fill="#bba"/><circle cx="15" cy="15" r="2" fill="#bba"/></svg>',
+  epee:'<svg viewBox="0 0 24 24"><path d="M4 20L18 6l2-4-4 2L2 18z" fill="#8aa0b4"/><path d="M3 15l6 6" stroke="#5a4a2a" stroke-width="2.5"/></svg>',
+  petrif:'<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2" fill="#8a8a8a"/><path d="M7 9l4 3 6-4M8 16l5-2" stroke="#555" stroke-width="1.3" fill="none"/></svg>',
+  bonbon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ff5fa2"/><path d="M7 12l-5-4v8zM17 12l5-4v8z" fill="#ff5fa2"/></svg>',
+  immortel:'<svg viewBox="0 0 24 24"><path d="M5 12c0-4 6-4 7 0s7 4 7 0-6-4-7 0-7 4-7 0" fill="none" stroke="#6a2c91" stroke-width="2.5"/></svg>',
+  barriere:'<svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z" fill="#4f6a84"/></svg>',
+  cellabs:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#2e7d32"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg>',
+  absorbAllie:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#ff5fa2"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg>',
+  finalexp:'<svg viewBox="0 0 24 24"><polygon points="12,1 14,7 20,3 17,9 23,10 18,13 22,19 16,17 15,23 12,18 9,23 8,17 2,19 6,13 1,10 7,9 4,3 10,7" fill="#b0307a"/></svg>',
+  temps:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#29a3f0" stroke-width="2.5"/><path d="M12 6v6l4 3" stroke="#29a3f0" stroke-width="2.5" fill="none"/></svg>',
+  legendaire:'<svg viewBox="0 0 24 24"><path d="M12 22V8M6 13l6-7 6 7" stroke="#2fb34a" stroke-width="3" fill="none"/></svg>',
+  solitaire:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#d7261e"/><path d="M5 22c0-6 14-6 14 0" fill="#d7261e"/></svg>',
+  ultraego:'<svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#7b3fc4"/></svg>',
+  hakai:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#5b1f8a"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2.5"/></svg>',
+  retour:'<svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 1 0 2-5" fill="none" stroke="#3aa6c9" stroke-width="2.5"/><path d="M3 4v5h5" fill="none" stroke="#3aa6c9" stroke-width="2.5"/></svg>',
+  contre:'<svg viewBox="0 0 24 24"><path d="M4 8h12l-3-3M20 16H8l3 3" stroke="#6a2c91" stroke-width="2.5" fill="none"/></svg>',
+  double:'<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5" fill="#29a3f0"/><circle cx="16" cy="12" r="5" fill="#29a3f0"/></svg>',
+  rayon:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#29a3f0"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>',
+  furie:'<svg viewBox="0 0 24 24"><polygon points="12,2 16,9 22,8 18,14 22,20 14,18 12,23 10,18 2,20 6,14 2,8 8,9" fill="#d7261e"/></svg>',
+  regen:'<svg viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#2e9e44"/></svg>',
+  absorb:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#7b3fc4"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg>',
+  soutien:'<svg viewBox="0 0 24 24"><path d="M5 13l7-6 7 6M5 19l7-6 7 6" stroke="#1e5fb8" stroke-width="2.5" fill="none"/></svg>',
+  divin:'<svg viewBox="0 0 24 24"><polygon points="12,2 14.9,8.6 22,9.3 16.6,14 18.2,21 12,17.3 5.8,21 7.4,14 2,9.3 9.1,8.6" fill="#e0a800"/></svg>',
+  explosion:'<svg viewBox="0 0 24 24"><polygon points="12,1 14,7 20,3 17,9 23,10 18,13 22,19 16,17 15,23 12,18 9,23 8,17 2,19 6,13 1,10 7,9 4,3 10,7" fill="#ff7a00"/></svg>',
+  onde:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#1f8f8f"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="#1f8f8f" stroke-width="2"/><circle cx="12" cy="12" r="11" fill="none" stroke="#1f8f8f" stroke-width="1.5" opacity=".6"/></svg>',
+  scouter:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="#2e9e44" stroke-width="2.5"/><circle cx="12" cy="12" r="3" fill="#2e9e44"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3" stroke="#2e9e44" stroke-width="2"/></svg>',
+  esquive:'<svg viewBox="0 0 24 24"><path d="M3 12c3-5 6-5 9 0s6 5 9 0" fill="none" stroke="#6a2c91" stroke-width="2.5" stroke-linecap="round"/><path d="M13 4l5 3-4 3" fill="none" stroke="#6a2c91" stroke-width="2"/></svg>',
+  ki:'<svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 9-12h-6z" fill="#e0a800"/></svg>',
+  absorbKi:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#7b3fc4"/><path d="M12 17l-4-5h3V7h2v5h3z" fill="#fff"/></svg>', lien:'<svg viewBox="0 0 24 24"><path d="M8 12h8M12 8v8" stroke="#e09b27" stroke-width="3" stroke-linecap="round"/></svg>'
+};
+
+/* Adversaires du mode Tournoi, dans l'ordre. Chacun a son deck (équipe) et son style. */
+const ADVERSAIRES = [
+  { nom: 'Hawkeye', equipe: ['Yamcha', 'Tenshinhan', 'Krillin', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé', 'Son Goku enfant'], style: { prudent: true, agressif: 0 } },
+  { nom: 'Iron Man', equipe: ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Goku Super Saiyan', 'Son Goku', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Vegetto Super Saiyan'], style: { prudent: false, agressif: 2, trait: 'fier' } },
+  { nom: 'Thor', equipe: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer', 'Dabra', 'Babidi', 'Zamasu', 'Goku Black', 'Hit'], style: { prudent: false, agressif: 1, trait: 'calculateur' } },
+  { nom: 'Spider-Man', equipe: ['Cell', 'Cell parfait', 'C-16', 'C-17', 'C-18', 'Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2', 'Hit'], style: { prudent: false, agressif: 1, trait: 'parfait' } },
+  { nom: 'Hulk', equipe: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi', 'Krillin', 'Tenshinhan', 'Yamcha'], style: { prudent: false, agressif: 0, trait: 'chaotique' } },
+  { nom: 'Captain America', equipe: ['Jiren', 'Broly', 'Toppo', 'Kale', 'Caulifla', 'Kefla', 'Hit', 'Goku Ultra Instinct'], style: { prudent: false, agressif: 2, trait: 'imperturbable' } },
+  { nom: 'Doctor Strange', equipe: ['Beerus', 'Whis', 'Toppo', 'Zamasu', 'Goku Black', 'Gogeta blue', 'Hit'], style: { prudent: false, agressif: 1, trait: 'attentiste' } },
+  { nom: 'Wanda', equipe: ['Goku Ultra Instinct', 'Gogeta blue', 'Son Goku', 'Vegeta Ultra Ego', 'Whis', 'Vegetto Super Saiyan', 'Vegetto', 'Kefla'], style: { prudent: false, agressif: 1, trait: 'instinct' } }
+];
+
+/* Tempéraments : camp de chaque combattant. 2 cartes du même camp = +1 ATT à chacune. */
+/* Version Lore : un combattant peut appartenir à plusieurs camps (ex. Broly : Saiyan + Boss). */
+const CAMPS = {
+  cyborg: ['C-16', 'C-17', 'C-18', 'Cell', 'Cell parfait'],
+  saiyan: ['Son Goku', 'Goku Super Saiyan', 'Gogeta blue', 'Goku Ultra Instinct', 'Son Goku enfant', 'Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego', 'Son Gohan', 'Gohan Super Saiyan 2', 'Trunks Super Saiyan', 'Trunks', 'Goten', 'Gotenks', 'Vegetto', 'Vegetto Super Saiyan', 'Broly', 'Kale', 'Caulifla', 'Kefla'],
+  terrien: ['Krillin', 'Tenshinhan', 'Yamcha', 'Chaozu', 'Bulma', 'Tortue Géniale', 'Oolong', 'Puar', 'Yajirobé', 'Son Goku enfant', 'Son Gohan', 'Gohan Super Saiyan 2', 'Goten', 'Trunks', 'Trunks Super Saiyan', 'Gotenks', 'C-17', 'C-18'],
+  namek: ['Piccolo'],
+  demon: ['Majin Buu', 'Kid Buu', 'Super Buu', 'Dabra', 'Babidi', 'Piccolo', 'Vegeta Majin'],
+  dieu: ['Beerus', 'Whis', 'Zamasu', 'Goku Black', 'Toppo', 'Vegeta Ultra Ego'],
+  boss: ['Cell', 'Cell parfait', 'Freezer', 'Freezer (forme finale)', 'Golden Freezer', 'Broly', 'Super Buu', 'Zamasu', 'Goku Black'],
+  u6: ['Hit', 'Kale', 'Caulifla', 'Kefla'],
+  u11: ['Jiren', 'Toppo']
+};
+// Ordre d'affichage : le camp « principal » d'abord (Saiyan avant Terrien, etc.)
+const ORDRE_CAMPS = ['saiyan', 'namek', 'cyborg', 'demon', 'dieu', 'boss', 'u6', 'u11', 'terrien'];
+const CAMPS_OF = {};
+ORDRE_CAMPS.forEach(camp => CAMPS[camp].forEach(n => { const i = ID[n]; if (i !== undefined) (CAMPS_OF[i] = CAMPS_OF[i] || []).push(camp); }));
+const CAMP_OF = {}; // camp principal (couleur, compatibilité)
+Object.keys(CAMPS_OF).forEach(i => { CAMP_OF[i] = CAMPS_OF[i][0]; });
+const campsId = id => CAMPS_OF[id] || [];
+const aCamp = (id, camp) => campsId(id).includes(camp);
+// Camps d'un combattant posé : Puar (Métamorphose) prend en plus le camp copié
+const campsDe = inst => inst ? (inst.campCopie ? [...new Set([...campsId(inst.id), inst.campCopie])] : campsId(inst.id)) : [];
+const instCamp = (inst, camp) => campsDe(inst).includes(camp);
+const aAb = (id, code) => CARDS[id].a.some(x => x[0] === code);
+
+/* Familles : Rivalités entre combattants liés. Alliés = +1 si un allié est présent du même côté. Rivaux = +1 si un rival est en face. */
+const FAMILLES = {
+  goku: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant'], // Goku Black n'est pas Goku (c'est Zamasu dans son corps)
+  vegeta: ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego'],
+  gohan: ['Son Gohan', 'Gohan Super Saiyan 2'],
+  piccolo: ['Piccolo'],
+  krillin: ['Krillin'],
+  tenshinhan: ['Tenshinhan'],
+  trunks: ['Trunks', 'Trunks Super Saiyan'],
+  goten: ['Goten'],
+  cell: ['Cell', 'Cell parfait'],
+  freezer: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer'],
+  buu: ['Majin Buu', 'Super Buu', 'Kid Buu'],
+  jiren: ['Jiren'],
+  hit: ['Hit'],
+  kale: ['Kale'],
+  caulifla: ['Caulifla']
+};
+const FAM_OF = {};
+Object.keys(FAMILLES).forEach(f => FAMILLES[f].forEach(n => { FAM_OF[n] = f; }));
+const ALLIES = [['goku', 'vegeta'], ['gohan', 'piccolo'], ['krillin', 'tenshinhan'], ['trunks', 'goku'], ['trunks', 'vegeta'], ['gohan', 'trunks']];
+const LIENS_SPECIAUX = [
+  { key: 'bulma', nom: 'Touche pas à ma Bulma !', a: n => FAM_OF[n] === 'vegeta', b: n => n === 'Bulma' },
+  { key: 'pere-fils-goku', nom: 'Père fils', a: n => ['Son Goku','Goku Super Saiyan','Goku Ultra Instinct'].includes(n), b: n => ['Son Gohan','Gohan Super Saiyan 2','Goten'].includes(n) },
+  { key: 'pere-fils-vegeta', nom: 'Père fils', a: n => FAM_OF[n] === 'vegeta', b: n => FAM_OF[n] === 'trunks' }
+];
+function lienSpecial(aId,bId){
+  const a=CARDS[aId].n,b=CARDS[bId].n;
+  return LIENS_SPECIAUX.find(l => (l.a(a)&&l.b(b)) || (l.a(b)&&l.b(a)));
+}
+const RIVAUX = [['gohan', 'cell'], ['goku', 'freezer'], ['vegeta', 'freezer'], ['goku', 'jiren'], ['goku', 'hit'], ['gohan', 'buu']];
+/* Liens permanents à effet : actifs tant que les deux cartes sont sur le même plateau (ni ATT, ni trait entre adversaires) */
+const nomC = id => CARDS[id].n;
+const LIENS_EFFETS = [
+  { key: 'amour', nom: 'Amour de Yamcha', ok: (a, b) => nomC(a) === 'Yamcha' && nomC(b) === 'Bulma' },
+  { key: 'serviteur', nom: 'Serviteur', ok: (a, b) => nomC(a) === 'Whis' && nomC(b) === 'Beerus' },
+  { key: 'pere-spirituel', nom: 'Père spirituel', ok: (a, b) => nomC(a) === 'Piccolo' && famOf(b) === 'gohan' },
+  { key: 'maitre-sorcier', nom: 'Maître sorcier', ok: (a, b) => nomC(a) === 'Babidi' && nomC(b) === 'Dabra' },
+  { key: 'amis', nom: "Amis d'enfance", ok: (a, b) => famOf(a) === 'goku' && nomC(b) === 'Krillin' },
+  { key: 'universe6', nom: 'Universe 6', ok: (a, b) => nomC(a) === 'Kale' && nomC(b) === 'Caulifla' },
+  { key: 'couple', nom: 'Couple', ok: (a, b) => nomC(a) === 'Krillin' && nomC(b) === 'C-18' },
+];
+function lienEffet(a, b){ return LIENS_EFFETS.find(l => l.ok(a, b) || l.ok(b, a)); }
+// Texte des liens pour la carte zoomée (cartes concernées par nom)
+const GOKU_DUEL = ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant'];
+const VEGETA_DUEL = ['Vegeta', 'Vegeta Super Saiyan', 'Vegeta Majin', 'Vegeta Ultra Ego'];
+const LIENS_INFO = [
+  { nom: 'Amour de Yamcha', cartes: ['Yamcha', 'Bulma'], texte: 'Yamcha reçoit les rayons visant Bulma, une fois par tour adverse.' },
+  { nom: 'Serviteur', cartes: ['Whis', 'Beerus'], texte: 'Whis reçoit les rayons visant Beerus, une fois par tour adverse.' },
+  { nom: 'Père spirituel', cartes: ['Piccolo', 'Son Gohan', 'Gohan Super Saiyan 2'], texte: 'Piccolo soigne 1 dégât à Gohan en début de ton tour.' },
+  { nom: 'Maître sorcier', cartes: ['Babidi', 'Dabra'], texte: 'Babidi gagne 1 Ki en début de ton tour tant que Dabra est en jeu.' },
+  { nom: "Amis d'enfance", cartes: ['Son Goku', 'Goku Super Saiyan', 'Goku Ultra Instinct', 'Son Goku enfant', 'Krillin'], texte: "Quand l'un est mis KO, l'autre gagne 1 Ki (tous deux en jeu)." },
+  { nom: 'Universe 6', cartes: ['Kale', 'Caulifla'], texte: "Quand l'un est posé, l'autre gagne 1 Ki." },
+  { nom: 'Couple', cartes: ['Krillin', 'C-18'], texte: 'Le premier dégât reçu par chacun est réduit de 1.' },
+  { nom: 'Duel', cartes: [...GOKU_DUEL, ...VEGETA_DUEL], texte: "Un rayon entre Goku et Vegeta inflige 1 dégât de plus, quel que soit le plateau." },
+  { nom: 'Vengeance', cartes: ['Broly', ...GOKU_DUEL], texte: "Un rayon de Broly contre Goku inflige 1 dégât de plus, quel que soit le plateau." },
+];
+function lienInfosCarte(id){
+  const n = CARDS[id].n;
+  const lignes = LIENS_INFO.filter(l => l.cartes.includes(n));
+  return lignes.length ? `<div class="zliens"><b>Liens</b>${lignes.map(l => `<div><b>${esc(l.nom)}</b> : ${esc(l.texte)}</div>`).join('')}</div>` : '';
+}
+// Protections : un rayon visant le second est reçu par le premier (une fois par tour adverse, rayons seulement)
+const PROTECTIONS = [['Yamcha', 'Bulma'], ['Whis', 'Beerus']];
+function protecteurDe(p, s){
+  const inst = P[p].slots[s]; if (!inst) return -1;
+  const pr = PROTECTIONS.find(([, x]) => nomC(inst.id) === x); if (!pr) return -1;
+  return P[p].slots.findIndex(o => o && nomC(o.id) === pr[0] && !o.redirUsed);
+}
+// Liens d'attaque (Duel, Vengeance) : +1 dégât au rayon, quel que soit le plateau de chaque combattant
+function bonusRayon(att, tgtP, tgtS){
+  const t = P[tgtP].slots[tgtS]; if (!att || !t) return null;
+  const fa = famOf(att.id), ft = famOf(t.id);
+  if ((fa === 'goku' && ft === 'vegeta') || (fa === 'vegeta' && ft === 'goku')) return 'Duel';
+  if (nomC(att.id) === 'Broly' && ft === 'goku') return 'Vengeance';
+  return null;
+}
+const paire = (liste, a, b) => !!a && !!b && liste.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+
+/* Fusions : deux combattants sur le plateau deviennent un seul. */
+const FUSIONS = [
+  { a: 'goku', b: 'vegeta', ki: 7, res: 'Gogeta blue', nom: 'Gogeta blue' },
+  { a: 'goku', b: 'vegeta', ki: 6, res: 'Vegetto', nom: 'Vegetto' },
+  { a: 'goten', b: 'trunks', ki: 4, res: 'Gotenks', nom: 'Gotenks' },
+  { a: 'kale', b: 'caulifla', ki: 5, res: 'Kefla', nom: 'Kefla' },
+];
+// Cartes de fusion : jamais posées seules, seulement en fusionnant (comme une évolution sur son combattant)
+const FUSION_RES = FUSIONS.map(f => f.res);
+
+/* ---------- Sauvegardes locales ---------- */
+const lire = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v === null || v === undefined) ? d : v; } catch (e) { return d; } };
+const ecrire = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const STARTER = CARDS.map((_, i) => i).filter(i => CARDS[i].e < 0 && CARDS[i].k <= 4 && !FUSION_RES.includes(CARDS[i].n)); // cartes de base (coût 4 Ki ou moins) : de quoi composer un deck de 20
+// Index valides uniquement (une sauvegarde corrompue ne doit pas faire planter le jeu)
+const valideIndex = a => Array.isArray(a) ? [...new Set(a.filter(i => Number.isInteger(i) && i >= 0 && i < CARDS.length))] : [];
+let collection = [...new Set([...valideIndex(lire('dbzLoreColl', [])), ...STARTER])];
+let deckPerso = valideIndex(lire('dbzLoreDeck', [])); if (!deckPerso.length) deckPerso = null;
+let stats = lire('dbzLoreStats', { victoires: 0, serie: 0, meilleure: 0, tournois: 0, nuls: 0, decks: {} });
+if (!stats.decks) stats.decks = {};
+let deckCle = null; // identifiant du deck de la partie en cours (statistiques par deck)
+let succes = lire('dbzLoreSucces', { kaio: false, genkidama: false });
+let tournoi = lire('dbzLoreTournoi', { etape: 0 });
+let mode = lire('dbzLoreMode', 'rapide');
+let partieMode = mode; // mode de la partie en cours (le bouton Mode ne change qu'à la partie suivante)
+let vitesse = lire('dbzLoreVitesse', 'normale');
+
+/* ---------- Etat de la partie ---------- */
+let P = [], round = 1, wins = [0, 0], first = HUMAN, cur = HUMAN, sel = null, pending = null, over = false;
+let inGame = false, aiTimer = null, pendingAI = false, curBg = 0, finDerniere = null;
+let R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
+const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 6 }, difficile: { nom: 'Difficile', slots: 6 } };
+let niveau = lire('dbzLoreNiveau', 'normal');
+let NB = NIVEAUX[niveau].slots, mullMode = false;
+let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '';
+let overCb = null, stayCb = null, tutoEtape = 0, avantCoup = null, msgTimer = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+let noteTimer = null;
+function menuNote(t){
+  let el = document.getElementById('menuNote');
+  if (!el){ el = document.createElement('div'); el.id = 'menuNote'; el.className = 'menu-note'; el.setAttribute('aria-live', 'polite'); document.querySelector('.menu').insertAdjacentElement('afterend', el); }
+  el.textContent = t || '';
+  el.classList.toggle('visible', !!t);
+  clearTimeout(noteTimer);
+  if (t) noteTimer = setTimeout(() => el.classList.remove('visible'), 4000);
+}
+function msg(t){
+  const el = $('msg');
+  el.textContent = t || '';
+  el.classList.toggle('visible', !!t);
+  clearTimeout(msgTimer);
+  if (t && !pending) msgTimer = setTimeout(() => el.classList.remove('visible'), 3500);
+}
+// Retour haptique (téléphones) et son court pour les KO
+function vib(ms){ try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+// Secousse de l'écran (évite d'empiler les secousses)
+function secouer(){
+  try {
+    if (document.body.classList.contains('secoue')) return;
+    document.body.classList.add('secoue');
+    setTimeout(() => document.body.classList.remove('secoue'), 500);
+  } catch (e) {}
+}
+// Esquive : secousse de l'écran et mot « Esquive » au centre
+function esquiveFx(){
+  try {
+    document.body.classList.remove('secoue'); void document.body.offsetWidth; document.body.classList.add('secoue');
+    setTimeout(() => document.body.classList.remove('secoue'), 500);
+    vib(20);
+  } catch (e) {}
+  if (document.querySelector('.esquive-fx')) return;
+  const el = document.createElement('div');
+  el.className = 'esquive-fx'; el.textContent = 'Esquive';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1800);
+}
+function sfxKo(){ sfx(330, 150, 'sawtooth'); }
+// Mise en forme du journal : noms des joueurs en gras, attaques en bleu, fusions et évolutions en violet
+const ATTAQUES_JOURNAL = ["Rayon d'énergie", 'Double rayon', 'Genkidama', 'Onde de choc', 'Explosion', 'Furie', 'Régénération', 'Assimilation', 'Scouter', 'Maîtrise du Ki', 'Barrière cyborg', 'Sursaut du héros', 'Rayon', 'rayon'];
+const reEchap = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function formaterJournal(t){
+  const joueurs = ['Toi', oppNom()].map(reEchap);
+  const re = new RegExp(`(?<!\\p{L})(?:(${joueurs.join('|')})|(${ATTAQUES_JOURNAL.map(reEchap).join('|')}))(?!\\p{L})`, 'gu');
+  let out = '', last = 0, m;
+  while ((m = re.exec(t))){
+    out += esc(t.slice(last, m.index));
+    out += m[1] ? `<b>${esc(m[1])}</b>` : `<span class="jr-bleu">${esc(m[2])}</span>`;
+    last = re.lastIndex;
+  }
+  out += esc(t.slice(last));
+  return /fusion|\(évolution\)/i.test(t) ? `<span class="jr-violet">${out}</span>` : out;
+}
+function jour(t){ journal.unshift(t); if (journal.length > 500) journal.length = 500; }
+const idx = () => Array.from({ length: NB }, (_, k) => k);
+const adv = () => (advIdx >= 0 ? ADVERSAIRES[advIdx] : null);
+const oppNom = () => (adv() ? adv().nom : 'Ennemi');
+const nom = p => (p === HUMAN ? 'Toi' : oppNom());
+
+function pickBg(){
+  let i = Math.floor(Math.random() * BGS.length);
+  try { i = ((parseInt(localStorage.getItem('dbzLoreBg'), 10) || 0) + 1) % BGS.length; localStorage.setItem('dbzLoreBg', String(i)); } catch (e) {}
+  curBg = i;
+  document.body.style.backgroundImage = `url(${BGS[i]})`;
+}
+
+/* ---------- Capacités et ATT ---------- */
+const hasAb = (inst, code) => CARDS[inst.id].a.some(x => x[0] === code);
+const abVal = (id, code) => { const x = CARDS[id].a.find(x => x[0] === code); return x ? x[1] : 0; };
+const famOf = id => FAM_OF[CARDS[id].n] || null;
+
+// ATT de base : carte + bonus - dégâts
+function baseVal(p, s){ const inst = P[p].slots[s]; return inst ? CARDS[inst.id].p + inst.bonus + 2 * (inst.liensActifs || []).length - inst.dmg : 0; }
+
+// Détail de l’ATT : valeur et liste des bonus actifs (utilisée pour les icônes)
+function detailATT(p, s, sansCond){
+  const inst = P[p].slots[s];
+  if (!inst) return { v: 0, bonus: [] };
+  const sl = P[p].slots, id = inst.id;
+  let v = baseVal(p, s);
+  const bonus = [];
+  // Pétrifié (Dabra) : ATT figée, aucun bonus. Solitaire (Jiren) : ne reçoit aucun bonus.
+  if (inst.petrifie) return { v, bonus: ['petrifie'] };
+  if (hasAb(inst, 'solitaire')) return { v, bonus };
+  [...new Set((inst.liensActifs || []).map(l => l.type === 'bulma' ? 'lienBulma' : 'lienPere'))].forEach(k => bonus.push(k));
+  sl.forEach((o, j) => { if (o && j !== s && hasAb(o, 'soutien')){ v += 1; bonus.push('soutien'); } });
+  const cs = campsDe(inst);
+  if (cs.includes('demon')) sl.forEach((o, j) => { if (o && j !== s && hasAb(o, 'sorcier')){ v += abVal(o.id, 'sorcier'); if (!bonus.includes('sorcier')) bonus.push('sorcier'); } });
+  if (cs.length){
+    // Tempérament : +1 par camp partagé avec au moins un allié, au maximum +2
+    const partages = cs.filter(c => sl.some((o, j) => j !== s && o && campsDe(o).includes(c))).length;
+    if (partages){ v += Math.min(2, partages); bonus.push('camp'); }
+    // Comparaison sans les bonus Enragé et Survie (évite la récursion et reste lisible pour le joueur)
+    if (!sansCond && cs.includes('saiyan') && totalSansCond(p) < totalSansCond(1 - p)){ v += 1; bonus.push('enrage'); }
+    if (!sansCond && cs.includes('u11') && totalSansCond(p) < totalSansCond(1 - p)){ v += 1; bonus.push('survie'); }
+  }
+  const fam = famOf(id);
+  if (fam){
+    if (sl.some((o, j) => j !== s && o && paire(ALLIES, fam, famOf(o.id)))){ v += 1; bonus.push('allie'); }
+    if (P[1-p].slots.some(o => o && paire(RIVAUX, fam, famOf(o.id)))){ v += 1; bonus.push('rival'); }
+  }
+  return { v, bonus };
+}
+function att(p, s){ return detailATT(p, s).v; }
+function totalSansCond(p){ return idx().reduce((a, s) => a + detailATT(p, s, true).v, 0); }
+function total(p){ return idx().reduce((a, s) => a + att(p, s), 0); }
+function strongest(p, onlyStrikable){
+  let best = -1, bv = -Infinity;
+  P[p].slots.forEach((o, s) => {
+    if (!o) return;
+    if (onlyStrikable && hasAb(o, 'divin')) return;
+    const v = att(p, s);
+    if (v > bv){ bv = v; best = s; }
+  });
+  return best;
+}
+// Un combattant Divin ignore les rayons, sauf ceux tirés par un Dieu
+function immuniseRayon(inst, attId){ return !!inst && hasAb(inst, 'divin') && !(attId !== undefined && attId !== null && aCamp(attId, 'dieu')); }
+// Dégâts d'un rayon : liens Duel / Vengeance (+1), épée de Trunks (x2 contre Freezer et les cyborgs)
+function degatsRayon(attInst, tp, ts, base){
+  const t = P[tp].slots[ts]; let n = base;
+  const lien = bonusRayon(attInst, tp, ts);
+  if (lien){ n += 1; jour(`${lien} : +1 dégât.`); }
+  if (attInst && t && hasAb(attInst, 'epee') && (famOf(t.id) === 'freezer' || instCamp(t, 'cyborg'))){ n *= 2; jour(`Épée de Trunks : dégâts doublés contre ${CARDS[t.id].n}.`); }
+  return n;
+}
+// from : { p, id } du combattant qui attaque (pour Divin, attaque perçante et contre-attaque)
+function hit(p, s, n, src, from){
+  const inst = P[p].slots[s];
+  if (!inst) return;
+  const qui = src ? src + ' : ' : '';
+  const estRayon = !!src && src.startsWith('Rayon de ');
+  const perce = estRayon && from && aAb(from.id, 'percant');
+  if (estRayon){
+    // Protection : un rayon visant Bulma ou Beerus est reçu par Yamcha ou Whis (une fois par tour adverse)
+    const pr = protecteurDe(p, s);
+    if (pr >= 0){
+      P[p].slots[pr].redirUsed = true;
+      jour(`${qui}${CARDS[inst.id].n} est protégé : ${CARDS[P[p].slots[pr].id].n} reçoit le rayon à sa place.`);
+      return hit(p, pr, n, src, from);
+    }
+    // Leurre (Oolong) : il se métamorphose et reçoit le prochain rayon visant un allié
+    if (!hasAb(inst, 'leurre')){
+      const lr = P[p].slots.findIndex(o => o && hasAb(o, 'leurre') && !o.leurreUsed);
+      if (lr >= 0){
+        P[p].slots[lr].leurreUsed = true;
+        jour(`${qui}Métamorphose : ${CARDS[P[p].slots[lr].id].n} prend l'apparence de ${CARDS[inst.id].n} et reçoit le rayon.`);
+        return hit(p, lr, n, src, from);
+      }
+    }
+    if (immuniseRayon(inst, from ? from.id : null)){ jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) est Divin : ce rayon ne le touche pas.`); return; }
+  }
+  // Esquive : un peu de hasard (40 % maximum), jamais deux esquives de suite pour le même combattant
+  const esq = Math.min(40, abVal(inst.id, 'esquive'));
+  if (esq && !perce){
+    if (!inst.esqDerniere && Math.random() * 100 < esq){
+      inst.esqDerniere = true;
+      jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) esquive l'attaque.`); esquiveFx();
+      const ct = abVal(inst.id, 'contre');
+      if (ct && from){
+        const fs = P[from.p].slots.findIndex(o => o && o.id === from.id);
+        if (fs >= 0){ jour(`Ultra Instinct : ${CARDS[inst.id].n} contre-attaque.`); hit(from.p, fs, ct, 'Contre-attaque de ' + CARDS[inst.id].n, { p, id: inst.id }); }
+      }
+      return;
+    }
+    inst.esqDerniere = false;
+  }
+  if (instCamp(inst, 'cyborg') && !perce){
+    const bloque = Math.min(abVal(inst.id, 'barriere') || 1, n);
+    n -= bloque;
+    if (bloque) jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) : barrière cyborg, ${bloque} dégât${bloque > 1 ? 's' : ''} bloqué${bloque > 1 ? 's' : ''}.`);
+    if (n <= 0) return;
+  }
+  // Immortel (Zamasu) : seul le Hakai peut le mettre KO
+  if (hasAb(inst, 'immortel') && !(src || '').startsWith('Hakai')){
+    n = Math.min(n, att(p, s) - 1);
+    if (n <= 0){ jour(`${qui}${CARDS[inst.id].n} est immortel : il ne tombe pas.`); return; }
+  }
+  // Solitaire (Jiren) : dégâts divisés par 2
+  if (hasAb(inst, 'solitaire')){ n = Math.ceil(n / 2); jour(`${qui}${CARDS[inst.id].n} encaisse : dégâts divisés par 2.`); }
+  // Ultra Ego : les premiers coups reçus renforcent Vegeta au lieu de l'affaiblir
+  const ego = abVal(inst.id, 'ultraego');
+  if (ego && (inst.ego || 0) < ego){
+    inst.ego = (inst.ego || 0) + 1;
+    inst.bonus += 1;
+    jour(`${qui}Ultra Ego : ${CARDS[inst.id].n} encaisse et gagne +1 ATT (${inst.ego}/${ego}).`);
+    return;
+  }
+  // Couple : le premier dégât reçu par chacun des deux est réduit de 1 (tant qu'ils sont ensemble)
+  const partenaire = nomC(inst.id) === 'Krillin' ? 'C-18' : nomC(inst.id) === 'C-18' ? 'Krillin' : null;
+  if (partenaire && !inst.coupleUsed && P[p].slots.some((o, j) => j !== s && o && nomC(o.id) === partenaire)){
+    inst.coupleUsed = true;
+    n -= 1;
+    jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) : Couple, 1 dégât en moins sur ce premier coup.`);
+    if (n <= 0) return;
+  }
+  secouer();
+  inst.dmg += n;
+  inst.attTouche = Date.now(); // l'ATT clignote 3 secondes après une attaque
+  if (hasAb(inst, 'absorbKi')){ P[p].ki = Math.min(R.kiMax, P[p].ki + 1); jour(`${CARDS[inst.id].n} absorbe l'énergie de l'attaque (+1 Ki).`); }
+  vib(12);
+  const reste = att(p, s);
+  jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) perd ${n} ATT, il lui reste ${Math.max(0, reste)}.`);
+  if (reste <= 0) ko(p, s);
+}
+// Cartes mises KO récemment : l'adversaire ne peut pas reposer un autre exemplaire sur la même case
+let koRecents = [];
+function ko(p, s){
+  const inst = P[p].slots[s];
+  if (!inst) return;
+  P[p].slots[s] = null;
+  koRecents.push({ p, s, id: inst.id });
+  sfxKo(); vib(40);
+  P[p].ki = Math.min(R.kiMax, P[p].ki + 1); // Ki de combat : +1 au propriétaire du combattant KO
+  const id = inst.id;
+  jour(`${nom(p)} : ${CARDS[id].n} est mis KO (+1 Ki).`);
+  if ((famOf(id) === 'goku' && P[p].slots.some(o => o && nomC(o.id) === 'Krillin')) || (nomC(id) === 'Krillin' && P[p].slots.some(o => o && famOf(o.id) === 'goku'))){
+    P[p].ki = Math.min(R.kiMax, P[p].ki + 1);
+    jour(`Amis d'enfance : ${nom(p)} gagne 1 Ki.`);
+  }
+  if (hasAb(inst, 'regen') && (abVal(id, 'regen') >= 2 || !P[p].regenUsed.includes(id))){
+    P[p].regenUsed.push(id);
+    P[p].hand.push(id);
+    msg(`${CARDS[id].n} se régénère et revient dans ta main.`);
+  } else {
+    P[p].disc.push(id);
+  }
+  P[p].slots.forEach(o => { if (o && hasAb(o, 'furie')) o.bonus += Math.max(1, abVal(o.id, 'furie')); });
+  P[1-p].slots.forEach(o => { if (o && hasAb(o, 'absorb')) o.bonus += 2; });
+  if (aCamp(id, 'terrien') && P[p].slots.some(o => o && instCamp(o, 'terrien'))){
+    P[p].slots.forEach(o => { if (o && instCamp(o, 'terrien')) o.bonus += 1; });
+    jour('Entraide : les Terriens alliés gagnent +1 ATT.');
+  }
+  if (aCamp(id, 'saiyan') && P[1-p].slots.some(o => o && instCamp(o, 'boss'))){
+    P[1-p].slots.forEach(o => { if (o && instCamp(o, 'boss')) o.bonus += 1; });
+    jour('Rancune : les Boss gagnent +1 ATT.');
+  }
+  const ex = abVal(id, 'explosion');
+  if (ex){
+    const t = strongest(1-p);
+    if (t >= 0) hit(1-p, t, ex, 'Explosion de ' + CARDS[id].n, { p, id });
+  }
+  // Final Explosion (Vegeta Majin) : en tombant, il frappe tous les ennemis
+  const fe = abVal(id, 'finalexp');
+  if (fe){
+    jour(`Final Explosion de ${CARDS[id].n} : ${fe} dégâts à chaque ennemi.`);
+    idx().forEach(j => { if (P[1-p].slots[j]) hit(1-p, j, fe, 'Final Explosion', { p, id }); });
+  }
+  // Genkidama en préparation : un KO de l'un de ses combattants pendant le tour adverse l'annule
+  if (P[p].genkiPrete && cur !== p) annulerGenki(p, 'un de ses combattants est mis KO');
+}
+
+/* ---------- Decks ---------- */
+// Deck du joueur : le deck choisi ; sans deck choisi, 20 cartes tirées au hasard dans TOUTE la collection
+// (les cartes gagnées en tournoi, évolutions comprises, peuvent donc être distribuées). Aucun complément : seules les cartes possédées entrent dans le deck.
+function deckJoueur(){
+  const perso = (deckPerso && deckPerso.length) ? [...new Set(deckPerso.filter(i => collection.includes(i)))].slice(0, DECK_MAX) : null;
+  const ids = perso || shuffle(collection.slice()).slice(0, DECK_MAX);
+  return shuffle(ids);
+}
+// Point de départ de l'éditeur de deck : le deck enregistré, sinon les 20 premières cartes possédées
+function deckEditionDepart(){
+  const base = (deckPerso && deckPerso.length) ? deckPerso.filter(i => collection.includes(i)) : collection.slice(0, DECK_MAX);
+  return [...new Set(base)].slice(0, DECK_MAX);
+}
+// Deck aléatoire, pour le mode Rapide et l'ordinateur
+function deckAleatoire(){
+  const all = CARDS.map((_, i) => i);
+  const base = shuffle(all.filter(i => CARDS[i].e < 0)).slice(0, 8);
+  const rest = shuffle(all.filter(i => !base.includes(i))).slice(0, 12);
+  return shuffle([...base, ...rest]);
+}
+// Deck d'un adversaire du tournoi : son équipe en priorité, complétée à 20
+function deckAdversaire(a){
+  const team = [...new Set(a.equipe.map(n => ID[n]).filter(x => x !== undefined))];
+  const pool = shuffle([...team, ...team]).slice(0, DECK_MAX);
+  const reste = shuffle(CARDS.map((_, i) => i).filter(i => !pool.includes(i)));
+  while (pool.length < DECK_MAX && reste.length) pool.push(reste.pop());
+  return shuffle(pool);
+}
+function makePlayer(name, ids){
+  return { name, deck: ids.slice(), hand: [], disc: [], slots: Array(NB).fill(null), ki: 0, passed: false, regenUsed: [], actions: 0, soutiens: 0, aCharge: false, genkiPrete: false, genkiUsee: false, whisUsee: false, hakaiManche: false, aveugle: false };
+}
+function draw(p, tour){
+  if (!tour && p.hand.length >= HAND_SIZE) return;
+  // Pioche vide : la défausse est remélangée dans la pioche (sinon la main se vide et le joueur ne peut plus jouer)
+  if (!p.deck.length && p.disc.length){
+    p.deck = p.disc.slice();
+    p.disc = [];
+    for (let i = p.deck.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [p.deck[i], p.deck[j]] = [p.deck[j], p.deck[i]]; }
+    const i = P.indexOf(p);
+    jour(`${nom(i)} : la défausse est remélangée dans la pioche.`);
+  }
+  if (p.deck.length) p.hand.push(p.deck.pop());
+}
+
+/* ---------- Manches et tours ---------- */
+function newGame(){
+  clearTimeout(vueTimer); vueTimer = null;
+  pickBg();
+  inGame = true; over = false; finDerniere = null; history.pushState({ g: 1 }, ''); startMusic();
+  partieMode = mode;
+  R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
+  if (mode === 'defi'){
+    const d = DEFIS[Math.floor(Date.now() / 86400000) % DEFIS.length];
+    R = Object.assign(R, d);
+  }
+  advIdx = partieMode === 'tournoi' ? Math.min(tournoi.etape, ADVERSAIRES.length - 1) : -1;
+  const deckIA = advIdx >= 0 ? deckAdversaire(ADVERSAIRES[advIdx]) : deckAleatoire();
+  NB = NIVEAUX[niveau].slots; mullMode = false;
+  P = [makePlayer('Toi', deckJoueur()), makePlayer(oppNom(), deckIA)];
+  deckCle = deckSignature(); statsDeck();
+  round = 1; wins = [0,0]; first = HUMAN; sursaut = null; mullUsed = false;
+  journal = [];
+  jour(`Nouvelle partie : mode ${MODES[mode]}${advIdx >= 0 ? ' contre ' + oppNom() : ''}${R.nom ? ' · ' + R.nom : ''}.`);
+  $('over').classList.add('hidden');
+  startRound();
+  msg('Première manche. Choisis une carte de ta main puis un emplacement.');
+  if (!lire('dbzLoreTuto', false)) montrerTuto(0);
+}
+
+function startRound(){
+  finDerniere = null;
+  // Montée en puissance : le Ki de départ augmente de 2 à chaque manche (2, 4, 6), comme les sagas
+  P.forEach(p => {
+    p.ki = Math.min(R.kiMax, R.kiDebut + 2 * (round - 1)); p.regenUsed = []; p.actions = 0; p.soutiens = 0; p.hakaiManche = false; p.aveugle = false;
+    p.slots.forEach(x => { if (x) p.disc.push(x.id); });
+    p.slots = Array(NB).fill(null);
+    while (p.hand.length < HAND_SIZE && p.deck.length) draw(p);
+  });
+  if (sursaut !== null){
+    P[sursaut].ki = Math.min(R.kiMax, P[sursaut].ki + 1);
+    jour(`${nom(sursaut)} : sursaut du héros (+1 Ki), il commence la manche.`);
+    sursaut = null;
+  }
+  cur = first;
+  jour(`Manche ${round} : ${nom(cur)} commence.`);
+  startTurn();
+}
+
+// Namek : au début de son tour, le camp Namek soigne 1 dégât de ses combattants
+// Petits cœurs au-dessus du plateau du joueur soigné
+function coeurs(p){
+  const row = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
+  if (!row) return;
+  const r = row.getBoundingClientRect();
+  for (let k = 0; k < 6; k++){
+    const h = document.createElement('span');
+    h.className = 'coeur-fx'; h.textContent = '♥';
+    h.style.left = (r.left + r.width * (0.1 + 0.8 * Math.random())) + 'px';
+    h.style.top = (r.top + r.height / 2) + 'px';
+    h.style.animationDelay = (k * 0.12) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1600 + k * 120);
+  }
+}
+function namekSoin(p){
+  const sl = P[p].slots;
+  if (!sl.some(o => o && instCamp(o, 'namek'))) return;
+  let soigne = false;
+  sl.forEach(o => { if (o && o.dmg > 0 && !o.petrifie){ o.dmg--; soigne = true; } });
+  if (soigne){ jour(`${nom(p)} : Namek régénère ses combattants (+1 ATT).`); coeurs(p); }
+}
+
+// Liens de début de tour : Père spirituel (Piccolo soigne Gohan), Maître sorcier (Babidi gagne 1 Ki avec Dabra)
+// Légendaire (Broly) : il grandit à chaque début de tour (+2, jusqu'à +6), mais en Berserk il peut frapper un allié (20 %)
+let snapTour = [null, null], seqActions = 0;
+function legendaire(p){
+  const sl = P[p].slots;
+  sl.forEach((o, s) => {
+    if (!o || !hasAb(o, 'legendaire')) return;
+    const max = abVal(o.id, 'legendaire');
+    if ((o.leg || 0) < max){ o.leg = (o.leg || 0) + 2; o.bonus += 2; jour(`Super Saiyan légendaire : ${CARDS[o.id].n} gagne +2 ATT.`); }
+    const allies = idx().filter(j => j !== s && sl[j]);
+    if (allies.length && Math.random() < 0.2){
+      const j = allies[Math.floor(Math.random() * allies.length)];
+      jour(`Berserk : ${CARDS[o.id].n} perd le contrôle et frappe ${CARDS[sl[j].id].n}.`);
+      hit(p, j, 3, 'Berserk de ' + CARDS[o.id].n);
+    }
+  });
+}
+function liensDebutTour(p){
+  const sl = P[p].slots;
+  if (sl.some(o => o && nomC(o.id) === 'Piccolo')){
+    let soigne = false;
+    sl.forEach(o => { if (o && famOf(o.id) === 'gohan' && o.dmg > 0){ o.dmg--; soigne = true; jour(`Père spirituel : Piccolo soigne 1 dégât à ${CARDS[o.id].n}.`); } });
+    if (soigne) coeurs(p);
+  }
+  if (sl.some(o => o && nomC(o.id) === 'Babidi') && sl.some(o => o && nomC(o.id) === 'Dabra')){
+    P[p].ki = Math.min(R.kiMax, P[p].ki + 1);
+    jour(`Maître sorcier : ${nom(p)} gagne 1 Ki (Babidi et Dabra).`);
+  }
+}
+function startTurn(){
+  if (over) return;
+  const p = P[cur];
+  // Le Genkidama préparé par ce joueur part maintenant (elle n'a pas été annulée)
+  if (p.genkiPrete){ p.genkiPrete = false; genkidama(cur); }
+  p.ki = Math.min(R.kiMax, p.ki + R.kiTour);
+  if (p.slots.some(o => o && instCamp(o, 'dieu'))){
+    p.ki = Math.min(R.kiMax, p.ki + 1);
+    jour(`Aura divine : ${nom(cur)} gagne 1 Ki supplémentaire.`);
+  }
+  draw(p, true);
+  p.slots.forEach(o => { if (o) o.redirUsed = false; }); // protections renouvelées à chaque tour du propriétaire
+  namekSoin(cur);
+  liensDebutTour(cur);
+  legendaire(cur);
+  // En dernière manche, l'épuisement réel des cartes ouvre une ultime charge éventuelle,
+  // puis l'adversaire joue seul jusqu'à ce qu'il ne puisse plus agir.
+  if (finDerniere && cur === finDerniere.epuise){
+    return endRound('L’adversaire a terminé sa séquence de jeu.');
+  }
+  if (!finDerniere && round >= MAX_ROUNDS && p.hand.length === 0 && p.deck.length === 0 && p.disc.length === 0){
+    finDerniere = { epuise: cur, adversaire: 1-cur };
+    // Gain réel d'une charge : +2 sous 6 Ki, sinon +1, sans dépasser le Ki max (comme dans charger()).
+    const gainCharge = Math.min(2, Math.max(0, R.kiMax - p.ki));
+    if (p.ki + gainCharge >= R.kiMax && !p.genkiUsee){
+      const gain = gainCharge;
+      p.ki = Math.min(R.kiMax, p.ki + gain);
+      p.aCharge = true;
+      p.genkiUsee = true;
+      p.genkiPrete = true;
+      jour(`${nom(cur)} : ${gain ? `dernière charge (+${gain} Ki)` : 'Ki déjà au maximum'}. Le Genkidama est préparé.`);
+    } else {
+      jour(`${nom(cur)} n’a plus de cartes : aucune dernière charge ne peut lui ouvrir le Genkidama.`);
+    }
+    cur = finDerniere.adversaire;
+    return startTurn();
+  }
+  // Pendant la séquence finale, l'adversaire conserve la main jusqu'à épuisement.
+  if (!peutAgir(cur)){
+    if (finDerniere && cur === finDerniere.adversaire) return endRound('L’adversaire ne peut plus agir.');
+    jour(`${nom(cur)} ne peut rien jouer : son tour est sauté.`);
+    const autre = 1 - cur;
+    if (!peutAgir(autre)) return endRound('Plus personne ne peut agir.');
+    cur = autre;
+    return startTurn();
+  }
+  sel = null; pending = null;
+  // Instantané du début de tour (Retour temporel de Whis)
+  snapTour[cur] = { round, seq: seqActions, P: JSON.stringify(P) };
+  if (cur === HUMAN) msg('À toi de jouer : une carte, Charger ou Fusion.');
+  else msg(`${oppNom()} réfléchit…`);
+  if (cur === HUMAN && P[AI].genkiPrete) msg(`${oppNom()} prépare le Genkidama : annule-le en payant ${R.kiMax} Ki, ou en mettant KO un de ses combattants.`);
+  render();
+  focusTurn();
+  if (cur === AI) scheduleAI(900);
+}
+
+// Un combattant dont l'ATT tombe à 0 ou moins (bonus perdu, total qui change) est mis KO, même si le coup ne l'a pas touché
+function koSiSansAtt(){
+  [HUMAN, AI].forEach(p => idx().forEach(s => {
+    if (P[p].slots[s] && att(p, s) <= 0) ko(p, s);
+  }));
+}
+function afterAction(estCharge){
+  if (over) return;
+  // Carte du joueur encore en vol : la suite attend la fin de l'animation (cur bloqué pendant ce temps)
+  if (cur === HUMAN && animJusquA > performance.now()){
+    cur = AI;
+    setTimeout(() => { cur = HUMAN; afterAction(estCharge); }, animJusquA - performance.now() + 20);
+    return;
+  }
+  avantCoup = null;
+  koSiSansAtt();
+  P[cur].actions++;
+  P[cur].aCharge = !!estCharge;
+  const jouaIA = cur === AI;
+  // Les bonus de liens spéciaux durent deux tours du propriétaire, après celui de la pose (la pose compte déjà une fin d'action).
+  P[cur].slots.forEach(o => {
+    if (o && o.liensActifs && o.liensActifs.length){
+      o.liensActifs.forEach(l => l.tours--);
+      const finis = o.liensActifs.filter(l => l.tours <= 0);
+      if (finis.length){ o.liensActifs = o.liensActifs.filter(l => l.tours > 0); jour(`${CARDS[o.id].n} : fin du lien temporaire (${finis.map(l => l.nom).join(', ')}).`); }
+    }
+  });
+  // Fusions temporaires (Gogeta blue, Vegetto Super Saiyan) : elles prennent fin après 3 tours
+  P[cur].slots.forEach((o, s) => {
+    if (!o || !o.fusTours) return;
+    o.fusTours--;
+    if (o.fusTours <= 0){
+      P[cur].slots[s] = null; P[cur].disc.push(o.id);
+      jour(`${nom(cur)} : la fusion ${CARDS[o.id].n} prend fin, le combattant quitte le plateau.`);
+      msg(`La fusion ${CARDS[o.id].n} prend fin.`);
+    }
+  });
+  seqActions++;
+  // Plateaux pleins des deux côtés : la manche est finie
+  if (P[HUMAN].slots.every(Boolean) && P[AI].slots.every(Boolean)) return endRound('Les deux plateaux sont pleins.');
+  // Dans la séquence finale, l'adversaire joue ses tours à la suite.
+  if (finDerniere && cur === finDerniere.adversaire) return startTurn();
+  // Sinon le tour passe à l'autre (s'il ne peut rien faire, startTurn le saute)
+  cur = 1 - cur;
+  if (jouaIA && cur === HUMAN){ pauseVueIA(); return; }
+  startTurn();
+}
+// Après un coup de l'adversaire, son plateau reste en évidence quelques secondes avant ton tour
+let vueTimer = null;
+function pauseVueIA(){
+  cur = AI; // bloque les actions pendant la pause
+  const plateau = $('oppBoard').closest('.board');
+  plateau.classList.add('vu');
+  render();
+  clearTimeout(vueTimer);
+  vueTimer = setTimeout(() => {
+    vueTimer = null;
+    plateau.classList.remove('vu');
+    if (over || !inGame) return;
+    cur = HUMAN;
+    startTurn();
+  }, 2000);
+}
+
+// Un joueur peut agir s'il peut poser une carte, ou charger son Ki
+function peutAgir(p){
+  if (P[p].ki < R.kiMax) return true;
+  if (genkiLancable(p) || genkiAnnulable(p)) return true;
+  return P[p].hand.some((id, i) => idx().some(s => peutJouer(p, i, s)));
+}
+
+// Genkidama : une fois par partie. Lancée à la main à 12 Ki, elle part au début du prochain tour du lanceur,
+// sauf si l'adversaire l'annule : en payant 12 Ki, ou en mettant KO un combattant du lanceur pendant le tour adverse.
+function genkiLancable(p){ return P[p].ki >= R.kiMax && !P[p].genkiUsee && !P[p].genkiPrete; }
+function genkiAnnulable(p){ return P[1-p].genkiPrete && P[p].ki >= R.kiMax; }
+function lancerGenkidama(p){
+  P[p].genkiUsee = true;
+  P[p].genkiPrete = true;
+  jour(`${nom(p)} prépare le Genkidama (Ki maintenu à ${R.kiMax}).`);
+  if (p === HUMAN) msg(`Genkidama lancé : il part au début de ton prochain tour, sauf annulation par ${oppNom()}.`);
+  afterAction(false);
+}
+function annulerParPaiement(p){
+  if (!genkiAnnulable(p)) return;
+  P[p].ki = 0;
+  annulerGenki(1 - p, `${nom(p)} paie ${R.kiMax} Ki`);
+  afterAction(false);
+}
+function annulerGenki(lanceur, raison){
+  P[lanceur].genkiPrete = false;
+  P[lanceur].ki = 0;
+  jour(`Le Genkidama de ${nom(lanceur)} est annulé (${raison}). Son Ki tombe à 0.`);
+}
+// Charge : pas deux charges de suite, sauf si aucune carte n'est jouable
+function chargeAutorisee(p){
+  return !P[p].aCharge || !P[p].hand.some((id, i) => idx().some(s => peutJouer(p, i, s)));
+}
+function peutCharger(p){ return P[p].ki < R.kiMax && chargeAutorisee(p); }
+
+// Charger : +2 Ki (sans dépasser le maximum)
+// Genkidama : Ki au maximum, l'énergie de tout le monde se rassemble sur l'ennemi
+function genkidama(p){
+  if (over) return;
+  const cible = 1 - p;
+  jour(`${nom(p)} : Genkidama ! 6 dégâts à chaque combattant ennemi.`);
+  P[cible].slots.forEach((inst, s) => { if (inst) hit(cible, s, 6, 'Genkidama'); });
+  P[p].ki = 0;
+  genkiFx();
+}
+// Plein écran avec l'image, tremblement de 2 secondes
+function genkiFx(){
+  const el = document.createElement('div');
+  el.className = 'genki-fx';
+  el.innerHTML = '<img src="../img/genkidama.jpg" alt=""><p>Ki au maximum : Genkidama !</p>';
+  // Rattaché à <html> : le tremblement de <body> ne doit pas déplacer ni recadrer l'overlay plein écran
+  document.documentElement.appendChild(el);
+  document.body.classList.add('secoue-long');
+  setTimeout(() => document.body.classList.remove('secoue-long'), 2000);
+  setTimeout(() => el.remove(), 2400);
+}
+
+function charger(p){
+  const me = P[p];
+  const gain = Math.min(2, R.kiMax - me.ki);
+  me.ki += gain;
+  jour(`${nom(p)} : charge son Ki (+${gain}).`);
+  if (p === HUMAN) msg(`Tu charges ton Ki (+${gain}). ${oppNom()} joue.`);
+  afterAction(true);
+}
+function onCharger(){
+  if (over || cur !== HUMAN || pending) return;
+  if (P[HUMAN].ki >= R.kiMax){ msg('Ton Ki est déjà au maximum.'); return; }
+  if (!chargeAutorisee(HUMAN)){ msg('Tu ne peux pas charger deux tours de suite. Joue une carte ce tour-ci : la charge redevient possible si tu ne peux rien jouer.'); return; }
+  sel = null;
+  charger(HUMAN);
+}
+
+let gainsVictoire = [];
+function endRound(raison){
+  // Dans la séquence finale, le Genkidama préparé est résolu après les tours adverses.
+  if (finDerniere && P[finDerniere.epuise].genkiPrete){ const lanceur=finDerniere.epuise; P[lanceur].genkiPrete=false; genkidama(lanceur); }
+  // Tout autre Genkidama encore en préparation à la fin de la manche est perdu.
+  P.forEach((p, i) => { if (p.genkiPrete){ p.genkiPrete = false; jour(`${nom(i)} : Genkidama perdu, la manche est finie.`); } });
+  const tt = [total(HUMAN), total(AI)];
+  let winner = null;
+  if (tt[0] > tt[1]) winner = HUMAN;
+  else if (tt[1] > tt[0]) winner = AI;
+  if (winner !== null) wins[winner]++;
+  const ecart = Math.abs(tt[0] - tt[1]);
+  const debloques = [];
+  if (winner === HUMAN && ecart === 1 && !succes.kaio){ succes.kaio = true; debloques.push(SUCCES.kaio); }
+  if (P[HUMAN].soutiens >= 3 && !succes.genkidama){ succes.genkidama = true; debloques.push(SUCCES.genkidama); }
+  if (debloques.length) ecrire('dbzLoreSucces', succes);
+  const head = winner === null ? 'Égalité' : (winner === HUMAN ? 'Tu remportes la manche' : `${oppNom()} remporte la manche`);
+  const text = `${raison ? 'Fin de manche : ' + raison + ' ' : ''}Toi ${tt[0]} – ${tt[1]} ${oppNom()}. Manches : ${wins[HUMAN]} – ${wins[AI]}.`;
+  jour(`Fin de la manche ${round} : ${tt[0]} – ${tt[1]}.`);
+  const matchOver = wins[HUMAN] >= ROUNDS_TO_WIN || wins[AI] >= ROUNDS_TO_WIN || round >= MAX_ROUNDS;
+  const html = resumeHTML() + (debloques.length ? `<p class="succes">Succès débloqué : ${debloques.join(', ')}</p>` : '');
+  if (matchOver){
+    over = true; inGame = false;
+    // Issue de la partie : victoire, défaite ou nul (égalité de manches à la fin)
+    const issue = wins[HUMAN] > wins[AI] ? 'victoire' : (wins[HUMAN] < wins[AI] ? 'defaite' : 'nul');
+    bilanMatch(issue);
+    let extra = '';
+    if (partieMode === 'tournoi'){
+      if (issue === 'victoire'){
+        const gains = recompenses(adv());
+        gainsVictoire = gains;
+        tournoi.etape++;
+        if (tournoi.etape >= ADVERSAIRES.length){
+          stats.tournois++; ecrire('dbzLoreStats', stats);
+          extra = 'Tu es champion du tournoi !';
+          tournoi.etape = 0;
+        } else {
+          extra = `Prochain adversaire : ${ADVERSAIRES[tournoi.etape].nom}.`;
+        }
+      } else if (issue === 'nul'){
+        // Nul : pas de progression ni de recul, le même adversaire est rejoué
+        extra = `Égalité : le tournoi reprend contre ${oppNom()}.`;
+      } else {
+        tournoi.etape = 0;
+        extra = `Défaite : le tournoi repart de ${ADVERSAIRES[0].nom}.`;
+      }
+      ecrire('dbzLoreTournoi', tournoi);
+    }
+    const final = issue === 'victoire' ? 'Tu remportes la partie !' : (issue === 'nul' ? 'Partie nulle !' : `${oppNom()} remporte la partie.`);
+    jour(final);
+    const fete = gainsVictoire.length ? victoireHTML(gainsVictoire) : '';
+    gainsVictoire = [];
+    if (issue === 'victoire') setTimeout(() => { sfx(523, 1046, 'triangle'); setTimeout(() => sfx(659, 1318, 'triangle'), 180); }, 150);
+    const bilan = `Manches : ${wins[HUMAN]} – ${wins[AI]}. Dernière manche : toi ${tt[0]} – ${tt[1]} ${oppNom()}.`;
+    showOver(final, `${bilan} ${extra}`.trim(), 'Rejouer', newGame, { html: fete + html });
+  } else {
+    sursaut = winner === null ? null : 1 - winner;
+    first = winner === null ? 1 - first : 1 - winner;
+    showOver(`${head} (manche ${round})`, text, 'Manche suivante', nextRound, { html });
+  }
+  render();
+}
+function nextRound(){
+  round++;
+  startRound();
+  msg(cur === HUMAN ? `Manche ${round}. À toi de jouer.` : `Manche ${round}. ${oppNom()} commence.`);
+}
+
+// Identifiant du deck : « aleatoire » ou la liste triée des cartes du deck enregistré
+function deckSignature(){
+  return (deckPerso && deckPerso.length) ? 'perso-' + [...deckPerso].sort((a, b) => a - b).join('-') : 'aleatoire';
+}
+function deckNomCourt(){
+  if (deckCle === 'aleatoire') return 'Deck aléatoire';
+  const noms = (deckPerso || []).slice(0, 3).map(i => CARDS[i].n).join(', ');
+  return `Deck : ${noms}${deckPerso && deckPerso.length > 3 ? '…' : ''} (${deckPerso ? deckPerso.length : 0} cartes)`;
+}
+function statsDeck(){
+  if (!stats.decks) stats.decks = {};
+  if (!deckCle) return null;
+  if (!stats.decks[deckCle]) stats.decks[deckCle] = { nom: deckNomCourt(), parties: 0, victoires: 0, nuls: 0, defaites: 0 };
+  return stats.decks[deckCle];
+}
+// Bilan d'une partie terminée : victoire, défaite ou nul
+function bilanMatch(issue){
+  if (issue === 'victoire'){ stats.victoires++; stats.serie++; stats.meilleure = Math.max(stats.meilleure, stats.serie); }
+  else if (issue === 'defaite') stats.serie = 0;   // un nul ne coupe pas la série
+  else stats.nuls = (stats.nuls || 0) + 1;
+  const d = statsDeck();
+  if (d){ d.parties++; d[issue === 'victoire' ? 'victoires' : (issue === 'nul' ? 'nuls' : 'defaites')]++; }
+  ecrire('dbzLoreStats', stats);
+}
+function rang(){
+  let r = RANGS[0];
+  RANGS.forEach(x => { if (stats.victoires >= x.min) r = x; });
+  return r;
+}
+
+// Poids de tirage : les cartes simples sont plus fréquentes, les évolutions sont rares
+function poids(i){ const c = CARDS[i]; return c.e >= 0 ? 1 : (c.p <= 4 ? 3 : (c.p <= 6 ? 2 : 1)); }
+function tirerPondere(liste, n){
+  const out = [], pool = liste.slice();
+  while (out.length < n && pool.length){
+    const tot = pool.reduce((a, i) => a + poids(i), 0);
+    let r = Math.random() * tot, k = 0;
+    for (; k < pool.length; k++){ r -= poids(pool[k]); if (r <= 0) break; }
+    if (k >= pool.length) k = pool.length - 1;
+    out.push(pool.splice(k, 1)[0]);
+  }
+  return out;
+}
+// Cartes gagnées après un adversaire battu : prioritairement dans son équipe
+function recompenses(a){
+  const team = a ? [...new Set(a.equipe.map(n => ID[n]).filter(x => x !== undefined))].filter(i => !collection.includes(i)) : [];
+  let cands = team;
+  if (!cands.length) cands = CARDS.map((_, i) => i).filter(i => !collection.includes(i));
+  const gain = tirerPondere(cands, 2);
+  gain.forEach(i => collection.push(i));
+  ecrire('dbzLoreColl', collection);
+  return gain;
+}
+
+// Écran de victoire : cartes gagnées + petite animation de fête
+function victoireHTML(ids){
+  const couleurs = ['#ffd34d', '#ff7a3d', '#3ddc84', '#4aa8ff', '#ff4fa3'];
+  const conf = Array.from({ length: 30 }, (_, i) => `<i style="left:${(i * 37) % 100}%;animation-delay:${((i * 7) % 10) * 0.12}s;background:${couleurs[i % 5]}"></i>`).join('');
+  const cartes = ids.map((id, i) => `<div class="gain" style="animation-delay:${0.4 + i * 0.2}s">${cardHTML(id)}</div>`).join('');
+  return `<div class="fete"><div class="confettis">${conf}</div><p class="gain-titre">Nouvelles cartes pour ton deck !</p><div class="gains">${cartes}</div></div>`;
+}
+function resumeHTML(){
+  const k = [P[HUMAN].ki, P[AI].ki];
+  const ligne = (label, v) => `<div class="jauge"><span>${esc(label)}</span><div class="barre"><i data-w="${Math.round(v / R.kiMax * 100)}"></i></div><b>${v}</b></div>`;
+  return `<div class="resume"><p>Ki en fin de manche</p>${ligne('Toi', k[0])}${ligne(oppNom(), k[1])}</div>`;
+}
+
+/* ---------- Fenêtres (modales) ---------- */
+function showOver(titre, texte, bouton, cb, opts){
+  opts = opts || {};
+  overCb = cb || null;
+  stayCb = opts.stayCb || null;
+  $('overTitle').textContent = titre;
+  $('overText').textContent = texte;
+  $('btnOver').textContent = bouton;
+  const res = $('overSummary');
+  res.innerHTML = opts.html || '';
+  res.hidden = !opts.html;
+  $('btnStay').hidden = !opts.stayLabel;
+  $('btnStay').textContent = opts.stayLabel || '';
+  $('over').classList.remove('hidden');
+  if (opts.html) setTimeout(() => document.querySelectorAll('#overSummary .barre i').forEach(el => { el.style.width = el.dataset.w + '%'; }), 60);
+}
+function fermerOver(){
+  $('over').classList.add('hidden');
+  $('overSummary').innerHTML = '';
+  $('btnStay').hidden = true;
+}
+function onOverButton(){
+  const cb = overCb;
+  overCb = null; stayCb = null;
+  fermerOver();
+  if (cb) cb();
+}
+function onStay(){
+  const cb = stayCb;
+  overCb = null; stayCb = null;
+  fermerOver();
+  if (cb) cb();
+  render();
+  resumeAI();
+}
+function fermerModal(id){
+  $(id).classList.add('hidden');
+  render();
+  resumeAI();
+}
+function askQuit(){
+  showOver('Quitter la partie ?', 'La partie en cours sera perdue.', 'Quitter', () => { inGame = false; proposerNouvellePartie(); }, { stayLabel: 'Continuer' });
+}
+function montrerInfo(o){
+  const im = $('inspImg');
+  if (o.img){ im.src = o.img; im.alt = o.nom; im.style.display = ''; }
+  else im.style.display = 'none';
+  $('inspName').textContent = o.nom;
+  $('inspTxt').textContent = o.texte;
+  const zc = $('inspCartes');
+  zc.innerHTML = o.cartes || '';
+  zc.hidden = !o.cartes;
+  $('inspect').querySelector('.box').classList.toggle('large', !!o.cartes);
+  $('inspect').classList.remove('hidden');
+}
+function montrerCarte(id, attVal, bonusActuels, apercuTxt){
+  zoomCarte(id, attVal, bonusActuels, apercuTxt);
+}
+// Explications des caractéristiques, reprises des règles
+const CAP_TXT = {
+  contre: "Contre-attaque (Ultra Instinct) : quand il esquive une attaque, il riposte avec les dégâts indiqués.",
+  retour: "Retour temporel (Whis) : à sa pose, la dernière action de l'adversaire est annulée. Une fois par partie. Whis n'attaque jamais.",
+  hakai: "Hakai (Beerus) : à sa pose, une fois par manche, détruit le plus fort combattant adverse qui n'est pas un Dieu.",
+  ultraego: "Ultra Ego : les premiers coups reçus (jusqu'à la valeur) lui donnent +1 ATT au lieu de lui en retirer.",
+  solitaire: "Solitaire (Jiren) : il ne reçoit aucun bonus, mais les dégâts qu'il subit sont divisés par 2.",
+  legendaire: "Super Saiyan légendaire (Broly) : au début de chacun de tes tours, il gagne +2 ATT (jusqu'à la valeur). Berserk : 20 % de chances de frapper un allié (3 dégâts).",
+  temps: "Fusion temporaire : le combattant quitte le plateau après le nombre de tours indiqué.",
+  finalexp: "Final Explosion (Vegeta Majin) : quand il est mis KO, chaque combattant ennemi subit les dégâts indiqués.",
+  absorbAllie: "Absorption (Super Buu) : à sa pose, il absorbe ton autre combattant le plus fort et gagne son ATT.",
+  cellabs: "Absorption des androïdes (Cell) : si C-17 ou C-18 est en jeu (sur n'importe quel plateau), Cell parfait se pose sur Cell sans payer de Ki, et les androïdes sont absorbés.",
+  barriere: "Barrière (C-17) : bloque la valeur indiquée de dégâts à chaque coup (au lieu de 1 pour les autres cyborgs).",
+  immortel: "Immortel (Zamasu) : les dégâts ne peuvent pas le faire descendre sous 1 ATT. Seul le Hakai peut le mettre KO.",
+  bonbon: "Bonbon (Majin Buu) : à sa pose, transforme en bonbon (met KO) le combattant adverse le plus fort dont l'ATT ne dépasse pas la valeur.",
+  petrif: "Crachat pétrifiant (Dabra) : à sa pose, pétrifie le combattant adverse le plus fort dont l'ATT ne dépasse pas la valeur. Il ne reçoit plus aucun bonus ni soin.",
+  epee: "Épée (Trunks) : son rayon inflige le double de dégâts à Freezer et aux cyborgs.",
+  ozaru: "Ozaru : posé quand ton total est inférieur à celui de l'adversaire, il se transforme et gagne la valeur indiquée en ATT.",
+  sorcier: "Sorcier (Babidi) : tes Démons gagnent la valeur indiquée en ATT tant qu'il est en jeu.",
+  senzu: "Senzu : à sa pose, ton combattant le plus blessé récupère tous ses dégâts.",
+  copie: "Métamorphose (Puar) : à sa pose, il rejoint le camp le plus présent chez tes combattants, pour activer un Tempérament.",
+  leurre: "Métamorphose (Oolong) : il prend l'apparence d'un allié et reçoit le prochain rayon qui le vise, une fois.",
+  mafuba: "Mafuba : à sa pose, scelle (met KO) le Démon adverse le plus fort dont l'ATT ne dépasse pas la valeur. Tortue Géniale est mise KO aussi.",
+  taiyoken: "Taiyoken : à sa pose, l'adversaire est aveuglé. Son prochain rayon rate.",
+  percant: "Attaque perçante (Kienzan, Makankosappo, assassinat de Hit) : son rayon ignore l'esquive et la barrière cyborg.",
+  rayon: "Rayon d'énergie (Kamehameha, Galick Gun, Death Beam...) : quand la carte est posée, tu choisis un combattant ennemi et il subit ses dégâts.",
+  double: 'Double rayon : à son entrée en jeu, son rayon touche deux combattants ennemis différents (tu choisis les deux cibles).',
+  furie: "Furie : ce combattant gagne la valeur indiquée en ATT chaque fois qu'un de tes combattants est mis KO (colère de Gohan, Berserk de Kale).",
+  regen: "Régénération : quand ce combattant est mis KO, il retourne dans ta main (une fois par manche ; à chaque KO pour Kid Buu).",
+  absorb: 'Assimilation : ce combattant gagne +2 ATT chaque fois qu\'un combattant ennemi est mis KO.', absorbKi: 'Absorption : gagne +1 Ki lorsqu\'il subit des dégâts, même s\'il survit.',
+  soutien: 'Soutien : tes autres combattants gagnent +1 tant qu\'il est en jeu.',
+  divin: "Divin : insensible aux rayons, sauf ceux tirés par un Dieu. Les ondes, explosions et le Genkidama le touchent.",
+  explosion: "Explosion : quand ce combattant est mis KO, il inflige ses dégâts au combattant ennemi le plus fort.",
+  onde: 'Onde de choc : quand la carte est posée, elle inflige ses dégâts à tous les combattants ennemis.',
+  scouter: "Scouter : à sa pose, tu vois la main de l'adversaire.",
+  esquive: "Esquive : chance d'éviter une attaque (40 % maximum). Un combattant n'esquive jamais deux coups de suite. Les attaques perçantes ne s'esquivent pas.",
+  ki: "Maîtrise du Ki : à son entrée en jeu, cette carte rend le Ki indiqué par sa valeur (sans dépasser 12).",
+  absorbKi: "Absorption : gagne +1 Ki chaque fois que ce combattant subit des dégâts, même s’il survit. Le +1 Ki de KO reste cumulable."
+};
+// Caractéristiques de chaque camp, reprises des règles
+const CAMP_TXT = {
+  saiyan: "Saiyan : un Saiyan gagne +1 ATT si ton total est inférieur à celui de l'adversaire (Saiyan enragé ; les bonus Enragé et Univers 11 ne comptent pas dans ce total). Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  terrien: "Terrien : entraide. Quand un Terrien allié est mis KO, les autres Terriens de ton plateau gagnent +1 ATT. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  namek: "Namek : en début de ton tour, tes combattants blessés se soignent de 1 dégât. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  demon: "Démon : magie démoniaque. Quand un Démon est posé, ton adversaire perd 1 Ki. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  dieu: "Dieu : aura divine. Au début de ton tour, si tu as un Dieu sur ton plateau, tu gagnes 1 Ki de plus. Le rayon d'un Dieu touche les Divins. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  cyborg: "Cyborg : barrière. Chaque coup reçu par un Cyborg est réduit de 1 (2 pour C-17), sauf les attaques perçantes. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  boss: "Boss : rancune. Quand un Saiyan adverse est mis KO, tes Boss gagnent +1 ATT. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  u6: "Univers 6 : les guerriers de Champa (Hit, Kale, Caulifla, Kefla). Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
+  u11: "Univers 11 : dernier rempart. Si ton total est inférieur à celui de l'adversaire, chaque combattant de ce camp gagne +1 ATT. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2)."
+};
+// Définition d'un camp : « Camp : » et « Tempérament : » en gras, une ligne vide entre les deux
+function formaterCamp(t){
+  const [definition, temperament] = t.split(' Tempérament : ');
+  const i = definition.indexOf(' : ');
+  const def = i > 0 ? `<b>${esc(definition.slice(0, i))} :</b> ${esc(definition.slice(i + 3))}` : esc(definition);
+  return `<p>${def}</p><p><b>Tempérament :</b> ${esc(temperament || '')}</p>`;
+}
+function explique(ex){
+  const [t, k, v] = ex.split(':');
+  let txt;
+  if (t === 'camp'){ $('zoomExpl').innerHTML = formaterCamp(CAMP_TXT[k]); return; }
+  if (t === 'att') txt = `ATT : puissance d’attaque du combattant. Valeur de base : ${k}, actuelle : ${v} (bonus compris). Quand elle tombe à 0, il est mis KO.`;
+  else if (t === 'ki') txt = 'Ki : coût pour poser cette carte. Une évolution ne paie que la différence avec le combattant qu\'elle remplace.';
+  else if (t === 'evo') txt = "Évolution : cette carte se pose sur le combattant qu'elle remplace, et uniquement sur lui.";
+  else {
+    // Capacité : nom en gras, puis la valeur sur une ligne à part
+    const d = CAP_TXT[k] || '';
+    const i = d.indexOf(' : ');
+    const titre = i > 0 ? `<b>${esc(d.slice(0, i))} :</b> ${esc(d.slice(i + 3))}` : esc(d);
+    const val = (v && k !== 'esquive') ? `<p><b>Valeur :</b> ${esc(v)}.</p>` : '';
+    $('zoomExpl').innerHTML = `<p>${titre}</p>${val}`;
+    return;
+  }
+  $('zoomExpl').textContent = txt;
+}
+function zoomCarte(id, attVal, bonusActuels, apercuTxt){
+  const c = CARDS[id];
+  const v = (attVal === undefined || attVal === null || attVal === '') ? c.p : attVal;
+  const bons = (bonusActuels || []).filter(b => BONUS_INFO[b]).map(b => `<span style="color:${BONUS_COULEUR[b] || '#222'};font-weight:600">${esc(BONUS_INFO[b].titre)}</span>`);
+  const camp = campsId(id).map(k => `<span class="zk camp-chip c-${k}" data-ex="camp:${k}">Camp ${CAMP_LABEL[k]}</span>`).join(' ');
+  const evo = c.e >= 0 ? `<span class="zk" data-ex="evo">Évolution de ${esc(CARDS[c.e].n)}</span>${c.n === 'Vegeta Majin' ? ' <span class="zk">Nécessite Babidi sur ton plateau.</span>' : ''}` : (FUSION_RES.includes(c.n) ? '<span class="zk">Carte de fusion : se pose seulement par fusion.</span>' : '');
+  const caps = c.a.map(([k, v]) => `<div class="zcap"><span class="zk" data-ex="cap:${k}:${v}">${ICONS[k]}${v && k !== 'esquive' ? v : ''}</span><b>${NAMES[k]}</b></div>`).join('') || '<span>Aucune capacité</span>';
+  $('zoomImg').src = c.img; $('zoomImg').alt = c.n;
+  $('zoomName').textContent = c.n;
+  $('zoomTxt').innerHTML = `${apercuTxt ? `<div class="zcalc"><b>Si jouée :</b> ${esc(apercuTxt)}</div>` : ''}<div class="zstats"><span class="zk" data-ex="att:${c.p}:${v}"><b>ATT</b> ${v}</span><span class="zk" data-ex="ki"><b>Ki</b> ${c.k}</span>${camp}${evo}</div><div class="zsec"><b>Capacités</b></div><div class="zcaps">${caps}</div>${lienInfosCarte(id)}${bons.length ? `<div class="zbon"><b>Bonus actifs :</b> ${bons.join(' ; ')}</div>` : ''}`;
+  $('zoomExpl').textContent = "Touche une caractéristique pour l'expliquer.";
+  $('zoomCarte').classList.remove('hidden');
+}
+$('zoomCarte').querySelector('.box').addEventListener('click', e => {
+  const z = e.target.closest('.zk');
+  if (!z) return;
+  e.stopPropagation();
+  explique(z.dataset.ex);
+});
+$('zoomCarte').onclick = e => { e.stopPropagation(); $('zoomCarte').classList.add('hidden'); render(); resumeAI(); };
+const BONUS_COULEUR = { sorcier: '#b0307a', petrifie: '#6b6b6b', soutien: '#1e5fb8', camp: '#7b3fc4', enrage: '#d7261e', survie: '#0e7c86', allie: '#2e7d32', rival: '#795548', lienPere: '#e07b00', lienBulma: '#c2185b', namek: '#558b2f' };
+const BONUS_COURT = { sorcier: 'sorcier', petrifie: 'pétrifié', soutien: 'soutien', camp: 'tempérament', enrage: 'enragé', survie: 'survie', allie: 'allié', rival: 'rival', lienPere: 'lien Père fils', lienBulma: 'lien Bulma' };
+const CAMP_LABEL = { saiyan: 'Saiyan', terrien: 'Terrien', namek: 'Namek', demon: 'Démon', dieu: 'Dieu', cyborg: 'Cyborg', boss: 'Boss', u6: 'Univers 6', u11: 'Univers 11' };
+function showInspect(s){
+  const inst = P[AI].slots[s];
+  if (!inst) return;
+  montrerCarte(inst.id, att(AI, s));
+}
+
+// Tutoriel de la première partie
+function montrerTuto(e){
+  tutoEtape = e;
+  $('tutoTitre').textContent = `Tutoriel ${e + 1}/${TUTO.length}`;
+  $('tutoTxt').textContent = TUTO[e];
+  $('tutoBtn').textContent = e === TUTO.length - 1 ? 'Jouer' : 'Suivant';
+  $('tutoModal').classList.remove('hidden');
+}
+function tutoSuivant(){
+  if (tutoEtape < TUTO.length - 1) montrerTuto(tutoEtape + 1);
+  else { ecrire('dbzLoreTuto', true); fermerModal('tutoModal'); }
+}
+
+/* ---------- Actions du joueur ---------- */
+function onHand(i){
+  if (over || cur !== HUMAN || pending) return;
+  if (mullMode){ mulliganEchange(i); return; }
+  const c = CARDS[P[HUMAN].hand[i]];
+  const s = emplacementAuto(HUMAN, i);
+  if (s < 0){
+    msg(c.e >= 0 ? `${c.n} évolue depuis ${CARDS[c.e].n} : ce combattant n'est pas en jeu.` : 'Plus d\'emplacement libre : attends qu\'un combattant tombe.');
+    return;
+  }
+  if (!peutJouer(HUMAN, i, s)){ msg(`Il faut ${coutCarte(HUMAN, i, s)} Ki pour jouer ${c.n} (tu as ${P[HUMAN].ki}).`); return; }
+  playCard(HUMAN, i, s);
+}
+// Emplacement où la carte se pose : premier libre, ou le combattant qu'elle fait évoluer ; -1 si aucun
+function emplacementAuto(p, i){
+  const c = CARDS[P[p].hand[i]];
+  if (c.e >= 0) return P[p].slots.findIndex(x => x && x.id === c.e);
+  return P[p].slots.findIndex(x => x === null);
+}
+function onSlot(player, s){
+  if (over) return;
+  if (player === AI && !pending && P[AI].slots[s]) { showInspect(s); return; }
+  if (pending){
+    if (player === pending.tp && P[player].slots[s]){
+      if (immuniseRayon(P[player].slots[s], pending.from ? pending.from.id : null)){ msg('Ce combattant est Divin : seul le rayon d\'un Dieu peut le toucher.'); return; }
+      if ((pending.deja || []).includes(s)){ msg('Ce combattant a déjà été touché par ce rayon : choisis un autre combattant.'); return; }
+      resolveRayon(s);
+    }
+  }
+}
+
+// Coût en Ki : une évolution ne paie que la différence avec le combattant qu'elle remplace
+function coutCarte(p, i, s){
+  const me = P[p], c = CARDS[me.hand[i]];
+  if (c.e < 0) return c.k;
+  const actuel = me.slots[s];
+  if (actuel && actuel.id === c.e && aAb(c.e, 'cellabs') && androidesEnJeu().length) return 0; // Cell absorbe un androïde : forme parfaite gratuite
+  return (actuel && actuel.id === c.e) ? Math.max(0, c.k - CARDS[c.e].k) : c.k;
+}
+// C-17 et C-18 présents sur un plateau (les deux camps)
+function androidesEnJeu(){
+  const out = [];
+  [HUMAN, AI].forEach(q => P[q].slots.forEach((o, j) => { if (o && ['C-17', 'C-18'].includes(nomC(o.id))) out.push({ q, j }); }));
+  return out;
+}
+function peutJouer(p, i, s){
+  const me = P[p], c = CARDS[me.hand[i]];
+  if (FUSION_RES.includes(c.n)) return false;
+  if (c.n === 'Vegeta Majin' && !me.slots.some(x => x && CARDS[x.id].n === 'Babidi')) return false;
+  if (c.e < 0){ if (me.slots[s] !== null) return false; }
+  else if (!me.slots[s] || me.slots[s].id !== c.e) return false;
+  return coutCarte(p, i, s) <= me.ki;
+}
+function jouable(p, i){ return idx().some(s => peutJouer(p, i, s)); }
+// Aperçu : ATT de la carte posée, gain sur le total, et bonus actifs
+// Aperçu d'un coup pour un joueur : gain de total, ATT de la carte, bonus actifs
+function apercuPour(p, i, s){
+  const me = P[p], avant = total(p), ancien = me.slots[s];
+  me.slots[s] = { id: me.hand[i], dmg: 0, bonus: 0 };
+  const apres = total(p);
+  const det = detailATT(p, s);
+  me.slots[s] = ancien;
+  return { total: apres - avant, carte: det.v, bonus: det.bonus };
+}
+function apercu(i, s){ return apercuPour(HUMAN, i, s); }
+
+// Intérêt d'une cible de rayon pour l'IA : dégâts réellement infligés, bonus si le coup met KO
+function valeurCibleRayon(q, k, n){
+  const v = att(q, k);
+  return Math.min(n, v) + (v <= n ? 3 : 0) + v / 100;
+}
+// Valeur estimée des effets d'entrée (Hakai, Bonbon, Mafuba, Senzu...) pour l'IA
+function valeurEffets(p, id){
+  const opp = 1 - p; let v = 0;
+  const forte = ok => { const t = meilleureCible(opp, ok); return t >= 0 ? att(opp, t) : 0; };
+  if (aAb(id, 'hakai') && !P[p].hakaiManche) v += forte(o => !instCamp(o, 'dieu'));
+  const bb = abVal(id, 'bonbon'); if (bb) v += forte((o, j) => !hasAb(o, 'immortel') && att(opp, j) <= bb);
+  const mf = abVal(id, 'mafuba'); if (mf){ const g = forte((o, j) => instCamp(o, 'demon') && att(opp, j) <= mf); v += g ? g - CARDS[id].p : 0; }
+  const pt = abVal(id, 'petrif'); if (pt) v += forte((o, j) => !o.petrifie && att(opp, j) <= pt) ? 2 : 0;
+  if (aAb(id, 'senzu')) v += P[p].slots.reduce((m, o) => Math.max(m, o ? o.dmg : 0), 0);
+  if (aAb(id, 'taiyoken') && P[opp].hand.some(h => abVal(h, 'rayon'))) v += 2;
+  if (aAb(id, 'retour') && !P[p].whisUsee && snapTour[opp] && snapTour[opp].seq === seqActions - 1) v += 6;
+  if (aAb(id, 'absorbAllie')) v += P[p].slots.some(Boolean) ? 2 : 0;
+  return v;
+}
+// IA difficile : chaque coup est évalué sur son effet réel (ATT gagnés, cibles touchées, Ki dépensé)
+function scoreDifficile(id, i, s, style){
+  const c = CARDS[id];
+  // Objectif : faire monter notre total et faire baisser celui de l'adversaire, à poids égal
+  const gain = apercuPour(AI, i, s).total;
+  let sc = gain;
+  sc -= coutCarte(AI, i, s) * 0.3;               // le Ki a une valeur, mais pas plus qu'un point d'ATT
+  if (c.e >= 0) sc += 1;
+  const cibles = idx().filter(k => P[HUMAN].slots[k] && !immuniseRayon(P[HUMAN].slots[k], id));
+  const rayon = abVal(id, 'rayon');
+  if (rayon && !R.noRayon && cibles.length){
+    let meilleur = 0;
+    cibles.forEach(k => {
+      const v = att(HUMAN, k), esq = aAb(id, 'percant') ? 0 : Math.min(40, abVal(P[HUMAN].slots[k].id, 'esquive')) / 100;
+      const val = (Math.min(rayon, v) + (v <= rayon ? 1 : 0)) * (1 - esq);
+      if (val > meilleur) meilleur = val;
+    });
+    sc += meilleur;
+  }
+  const onde = abVal(id, 'onde');
+  if (onde && cibles.length) sc += cibles.reduce((a, k) => a + Math.min(onde, att(HUMAN, k)), 0);
+  sc += valeurEffets(AI, id);
+  return sc;
+}
+
+// Carte jouée par le joueur : seule l'illustration sort de la main, s'affiche agrandie un court instant, puis se pose sur son emplacement.
+// Pendant le vol, le joueur reste sur son plateau : le tour de l'adversaire ne commence qu'à la fin.
+let animJusquA = 0;
+const DUREE_CARTE_JOUEE = 1400;
+function animerCarteJouee(i, s){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const src = document.querySelectorAll('#hand .card')[i];
+  const cible = document.getElementById('myBoard') && document.getElementById('myBoard').children[s];
+  if (!src || !cible) return;
+  const img = src.querySelector('img');
+  if (!img) return;
+  const a = img.getBoundingClientRect();
+  const b = (cible.querySelector('img') || cible).getBoundingClientRect();
+  if (!a.width || !b.width) return;
+  const clone = img.cloneNode(true);
+  clone.removeAttribute('loading');
+  clone.style.cssText = `position:fixed;left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;margin:0;object-fit:cover;border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.6);z-index:30;pointer-events:none;transform-origin:center;`;
+  document.body.appendChild(clone);
+  src.style.visibility = 'hidden'; // la carte part de la main : elle n'y reste pas pendant le vol
+  const cx = a.left + a.width / 2, cy = a.top + a.height / 2;
+  const kC = Math.min(220, innerWidth * 0.6) / a.width;   // taille agrandie
+  const dxC = innerWidth / 2 - cx, dyC = innerHeight / 2 - cy;
+  const dxT = (b.left + b.width / 2) - cx, dyT = (b.top + b.height / 2) - cy;
+  const kT = b.width / a.width;
+  const anim = clone.animate([
+    { transform: 'translate(0px,0px) scale(1)', offset: 0, easing: 'cubic-bezier(.2,.7,.3,1)' },
+    { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.3, easing: 'linear' },
+    { transform: `translate(${dxC}px,${dyC}px) scale(${kC})`, offset: 0.68, easing: 'cubic-bezier(.5,0,.6,1)' },
+    { transform: `translate(${dxT}px,${dyT}px) scale(${kT})`, offset: 1 }
+  ], { duration: DUREE_CARTE_JOUEE, fill: 'forwards' });
+  animJusquA = performance.now() + DUREE_CARTE_JOUEE;
+  anim.onfinish = () => clone.remove();
+}
+let uidInst = 0; // identifiant unique de chaque combattant posé (les liens spéciaux sont mémorisés par combattant, pas par emplacement)
+function activerLiensSpeciaux(p){
+  const sl=P[p].slots;
+  for(let s=0;s<sl.length;s++) for(let j=s+1;j<sl.length;j++){
+    const a=sl[s], b=sl[j]; if(!a||!b) continue;
+    if(!a.uid) a.uid=++uidInst; if(!b.uid) b.uid=++uidInst;
+    const lien=lienSpecial(a.id,b.id); if(!lien) continue;
+    const key=`${lien.key}:${Math.min(a.uid,b.uid)}:${Math.max(a.uid,b.uid)}`;
+    a.liensDeclenches=a.liensDeclenches||[]; b.liensDeclenches=b.liensDeclenches||[];
+    if(a.liensDeclenches.includes(key)||b.liensDeclenches.includes(key)) continue;
+    a.liensDeclenches.push(key); b.liensDeclenches.push(key);
+    const type = lien.key === 'bulma' ? 'bulma' : 'pere';
+    a.liensActifs=(a.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 3, cle: key }]);
+    b.liensActifs=(b.liensActifs||[]).concat([{ type, nom: lien.nom, tours: 3, cle: key }]);
+    jour(`${lien.nom} : ${CARDS[a.id].n} et ${CARDS[b.id].n} gagnent +2 ATT pendant deux tours.`);
+  }
+}
+function playCard(p, i, s){
+  const me = P[p];
+  if (p === HUMAN) avantCoup = { P: JSON.parse(JSON.stringify(P)), journal: journal.slice() };
+  const id = me.hand[i], c = CARDS[id];
+  const cout = coutCarte(p, i, s);
+  if (c.e < 0){
+    if (me.slots[s] !== null){ msg('Cet emplacement est occupé. Choisis un emplacement libre, ou une évolution à poser dessus.'); return; }
+  } else {
+    if (!me.slots[s] || me.slots[s].id !== c.e){ msg(`${c.n} évolue depuis ${CARDS[c.e].n} : place-la sur le combattant correspondant.`); return; }
+  }
+  if (cout > me.ki){ msg(`Il faut ${cout} Ki pour jouer ${c.n} (tu as ${me.ki}).`); return; }
+  if (p === HUMAN) animerCarteJouee(i, s);
+  const meneAvant = total(p) < total(1 - p);
+  const absorbeCell = c.e >= 0 && aAb(c.e, 'cellabs') && cout === 0 && androidesEnJeu().length ? androidesEnJeu() : [];
+  const ancien = c.e >= 0 ? me.slots[s] : null;
+  if (ancien) me.disc.push(ancien.id);
+  // Une évolution est le même combattant : il garde son identité et ses bonus de lien en cours.
+  me.slots[s] = ancien
+    ? { id, dmg: 0, bonus: 0, liensActifs: (ancien.liensActifs || []).slice(), liensDeclenches: (ancien.liensDeclenches || []).slice(), uid: ancien.uid }
+    : { id, dmg: 0, bonus: 0, liensActifs: [], liensDeclenches: [] };
+  me.ki -= cout;
+  me.hand.splice(i, 1);
+  sel = null;
+  if (['sorcier', 'senzu', 'scouter'].some(k => hasAb(me.slots[s], k))) me.soutiens++;
+  // Ozaru (Goku enfant) : la pleine lune le transforme quand tu es mené
+  const oz = abVal(id, 'ozaru');
+  if (oz && meneAvant){ me.slots[s].bonus += oz; jour(`Pleine lune : ${c.n} se transforme en Ozaru (+${oz} ATT).`); }
+  // Cell absorbe les androïdes pour atteindre sa forme parfaite
+  absorbeCell.forEach(({ q, j }) => {
+    const o = P[q].slots[j]; if (!o) return;
+    P[q].slots[j] = null; P[q].disc.push(o.id);
+    jour(`Absorption : Cell absorbe ${CARDS[o.id].n} (${nom(q)}) et atteint sa forme parfaite.`);
+  });
+  activerLiensSpeciaux(p);
+  liensPose(p, s);
+  sfx();
+  jour(`${nom(p)} : pose ${c.n}${c.e >= 0 ? ' (évolution)' : ''}${cout ? ` (−${cout} Ki)` : ''}.`);
+  msg(`${c.n} entre en jeu.`);
+  if (p === HUMAN && hasAb({ id }, 'scouter')) scouter();
+  if (effetsEntree(p, id, me.slots[s])) return;
+  afterAction();
+}
+
+// Scouter : révèle la main adverse
+function scouter(){
+  const main = P[AI].hand;
+  jour(`Scouter : main adverse révélée (${main.length} cartes).`);
+  const cartes = main.map(id => {
+    const capa = CARDS[id].a.map(([k, v]) => `${NAMES[k]}${v ? ' ' + v : ''}`).join(', ');
+    return cardHTML(id, { extra: capa ? `<div class="capa">${esc(capa)}</div>` : '' });
+  }).join('');
+  montrerInfo({ nom: `Scouter : main ${adv() ? 'de ' + oppNom() : "de l'Ennemi"}`, texte: main.length ? `${main.length} carte${main.length > 1 ? 's' : ''} en main` : 'La main adverse est vide.', cartes });
+}
+
+// Effets à l'entrée en jeu (Onde de choc, Rayon). Retourne true si le joueur doit choisir une cible.
+// Liens à la pose : Universe 6 (Kale et Caulifla), l'autre gagne 1 Ki
+function liensPose(p, s){
+  const n = nomC(P[p].slots[s].id);
+  const autre = n === 'Kale' ? 'Caulifla' : n === 'Caulifla' ? 'Kale' : null;
+  if (autre && P[p].slots.some((o, j) => j !== s && o && nomC(o.id) === autre)){
+    P[p].ki = Math.min(R.kiMax, P[p].ki + 1);
+    jour(`Universe 6 : ${nom(p)} gagne 1 Ki.`);
+  }
+}
+// Cible automatique : le combattant adverse le plus fort qui respecte la condition
+function meilleureCible(q, ok){
+  let best = -1, bv = -Infinity;
+  P[q].slots.forEach((o, j) => { if (o && ok(o, j)){ const v = att(q, j); if (v > bv){ bv = v; best = j; } } });
+  return best;
+}
+// Retour temporel (Whis) : la dernière action adverse est annulée (une fois par partie)
+function retourTemporel(p, inst){
+  const opp = 1 - p, sn = snapTour[opp];
+  if (P[p].whisUsee){ jour('Retour temporel : déjà utilisé dans cette partie.'); return; }
+  if (!sn || sn.round !== round || sn.seq !== seqActions - 1){ jour('Retour temporel : aucune action adverse à annuler.'); return; }
+  const R2 = JSON.parse(sn.P);
+  const sIdx = P[p].slots.indexOf(inst);
+  const mesSlots = R2[p].slots;
+  const cible = mesSlots[sIdx] ? mesSlots.findIndex(x => !x) : sIdx;
+  if (cible < 0){ jour('Retour temporel : plus de place sur le plateau.'); return; }
+  // Un combattant revenu en main par Régénération pendant l'action annulée ne doit pas être en double
+  const main = P[p].hand.slice();
+  mesSlots.forEach(o => { if (!o) return; const h = main.indexOf(o.id); if (h >= 0 && !R2[p].hand.includes(o.id) && !P[p].slots.some(x => x && x.id === o.id)) main.splice(h, 1); });
+  mesSlots[cible] = inst;
+  P[opp] = R2[opp];
+  P[p].slots = mesSlots; P[p].disc = R2[p].disc; P[p].regenUsed = R2[p].regenUsed; P[p].hand = main;
+  P[p].whisUsee = true;
+  koRecents = [];
+  jour(`Retour temporel : Whis remonte le temps, la dernière action de ${nom(opp)} est annulée.`);
+  msg('Retour temporel : la dernière action adverse est annulée !');
+}
+function effetsEntree(p, id, inst){
+  const opp = 1 - p;
+  if (aAb(id, 'retour')){ retourTemporel(p, inst); return false; }
+  // Fusion temporaire : 3 tours (le tour de la pose ne compte pas)
+  const tps = abVal(id, 'temps');
+  if (tps) inst.fusTours = tps + 1;
+  // Senzu (Yajirobé) : soigne tous les dégâts de l'allié le plus blessé
+  if (aAb(id, 'senzu')){
+    const j = meilleureCible(p, o => o !== inst && o.dmg > 0 && !o.petrifie);
+    if (j >= 0){ const o = P[p].slots[j]; jour(`Senzu : ${CARDS[o.id].n} récupère ${o.dmg} ATT.`); o.dmg = 0; coeurs(p); }
+  }
+  // Métamorphose (Puar) : prend le camp le plus présent chez ses alliés
+  if (aAb(id, 'copie')){
+    const compte = {};
+    P[p].slots.forEach(o => { if (o && o !== inst) campsDe(o).forEach(c => { compte[c] = (compte[c] || 0) + 1; }); });
+    const c = Object.keys(compte).sort((a, b) => compte[b] - compte[a])[0];
+    if (c){ inst.campCopie = c; jour(`Métamorphose : ${CARDS[id].n} rejoint le camp ${CAMP_LABEL[c]}.`); }
+  }
+  // Taiyoken (Tenshinhan) : le prochain rayon adverse rate
+  if (aAb(id, 'taiyoken')){ P[opp].aveugle = true; jour(`Taiyoken : ${nom(opp)} est aveuglé, son prochain rayon ratera.`); }
+  // Mafuba (Tortue Géniale) : scelle un Démon adverse, au prix de sa vie
+  const mf = abVal(id, 'mafuba');
+  if (mf){
+    const t = meilleureCible(opp, (o, j) => instCamp(o, 'demon') && att(opp, j) <= mf);
+    if (t >= 0){
+      jour(`Mafuba ! ${CARDS[id].n} scelle ${CARDS[P[opp].slots[t].id].n}, mais s'épuise.`);
+      ko(opp, t);
+      const moi = P[p].slots.indexOf(inst);
+      if (moi >= 0) ko(p, moi);
+      return false;
+    }
+    jour(`Mafuba : aucun Démon adverse à sceller (${mf} ATT maximum).`);
+  }
+  // Crachat pétrifiant (Dabra)
+  const pt = abVal(id, 'petrif');
+  if (pt){
+    const t = meilleureCible(opp, (o, j) => !o.petrifie && att(opp, j) <= pt);
+    if (t >= 0){ P[opp].slots[t].petrifie = true; jour(`Crachat pétrifiant : ${CARDS[P[opp].slots[t].id].n} est pétrifié (plus aucun bonus ni soin).`); }
+  }
+  // Bonbon (Majin Buu) : transforme un combattant faible en bonbon
+  const bb = abVal(id, 'bonbon');
+  if (bb){
+    const t = meilleureCible(opp, (o, j) => !hasAb(o, 'immortel') && att(opp, j) <= bb);
+    if (t >= 0){ jour(`Bonbon ! ${CARDS[id].n} transforme ${CARDS[P[opp].slots[t].id].n} en bonbon et le mange.`); ko(opp, t); }
+  }
+  // Hakai (Beerus) : une fois par manche, détruit le plus fort combattant adverse qui n'est pas un Dieu
+  if (aAb(id, 'hakai') && !P[p].hakaiManche){
+    const t = meilleureCible(opp, o => !instCamp(o, 'dieu'));
+    if (t >= 0){ P[p].hakaiManche = true; jour(`Hakai ! ${CARDS[id].n} détruit ${CARDS[P[opp].slots[t].id].n}.`); secouer(); ko(opp, t); }
+  }
+  // Absorption (Super Buu) : absorbe son allié le plus fort et gagne son ATT
+  if (aAb(id, 'absorbAllie')){
+    const j = meilleureCible(p, o => o !== inst);
+    if (j >= 0){
+      const o = P[p].slots[j], gain = Math.max(0, att(p, j));
+      P[p].slots[j] = null; P[p].disc.push(o.id);
+      inst.bonus += gain;
+      jour(`Absorption : ${CARDS[id].n} absorbe ${CARDS[o.id].n} et gagne +${gain} ATT.`);
+    }
+  }
+  // Maîtrise du Ki : recharge ponctuelle à la pose, plafonnée au Ki maximum.
+  const recharge = abVal(id, 'ki');
+  if (recharge > 0){
+    const gain = Math.min(recharge, R.kiMax - P[p].ki);
+    if (gain > 0){
+      P[p].ki += gain;
+      jour(`${CARDS[id].n} : maîtrise du Ki, +${gain} Ki.`);
+      if (p === HUMAN) msg(`${CARDS[id].n} te rend ${gain} Ki.`);
+    } else {
+      jour(`${CARDS[id].n} : maîtrise du Ki, réserve déjà au maximum.`);
+    }
+  }
+  if (aCamp(id, 'demon') && P[opp].ki > 0){
+    P[opp].ki -= 1;
+    jour(`Magie démoniaque de ${CARDS[id].n} : ${nom(opp)} perd 1 Ki.`);
+  }
+  const onde = abVal(id, 'onde');
+  if (onde) idx().forEach(j => hit(opp, j, onde, 'Onde de choc de ' + CARDS[id].n, { p, id }));
+  const rayon = abVal(id, 'rayon');
+  const nbCibles = abVal(id, 'double') ? 2 : 1;
+  if (rayon && !R.noRayon && P[opp].slots.some(x => x) && P[p].aveugle){
+    P[p].aveugle = false;
+    jour(`${nom(p)} : aveuglé par le Taiyoken, le rayon de ${CARDS[id].n} rate sa cible.`);
+    if (p === HUMAN) msg(`Taiyoken : ${CARDS[id].n} est aveuglé, son rayon rate.`);
+    return false;
+  }
+  if (rayon && !R.noRayon && P[opp].slots.some(x => x)){
+    if (p === HUMAN){
+      // Un combattant Divin ne peut pas être touché : sans cible valide, pas de choix à faire
+      if (!P[opp].slots.some(x => x && !immuniseRayon(x, id))){
+        msg(`${CARDS[id].n} : tous les combattants ennemis sont Divin, le rayon n'a pas de cible.`);
+        return false;
+      }
+      pending = { n: rayon, tp: opp, name: CARDS[id].n, reste: nbCibles - 1, deja: [], from: inst };
+      msg(nbCibles > 1 ? `${CARDS[id].n} : touche deux combattants ennemis, chacun subit ${rayon} dégâts.` : `${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
+      render();
+      focusCible();
+      return true;
+    }
+    // Adversaire : ses cibles sont les combattants les plus forts (distincts)
+    const cibles = P[opp].slots.map((x, k) => (x && !immuniseRayon(x, id)) ? k : -1).filter(k => k >= 0)
+      .sort((a, b) => valeurCibleRayon(opp, b, rayon) - valeurCibleRayon(opp, a, rayon)).slice(0, nbCibles);
+    if (cibles.length){
+      msg(`${CARDS[id].n} tire son rayon sur ${cibles.map(k => CARDS[P[opp].slots[k].id].n).join(' et ')}.`);
+      jour(`${nom(p)} : ${CARDS[id].n} tire son rayon (${rayon}).`);
+      cibles.forEach(t => {
+        hit(opp, t, degatsRayon(inst, opp, t, rayon), 'Rayon de ' + CARDS[id].n, { p, id });
+      });
+    }
+  }
+  return false;
+}
+
+function resolveRayon(j){
+  if (!pending) return;
+  const pd = pending;
+  pending = null;
+  const tgt = P[pd.tp].slots[j];
+  // Le tir est annoncé avant les dégâts qu'il inflige
+  msg(`${pd.name} tire son rayon sur ${tgt ? CARDS[tgt.id].n : 'un combattant'} (${pd.n} dégâts).`);
+  jour(`${nom(HUMAN)} : ${pd.name} tire son rayon (${pd.n}).`);
+  hit(pd.tp, j, degatsRayon(pd.from, pd.tp, j, pd.n), 'Rayon de ' + pd.name, pd.from ? { p: HUMAN, id: pd.from.id } : null);
+  // Double rayon : une deuxième cible, distincte de la première
+  const deja = [...pd.deja, j];
+  if (pd.reste > 0 && P[pd.tp].slots.some((x, k) => x && !deja.includes(k) && !immuniseRayon(x, pd.from ? pd.from.id : null))){
+    pending = { ...pd, reste: pd.reste - 1, deja };
+    msg(`Choisis la deuxième cible de ${pd.name}.`);
+    render();
+    focusCible();
+    return;
+  }
+  afterAction();
+}
+
+// Fusions possibles pour un joueur
+// Goku Black ne fusionne pas avec Vegeta (Gogeta blue et Vegetto sont issus de Goku et Vegeta « purs »)
+const FUSION_EXCLU = ['Goku Black', 'Son Goku enfant'];
+function fusionsPossibles(p){
+  const me = P[p], out = [];
+  FUSIONS.forEach(f => {
+    // La carte du résultat (Gogeta blue ou Vegetto) doit être dans la main
+    const hi = me.hand.indexOf(ID[f.res]);
+    if (hi < 0) return;
+    for (let i = 0; i < NB; i++) for (let j = 0; j < NB; j++){
+      if (i === j) continue;
+      const a = me.slots[i], b = me.slots[j];
+      if (a && b && famOf(a.id) === f.a && famOf(b.id) === f.b && me.ki >= f.ki && !FUSION_EXCLU.includes(CARDS[a.id].n) && !FUSION_EXCLU.includes(CARDS[b.id].n)){ out.push({ f, i, j, hi }); return; }
+    }
+  });
+  return out;
+}
+function fusionner(p, opt){
+  const me = P[p], f = opt.f, i = opt.i, j = opt.j;
+  const a = me.slots[i], b = me.slots[j];
+  me.ki -= f.ki;
+  // La carte du résultat quitte la main ; les deux combattants fusionnés et elle vont à la défausse
+  me.hand.splice(opt.hi, 1);
+  me.disc.push(a.id, b.id, ID[f.res]);
+  me.slots[j] = null;
+  me.slots[i] = { id: ID[f.res], dmg: 0, bonus: 0 };
+  sfx();
+  jour(`${nom(p)} : fusion en ${f.nom} (−${f.ki} Ki).`);
+  msg(`Fusion : ${f.nom} entre en jeu !`);
+  if (effetsEntree(p, ID[f.res], me.slots[i])) return;
+  afterAction();
+}
+function onFusion(){
+  if (over || cur !== HUMAN || pending) return;
+  const fus = fusionsPossibles(HUMAN);
+  if (!fus.length){ msg('Aucune fusion possible pour le moment.'); return; }
+  if (fus.length === 1){ fusionner(HUMAN, fus[0]); return; }
+  choisirFusion(fus);
+}
+function choisirFusion(fus){
+  const box = $('fusionChoix');
+  box.innerHTML = fus.map((o, k) => `<button class="primary" type="button" data-k="${k}">${esc(o.f.nom)} (${o.f.ki} Ki)</button>`).join('') + '<button type="button" id="btnFusionAnnul">Annuler</button>';
+  box.querySelectorAll('button[data-k]').forEach(b => b.onclick = () => { $('fusionModal').classList.add('hidden'); fusionner(HUMAN, fus[+b.dataset.k]); });
+  $('btnFusionAnnul').onclick = () => $('fusionModal').classList.add('hidden');
+  $('fusionModal').classList.remove('hidden');
+}
+
+// Mulligan : échange une carte de la main, une seule fois, en début de partie
+function mulliganDispo(){
+  return !over && inGame && round === 1 && cur === HUMAN && !pending && !mullUsed && P[HUMAN].actions === 0;
+}
+function mulliganEchange(i){
+  if (!mulliganDispo()){ mullMode = false; render(); return; }
+  const me = P[HUMAN];
+  const [carte] = me.hand.splice(i, 1);
+  me.deck.unshift(carte);
+  draw(me);
+  mullUsed = true; mullMode = false;
+  jour('Toi : Mulligan, une carte échangée.');
+  msg('Carte échangée. À toi de jouer.');
+  render();
+}
+
+/* ---------- Ordinateur ---------- */
+function scheduleAI(d){
+  clearTimeout(aiTimer);
+  const f = VITESSES[vitesse][1] / 900;
+  aiTimer = setTimeout(aiTurn, Math.round(d * f));
+}
+function resumeAI(){ if (pendingAI && cur === AI && !over && !modalOpen()){ pendingAI = false; scheduleAI(500); } }
+// Comportement propre à chaque adversaire (bonus de score par coup)
+function traitBonus(style, id, s){
+  const c = CARDS[id], t = style.trait;
+  let b = 0;
+  if (t === 'fier' && aCamp(id, 'saiyan')) b += 2; // Vegeta : fierté saiyan, joue ses guerriers
+  if (t === 'calculateur'){ // Freezer : frappe quand un rayon peut tuer
+    const r = abVal(id, 'rayon');
+    if (r && P[HUMAN].slots.some((o, k) => o && !immuniseRayon(o, id) && att(HUMAN, k) <= r)) b += 3;
+  }
+  if (t === 'parfait' && c.e >= 0) b += 3; // Cell : aime les évolutions
+  if (t === 'imperturbable' && c.a.some(([k]) => k === 'onde')) b += 3; // Jiren : ondes de choc
+  if (t === 'instinct' && c.a.some(([k]) => k === 'esquive' || k === 'regen')) b += 2; // Goku UI : esquive
+  return b;
+}
+
+function aiTurn(){
+  aiTimer = null;
+  if (over || cur !== AI) return;
+  if (modalOpen()){ pendingAI = true; return; }
+  const me = P[AI];
+  const style = adv() ? adv().style : { prudent: false, agressif: 1 };
+  if (niveau !== 'facile'){
+    const fus = fusionsPossibles(AI);
+    if (fus.length){ fusionner(AI, fus[0]); return; }
+  }
+  // Genkidama de l'adversaire : l'IA peut la payer pour l'annuler
+  if (genkiAnnulable(AI) && Math.random() < 0.6){ annulerParPaiement(AI); return; }
+  const peutC = peutCharger(AI);
+  if (style.prudent && total(AI) >= total(HUMAN) + 3 && peutC){ charger(AI); return; }
+  // Beerus : il ne fait rien quand il mène, il attend
+  if (style.trait === 'attentiste' && total(AI) > total(HUMAN) && peutC){ charger(AI); return; }
+  const coups = [];
+  // Exemplaire d'une carte mise KO sur cette case : il doit être posé ailleurs, pour que le joueur voie qu'il s'agit d'une autre carte
+  const interdit = (id, s) => koRecents.some(k => k.p === AI && k.id === id && k.s === s);
+  me.hand.forEach((id, i) => {
+    const c = CARDS[id];
+    idx().forEach(s => {
+      if (!peutJouer(AI, i, s) || interdit(id, s)) return;
+      let sc = (c.e < 0 ? c.p + (c.a.length ? 1 : 0) : c.p + 3) + valeurEffets(AI, id);
+      if (c.a.some(([k]) => k === 'rayon')) sc += style.agressif;
+      if (niveau === 'difficile') sc = scoreDifficile(id, i, s, style);
+      sc += traitBonus(style, id, s);
+      coups.push({ i, s, sc });
+    });
+  });
+  // Genkidama : lancé à 12 Ki (toujours si rien d'autre n'est jouable)
+  if (genkiLancable(AI) && (!coups.length || Math.random() < (niveau === 'facile' ? 0.3 : 0.7))){ lancerGenkidama(AI); return; }
+  if (!coups.length){
+    if (genkiAnnulable(AI)){ annulerParPaiement(AI); return; }
+    if (peutC){ charger(AI); return; }
+    return endRound();
+  }
+  let choix = coups.reduce((a, b) => (b.sc > a.sc ? b : a));
+  // Patience (version Lore) : un grand combattant accessible au prochain tour vaut mieux qu'un petit tout de suite
+  if (niveau !== 'facile' && peutC && P[AI].slots.filter(x => !x).length <= 3){
+    const attente = me.hand.some((id, i) => { const c = CARDS[id]; if (c.e >= 0 || FUSION_RES.includes(c.n)) return false; const cout = c.k; return cout > me.ki && cout <= me.ki + 3 && c.p >= CARDS[me.hand[choix.i]].p + 6; });
+    if (attente){ charger(AI); return; }
+  }
+  // Difficile : sans bon coup et sans être en tête, mieux vaut charger son Ki
+  if (niveau === 'difficile' && choix.sc < 1 && peutC && total(AI) <= total(HUMAN)){ charger(AI); return; }
+  // Buu : parfois imprévisible, il joue un coup au hasard
+  if (style.trait === 'chaotique' && coups.length > 1 && Math.random() < 0.3) choix = coups[Math.floor(Math.random() * coups.length)];
+  // Beerus : sans coup qui en vaille la peine, il charge son Ki
+  if (style.trait === 'attentiste' && choix.sc < 3 && peutC){ charger(AI); return; }
+  if (niveau === 'facile' && Math.random() < 0.4) choix = coups[Math.floor(Math.random() * coups.length)];
+  koRecents = [];
+  playCard(AI, choix.i, choix.s);
+}
+
+/* ---------- Affichage ---------- */
+const ATT_ICO = '<svg class="att-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 5.5h7.5a2.2 2.2 0 0 1 2.2 2.2v4.2a2 2 0 0 1-.4 1.2l-1.3 1.8c-.6.8-1.5 1.3-2.5 1.3H12c-1.6 0-2.9-.9-3.6-2.3L6.9 11a1.6 1.6 0 0 1 .9-2.1L9 8.5z"/><path d="M9.2 9.6v-1.7M12 9.6v-2.1M14.6 9.6v-1.9" stroke="var(--card-bg, #15142A)" stroke-width=".7" stroke-linecap="round"/><path d="M2 9.5h3M1.5 12.5h3.5M2.5 15.5h2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>';
+function cardHTML(id, opts){
+  opts = opts || {};
+  const c = CARDS[id];
+  const v = opts.att !== undefined ? opts.att : c.p;
+  const icons = c.a.map(([k, val]) => { const chiffre = val && k !== 'esquive' ? val : ''; return `<span class="ic" title="${NAMES[k]}${chiffre ? ' ' + chiffre : ''}">${ICONS[k]}${chiffre}</span>`; }).join('');
+  // Bonus : actifs en couleur, possibles (selon le camp et les liens de la carte) en grisé
+  const camps = campsId(id), camp = CAMP_OF[id], fam = famOf(id);
+  const actifs = opts.bonus || [];
+  const possibles = [];
+  if (camps.length) possibles.push('camp');
+  if (camps.includes('saiyan')) possibles.push('enrage');
+  if (camps.includes('u11')) possibles.push('survie');
+  if (aAb(id, 'solitaire')) possibles.length = 0;
+  if (fam && ALLIES.some(([x, y]) => x === fam || y === fam)) possibles.push('allie');
+  if (fam && RIVAUX.some(([x, y]) => x === fam || y === fam)) possibles.push('rival');
+  const cles = [...new Set([...possibles, ...actifs])];
+  const bonus = cles.map(k => {
+    const on = actifs.includes(k);
+    return `<span class="ic bon ${on ? '' : 'pot'}" title="${esc(BONUS_INFO[k].titre)} — ${on ? 'actif' : 'possible'}">${BONUS_INFO[k].svg}</span>`;
+  }).join('');
+  const namek = camps.includes('namek') ? `<span class="ic bon" title="${esc(BONUS_INFO.namek.titre)}">${BONUS_INFO.namek.svg}</span>` : '';
+  const chip = camps.length ? `<div class="camps">${camps.map(c => `<span class="camp-chip c-${c}">${CAMP_LABEL[c]}</span>`).join('')}</div>` : '';
+  const evo = c.e >= 0 ? `<div class="ev">Évolution de ${esc(CARDS[c.e].n)}</div>` : '';
+  const badge = c.e >= 0 ? `<span class="badge-evo" title="Carte d'évolution">ÉVO</span>` : (FUSION_RES.includes(c.n) ? `<span class="badge-evo badge-fus" title="Carte de fusion">FUSION</span>` : '');
+  const extra = opts.extra || '';
+  return `<div class="card ${opts.cls || ''}${opts.horiz ? ' hz' : ''}${opts.blesse ? ' blesse' : ''}${c.e >= 0 ? ' evo' : ''}" data-cid="${id}" data-att="${v}" data-bonus="${actifs.join(',')}" ${opts.attrs || ''}>${badge}<img src="${c.img}" alt="${esc(c.n)}" loading="lazy" decoding="async"><div class="nm">${esc(c.n)}</div>${chip}<div class="st"><span title="ATT"${opts.clig != null ? ` class="att-clig" style="animation-delay:-${Math.round(opts.clig)}ms"` : ''}>${ATT_ICO}${v}</span>${c.a.some(([k]) => k === 'rayon') ? '<span class="rdot" title="Rayon d\'énergie"><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="#29a3f0"/></svg></span>' : ''}<span>Ki ${c.k}</span></div>${evo}<div class="icons">${icons}${namek}</div>${(bonus || namek) ? `<div class="icons bons">${bonus}</div>` : ''}${extra}</div>`;
+}
+
+// Traits entre les combattants liés : chaque lien a sa propre couleur (teintes réparties au nombre d'or, bien distinctes)
+const LIEN_NOM = { camp: 'Tempérament de camp', allie: 'Alliés', rival: 'Rivaux', bulma: 'Touche pas à ma Bulma !', 'pere-fils-goku': 'Père fils', 'pere-fils-vegeta': 'Père fils', amour: 'Amour de Yamcha', serviteur: 'Serviteur', 'pere-spirituel': 'Père spirituel', 'maitre-sorcier': 'Maître sorcier', amis: "Amis d'enfance", universe6: 'Universe 6', couple: 'Couple' };
+// Couleur stable d'un lien : dérivée de son type et de l'identité des deux cartes (pas de l'ordre de dessin)
+function uidDe(x){ if (!x.uid) x.uid = ++uidInst; return x.uid; }
+function couleurStable(cle){
+  let h = 0; for (const ch of cle) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return `hsl(${h % 360}, 80%, 58%)`;
+}
+// Un lien temporaire est affiché seulement si ce couple est actif (il a été déclenché et n'a pas expiré)
+function lienActifEntre(a, b, lien){
+  const min = Math.min(uidDe(a), uidDe(b)), max = Math.max(uidDe(a), uidDe(b));
+  const cle = `${lien.key}:${min}:${max}`;
+  return (a.liensActifs || []).some(l => l.cle === cle) && (b.liensActifs || []).some(l => l.cle === cle);
+}
+function dessinerLiens(){
+  let svg = document.getElementById('liens');
+  if (!svg){
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'liens';
+    svg.setAttribute('class', 'liens');
+    document.body.appendChild(svg);
+  }
+  svg.innerHTML = '';
+  const ancre = (p, s) => {
+    const el = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
+    const c = el && el.children[s];
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  };
+  const trait = (a, b, type) => {
+    const A = ancre(a.p, a.s), B = ancre(b.p, b.s);
+    if (!A || !B) return;
+    const ia = P[a.p].slots[a.s], ib = P[b.p].slots[b.s];
+    const cle = `${type}|${Math.min(uidDe(ia), uidDe(ib))}|${Math.max(uidDe(ia), uidDe(ib))}`;
+    const l = document.createElementNS(svg.namespaceURI, 'line');
+    l.setAttribute('x1', A.x); l.setAttribute('y1', A.y);
+    l.setAttribute('x2', B.x); l.setAttribute('y2', B.y);
+    l.setAttribute('stroke', couleurStable(cle));
+    l.setAttribute('class', 'lien-trait');
+    const titre = document.createElementNS(svg.namespaceURI, 'title');
+    titre.textContent = `${LIEN_NOM[type]} : ${CARDS[P[a.p].slots[a.s].id].n} – ${CARDS[P[b.p].slots[b.s].id].n}`;
+    l.appendChild(titre);
+    svg.appendChild(l);
+  };
+  const n = P[HUMAN].slots.length;
+  for (const p of [HUMAN, AI]){
+    for (let s = 0; s < n; s++){
+      const a = P[p].slots[s]; if (!a) continue;
+      for (let j = s + 1; j < n; j++){
+        const b = P[p].slots[j]; if (!b) continue;
+        if (campsDe(a).some(c => campsDe(b).includes(c))) trait({ p, s }, { p, s: j }, 'camp');
+        const fa = famOf(a.id), fb = famOf(b.id);
+        if (fa && fb && paire(ALLIES, fa, fb)) trait({ p, s }, { p, s: j }, 'allie');
+        const special = lienSpecial(a.id, b.id);
+        if (special && lienActifEntre(a, b, special)) trait({ p, s }, { p, s: j }, special.key);
+        const effet = lienEffet(a.id, b.id); if (effet) trait({ p, s }, { p, s: j }, effet.key);
+      }
+    }
+  }
+  // Les rivaux sont dans deux camps : aucun trait entre les deux joueurs (le bonus Rival reste actif)
+}
+window.addEventListener('resize', () => dessinerLiens());
+window.addEventListener('scroll', () => dessinerLiens(), { passive: true });
+
+function slotHTML(player, s){
+  const inst = P[player].slots[s];
+  if (!inst) return `<div class="slot" onclick="onSlot(${player},${s})">Emplacement libre</div>`;
+  const isTarget = !!pending && player === pending.tp;
+  const valide = isTarget && !immuniseRayon(inst, pending.from ? pending.from.id : null);
+  const det = detailATT(player, s);
+  const depuis = inst.attTouche ? Date.now() - inst.attTouche : Infinity;
+  return cardHTML(inst.id, { att: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), horiz: true, blesse: inst.dmg > 0, clig: depuis < 3000 ? depuis : null, attrs: `onclick="onSlot(${player},${s})"` });
+}
+
+function modeInfo(){
+  if (partieMode === 'tournoi') return `<span>Tournoi <b>${Math.min(tournoi.etape + 1, ADVERSAIRES.length)}/${ADVERSAIRES.length}</b></span>`;
+  if (R.nom) return `<span>Défi <b>${esc(R.nom)}</b></span>`;
+  return '';
+}
+
+// Barre du journal : dernière action (la plus récente est en tête de liste)
+function rendreJournalBarre(){
+  const b = $('btnJournal');
+  if (!b) return;
+  b.hidden = !inGame;
+  b.innerHTML = 'Journal : ' + (journal.length ? formaterJournal(journal[0]) : 'aucune action pour l\'instant');
+}
+function ouvrirJournal(){
+  const ol = $('journalListe');
+  ol.innerHTML = journal.length ? journal.slice().reverse().map(t => `<li>${formaterJournal(t)}</li>`).join('') : '<li>Aucune action pour l\'instant.</li>';
+  $('journalModal').classList.remove('hidden');
+  ol.scrollTop = ol.scrollHeight;
+}
+$('btnJournal').onclick = ouvrirJournal;
+$('btnJournalClose').onclick = () => fermerModal('journalModal');
+
+function render(){
+  rendreJournalBarre();
+  if (!P.length) return;
+  const me = P[HUMAN], ai = P[AI];
+  const r = rang();
+  $('scoreFixe').hidden = !inGame;
+  $('scoreFixe').innerHTML = `<span class="score-tot-fixe">Toi <b>${total(HUMAN)}</b> – <b>${total(AI)}</b> ${esc(oppNom())}</span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Manche <b>${round}/${MAX_ROUNDS}</b></span>`;
+  $('status').innerHTML = `<span>Manche <b>${round}/${MAX_ROUNDS}</b></span><span>Manches <b>${wins[HUMAN]} – ${wins[AI]}</b></span><span>Tour : <b>${cur === HUMAN ? 'toi' : oppNom()}</b></span><span>Ki <b>${me.ki}/${R.kiMax}</b></span><span>Rang <b>${r.nom}</b> · série ${stats.serie}</span>${modeInfo()}`;
+  $('oppTitle').textContent = `${oppNom()} · total ${total(AI)} · main ${ai.hand.length} · Ki ${ai.ki}`;
+  $('myTitle').textContent = `Toi · total ${total(HUMAN)}`;
+  $('handTitle').innerHTML = `Ta main (${me.hand.length}) · <span class="kibadge">Ki ${me.ki}/${R.kiMax}</span>`;
+  $('oppBoard').innerHTML = idx().map(s => slotHTML(AI, s)).join('');
+  $('myBoard').innerHTML = idx().map(s => slotHTML(HUMAN, s)).join('');
+  dessinerLiens();
+  const monTour = inGame && !over && cur === HUMAN && !pending;
+  $('hand').innerHTML = me.hand.map((id, i) => {
+    const ok = monTour && jouable(HUMAN, i);
+    const sl = monTour ? emplacementAuto(HUMAN, i) : -1;
+    let apercuTxt = '';
+    if (sl >= 0 && peutJouer(HUMAN, i, sl)){
+      const a = apercu(i, sl);
+      const base = CARDS[id].p, bonusTxt = a.bonus.filter(b => BONUS_COURT[b]).map(b => BONUS_COURT[b]).join(', ');
+      const detail = (a.carte > base && bonusTxt) ? ` = ${base} + ${a.carte - base} (${bonusTxt})` : '';
+      apercuTxt = `ATT ${a.carte}${detail} · ${coutCarte(HUMAN, i, sl)} Ki`;
+    }
+    return cardHTML(id, { cls: [ok ? 'jouable' : '', (monTour && !ok) ? 'injouable' : '', (mullMode && monTour) ? 'mull' : ''].join(' '), extra: '', attrs: `onclick="onHand(${i})" data-apercu="${esc(apercuTxt)}"` });
+  }).join('') || '<p style="color:var(--muted)">Main vide.</p>';
+  $('btnCharge').title = me.ki >= R.kiMax ? 'Ki déjà au maximum' : (!chargeAutorisee(HUMAN) ? 'Tu as chargé au tour précédent : joue une carte d\'abord' : 'Gagne +2 Ki à la place de jouer une carte');
+  $('btnMull').title = 'Échange une carte de ta main : une seule fois, au premier tour';
+  $('btnFusion').title = 'Fusionne deux combattants liés en payant le Ki';
+  $('btnCancel').textContent = pending ? 'Annuler le coup' : (mullMode ? 'Annuler le Mulligan' : 'Annuler la sélection');
+  $('btnMull').textContent = mullMode ? 'Mulligan : choisis une carte' : 'Mulligan';
+  $('btnNiveau').textContent = `Niveau : ${NIVEAUX[niveau].nom}`;
+  $('myBoard').className = 'row n' + NB;
+  $('oppBoard').className = 'row n' + NB;
+  $('msg').classList.toggle('alerte', !!pending);
+  if (pending) $('msg').classList.add('visible');
+  $('btnCharge').disabled = !monTour || me.ki >= R.kiMax;
+  $('btnCharge').classList.toggle('grise', monTour && me.ki < R.kiMax && !chargeAutorisee(HUMAN));
+  const genkiOk = monTour && genkiLancable(HUMAN);
+  $('btnGenki').hidden = !genkiOk;
+  if (genkiOk) $('btnGenki').textContent = `Genkidama (${R.kiMax} Ki)`;
+  const annOk = monTour && genkiAnnulable(HUMAN);
+  $('btnAnnGenki').hidden = !annOk;
+  if (annOk) $('btnAnnGenki').textContent = `Annuler la Genkidama adverse (${R.kiMax} Ki)`;
+  const fus = monTour ? fusionsPossibles(HUMAN) : [];
+  $('btnFusion').hidden = !fus.length;
+  if (fus.length) $('btnFusion').textContent = fus.length > 1 ? 'Fusion : choisir' : `Fusion : ${fus[0].f.nom} (${fus[0].f.ki} Ki)`;
+  $('btnMull').hidden = !mulliganDispo();
+  ajusterMarge();
+  $('oppBoard').closest('.board').classList.toggle('cible', !!pending && pending.tp === AI);
+  $('msg').classList.toggle('alerte', !!pending);
+  $('btnMode').textContent = `Mode : ${MODES[inGame && !over ? partieMode : mode]}`;
+  persist();
+}
+
+/* ---------- Musique de fond : 3 morceaux tirés au hasard pendant la partie ---------- */
+const TRACKS = ['../music/track-1.mp3', '../music/track-2.mp3', '../music/track-3.mp3'];
+const bgm = new Audio();
+bgm.volume = 0.35;
+let muted = false;
+let lastTrack = -1;
+try { muted = localStorage.getItem('dbzLoreMuted') === '1'; } catch (e) {}
+function nextTrack(){
+  let i;
+  do { i = Math.floor(Math.random() * TRACKS.length); } while (i === lastTrack && TRACKS.length > 1);
+  lastTrack = i;
+  return i;
+}
+function startMusic(){
+  if (muted) return;
+  if (!bgm.getAttribute('src')) bgm.src = TRACKS[nextTrack()];
+  const r = bgm.play();
+  if (r && r.catch) r.catch(() => {});
+}
+bgm.addEventListener('ended', () => { bgm.src = TRACKS[nextTrack()]; startMusic(); });
+function paintSound(){
+  const b = $('btnSound');
+  b.textContent = muted ? 'Son : off' : 'Son : on';
+  b.setAttribute('aria-pressed', String(muted));
+}
+$('btnSound').onclick = () => {
+  muted = !muted;
+  try { localStorage.setItem('dbzLoreMuted', muted ? '1' : '0'); } catch (e) {}
+  if (muted) bgm.pause(); else startMusic();
+  paintSound();
+};
+// Les navigateurs bloquent l'audio avant une première interaction : on démarre au premier toucher.
+document.addEventListener('pointerdown', function firstTouch(){
+  if (!inGame) return;   // la musique accompagne la partie
+  startMusic();
+  document.removeEventListener('pointerdown', firstTouch);
+});
+paintSound();
+
+$('btnCharge').onclick = onCharger;
+$('btnGenki').onclick = () => { if (over || cur !== HUMAN || pending || !genkiLancable(HUMAN)) return; sel = null; lancerGenkidama(HUMAN); };
+$('btnAnnGenki').onclick = () => { if (over || cur !== HUMAN || pending) return; annulerParPaiement(HUMAN); };
+$('btnFusion').onclick = onFusion;
+$('btnMull').onclick = () => {
+  if (!mulliganDispo()) return;
+  mullMode = !mullMode;
+  msg(mullMode ? 'Mulligan : touche la carte de ta main à échanger.' : '');
+  render();
+};
+$('btnNiveau').onclick = () => {
+  const ordre = Object.keys(NIVEAUX);
+  niveau = ordre[(ordre.indexOf(niveau) + 1) % ordre.length];
+  ecrire('dbzLoreNiveau', niveau);
+  menuNote(`Niveau ${NIVEAUX[niveau].nom} : appliqué à la prochaine partie.`);
+  render();
+};
+$('btnNew').onclick = () => { if (inGame && !over) askQuit(); else proposerNouvellePartie(); };
+// Choix au lancement d'une nouvelle partie : commencer, modifier le deck, ou annuler
+let apresDeck = false;
+function proposerNouvellePartie(){ $('newModal').classList.remove('hidden'); }
+$('btnNewStart').onclick = () => { $('newModal').classList.add('hidden'); newGame(); };
+$('btnNewAnnul').onclick = () => $('newModal').classList.add('hidden');
+$('btnNewDeck').onclick = () => { $('newModal').classList.add('hidden'); apresDeck = true; ouvrirCollection(); };
+function ouvrirCollection(){
+  compteMsg = '';
+  deckEdit = deckEditionDepart();
+  renderColl();
+  $('collModal').classList.remove('hidden');
+}
+function retourAuChoix(){ if (apresDeck){ apresDeck = false; proposerNouvellePartie(); } }
+$('btnOver').onclick = onOverButton;
+$('btnStay').onclick = onStay;
+$('btnCancel').onclick = () => {
+  if (pending && avantCoup){
+    P = avantCoup.P; journal = avantCoup.journal;
+    pending = null; avantCoup = null; sel = null;
+    msg('Coup annulé. Choisis une autre carte ou un autre coup.');
+    render();
+    return;
+  }
+  if (mullMode){ mullMode = false; msg(''); render(); return; }
+  sel = null; msg(''); render();
+};
+$('tutoBtn').onclick = tutoSuivant;
+
+
+$('btnMode').onclick = () => {
+  if (inGame && !over){ menuNote('Le mode change à la prochaine partie.'); }
+  const ordre = Object.keys(MODES);
+  mode = ordre[(ordre.indexOf(mode) + 1) % ordre.length];
+  ecrire('dbzLoreMode', mode);
+  render();
+};
+
+/* ---------- Journal, collection, succès ---------- */
+
+
+function renderColl(){
+  const enCours = inGame && !over ? 'Partie en cours : ce deck sera utilisé à la prochaine partie. ' : '';
+  $('collCompte').textContent = enCours + (compteMsg || `Deck : ${deckEdit.length}/${DECK_MAX} · Cartes possédées : ${collection.length}/${CARDS.length}.${enCours ? '' : ' Le deck sert à la prochaine partie.'}`);
+  $('collGrille').innerHTML = CARDS.map((c, i) => {
+    const cls = (collection.includes(i) ? '' : 'nope') + (deckEdit.includes(i) ? ' sel' : '');
+    return cardHTML(i, { att: c.p, cls: 'coll ' + cls, attrs: `onclick="toggleDeck(${i})"` });
+  }).join('');
+}
+function toggleDeck(i){
+  compteMsg = '';
+  if (!collection.includes(i)){ compteMsg = 'Carte non possédée : gagne-la en battant un adversaire du tournoi.'; renderColl(); return; }
+  const k = deckEdit.indexOf(i);
+  if (k >= 0) deckEdit.splice(k, 1);
+  else if (deckEdit.length < DECK_MAX) deckEdit.push(i);
+  else compteMsg = 'Deck plein : retire une carte avant d\'en ajouter.';
+  renderColl();
+}
+$('btnColl').onclick = () => {
+  $('bouleModal').classList.add('hidden');
+  ouvrirCollection();
+};
+$('btnCollSave').onclick = () => {
+  deckPerso = deckEdit.slice();
+  ecrire('dbzLoreDeck', deckPerso);
+  fermerModal('collModal');
+  if (inGame && !over) msg('Deck enregistré : il sera utilisé à la prochaine partie.');
+  retourAuChoix();
+};
+$('btnCollReset').onclick = () => {
+  deckPerso = null;
+  ecrire('dbzLoreDeck', null);
+  deckEdit = deckEditionDepart();
+  compteMsg = 'Deck réinitialisé : à chaque partie, 20 cartes sont tirées au hasard dans ta collection.';
+  renderColl();
+};
+$('btnCollClose').onclick = () => { fermerModal('collModal'); retourAuChoix(); };
+
+$('btnBoule').onclick = () => $('bouleModal').classList.remove('hidden');
+$('btnBouleClose').onclick = () => fermerModal('bouleModal');
+$('btnSucc').onclick = () => {
+  $('bouleModal').classList.add('hidden');
+  const suivant = RANGS.find(x => x.min > stats.victoires);
+  const decks = Object.values(stats.decks || {}).sort((a, b) => b.parties - a.parties);
+  const lignes = decks.length ? decks.map(d => `<li><b>${esc(d.nom)}</b> : ${d.parties} partie(s) · ${d.victoires} victoire(s) · ${d.nuls} nul(s) · ${d.defaites} défaite(s)${d.parties ? ` · ${Math.round(d.victoires / d.parties * 100)} % de victoires` : ''}</li>`).join('') : '<li>Aucune partie jouée.</li>';
+  $('succContenu').innerHTML = `
+    <p><b>Rang :</b> ${rang().nom} · ${stats.victoires} victoire(s) · série ${stats.serie} (meilleure ${stats.meilleure}) · nuls ${stats.nuls || 0} · tournois gagnés ${stats.tournois}</p>
+    <p>${suivant ? `Prochain rang : ${suivant.nom} à ${suivant.min} victoires.` : 'Rang maximal atteint.'}</p>
+    <ul class="succ">
+      <li class="${succes.kaio ? 'ok' : ''}"><b>Kaio-ken</b> : gagner une manche avec 1 ${ATT_ICO} d'écart.${succes.kaio ? ' ✔' : ''}</li>
+      <li class="${succes.genkidama ? 'ok' : ''}"><b>Esprit d’équipe</b> : poser 3 cartes de soutien (Babidi, Yajirobé, Bulma) dans une même manche.${succes.genkidama ? ' ✔' : ''}</li>
+    </ul>
+    <h3 class="regle-groupe">Statistiques par deck</h3>
+    <ul class="succ">${lignes}</ul>`;
+  $('succModal').classList.remove('hidden');
+};
+$('btnSuccClose').onclick = () => fermerModal('succModal');
+
+// Règles : revoir le tutoriel
+$('btnTutoRevoir').onclick = () => { $('rulesModal').classList.add('hidden'); montrerTuto(0); };
+
+/* ---------- Mécaniques de l'app : sauvegarde, fenêtres, plein écran, son ---------- */
+const SAVE_KEY = 'dbzLoreSave';
+// Choix de cible d'un rayon : on montre le plateau adverse
+function focusCible(){
+  const b = $('oppBoard').closest('.board');
+  if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+// La barre du bas (main) recouvre le bas de la page : on réserve sa hauteur pour que le plateau défile au-dessus
+function ajusterMarge(){
+  const d = document.querySelector('footer.dock');
+  if (d && d.offsetHeight) document.body.style.paddingBottom = (d.offsetHeight + 16) + 'px';
+}
+window.addEventListener('resize', ajusterMarge);
+// Cadre de la main : réduit par défaut (illustrations, ATT et Ki) ; glisser la poignée vers le haut pour l'agrandir
+const dockEl = $('dock'), poignee = $('poignee');
+let glisse = null;
+function reduireMain(v){
+  dockEl.classList.toggle('reduit', v);
+  ecrire('dbzLoreMainReduite', v);
+  ajusterMarge();
+}
+dockEl.classList.toggle('reduit', lire('dbzLoreMainReduite', true));
+// Geste : glisser vers le haut agrandit, vers le bas réduit, un simple toucher bascule
+function geste(dy){
+  if (dy < -14) reduireMain(false);
+  else if (dy > 14) reduireMain(true);
+  else reduireMain(!dockEl.classList.contains('reduit'));
+  majBoutonMain();
+}
+function majBoutonMain(){
+  $('btnMain').textContent = dockEl.classList.contains('reduit') ? '▲' : '▼';
+  $('btnMain').title = dockEl.classList.contains('reduit') ? 'Agrandir la main' : 'Réduire la main';
+}
+majBoutonMain();
+// Souris (pointeur)
+poignee.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse') return;
+  glisse = { y: e.clientY };
+});
+poignee.addEventListener('pointerup', e => {
+  if (e.pointerType !== 'mouse' || !glisse) return;
+  geste(e.clientY - glisse.y);
+  glisse = null;
+});
+// Tactile : événements touch, plus fiables que les pointeurs sur tous les navigateurs mobiles
+poignee.addEventListener('touchstart', e => { glisse = { y: e.touches[0].clientY }; }, { passive: true });
+poignee.addEventListener('touchmove', e => { e.preventDefault(); }, { passive: false });
+poignee.addEventListener('touchend', e => {
+  if (!glisse) return;
+  e.preventDefault();
+  geste(e.changedTouches[0].clientY - glisse.y);
+  glisse = null;
+}, { passive: false });
+$('btnMain').onclick = () => { reduireMain(!dockEl.classList.contains('reduit')); majBoutonMain(); };
+// Affiche le plateau du joueur en entier, au-dessus de la barre du bas
+function focusTurn(){
+  const board = $(cur === HUMAN ? 'myBoard' : 'oppBoard').closest('.board');
+  if (!board || over) return;
+  ajusterMarge();
+  board.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => {
+    const d = document.querySelector('footer.dock');
+    const limite = window.innerHeight - (d ? d.offsetHeight : 0) - 8;
+    const bas = board.getBoundingClientRect().bottom;
+    if (bas > limite) window.scrollBy({ top: bas - limite, behavior: 'smooth' });
+  }, 450);
+}
+const modalOpen = () => !!document.querySelector('.over:not(.hidden)');
+function persist(){
+  try {
+    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, partieMode, advIdx, sursaut, mullUsed, journal, NB, deckCle }));
+    else localStorage.removeItem(SAVE_KEY);
+  } catch (e) {}
+}
+function loadGame(){
+  try {
+    const d = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if (!d || !d.P) return false;
+    const idsOk = p => [...p.deck, ...p.hand, ...p.disc, ...p.slots.filter(Boolean).map(x => x.id)].every(i => Number.isInteger(i) && i >= 0 && i < CARDS.length);
+    if (!d.P.every(idsOk)) return false;   // sauvegarde incompatible : nouvelle partie
+    P = d.P; round = d.round; wins = d.wins; first = d.first; cur = d.cur; pending = d.pending; curBg = d.curBg || 0;
+    R = Object.assign({ kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' }, d.R || {});
+    partieMode = d.partieMode || mode;
+    advIdx = typeof d.advIdx === 'number' ? d.advIdx : -1;
+    sursaut = d.sursaut === undefined ? null : d.sursaut;
+    mullUsed = !!d.mullUsed;
+    NB = d.NB || NIVEAUX[niveau].slots;
+    deckCle = d.deckCle || deckSignature();
+    journal = Array.isArray(d.journal) ? d.journal : [];
+    P.forEach(p => { p.actions = p.actions || 0; p.soutiens = p.soutiens || 0; p.regenUsed = p.regenUsed || []; });
+    over = false; inGame = true; sel = null;
+    document.body.style.backgroundImage = `url(${BGS[curBg]})`;
+    history.pushState({ g: 1 }, '');
+    msg(d.msg || '');
+    render();
+    if (cur === AI) scheduleAI(900);
+    return true;
+  } catch (e) { return false; }
+}
+
+// Confirmation avant de quitter une partie en cours
+window.addEventListener('beforeunload', e => { if (inGame && !over) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('popstate', () => {
+  if (!inGame || over) return;
+  history.pushState({ g: 1 }, '');
+  if (!modalOpen()) askQuit();
+});
+
+// Règles en fenêtre
+$('btnRules').onclick = () => { if (modalOpen()) return; $('rulesModal').classList.remove('hidden'); };
+$('btnRulesClose').onclick = () => fermerModal('rulesModal');
+$('inspect').onclick = () => { $('inspect').classList.add('hidden'); render(); resumeAI(); };
+
+/* ---------- Appui long : lire une carte (la nôtre comme celle de l'adversaire) ---------- */
+let pressTimer = null, pressFired = false, pressX = 0, pressY = 0;
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest && e.target.closest('.card[data-cid]');
+  pressFired = false;
+  clearTimeout(pressTimer);
+  if (!el) return;
+  pressX = e.clientX; pressY = e.clientY;
+  pressTimer = setTimeout(() => {
+    pressFired = true;
+    if (navigator.vibrate) navigator.vibrate(15);
+    if (el.closest('#inspCartes')) zoomCarte(+el.dataset.cid);
+    else montrerCarte(+el.dataset.cid, el.dataset.att, el.dataset.bonus ? el.dataset.bonus.split(',').filter(Boolean) : [], el.dataset.apercu || '');
+  }, 400);
+});
+document.addEventListener('pointermove', e => {
+  if (Math.hypot(e.clientX - pressX, e.clientY - pressY) > 10) clearTimeout(pressTimer);
+});
+['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, () => clearTimeout(pressTimer)));
+// Pas de menu du navigateur (copier, traduire...) ni de sélection de texte sur les cartes
+['contextmenu', 'selectstart', 'dragstart'].forEach(ev => document.addEventListener(ev, e => { if (pressFired || (e.target.closest && e.target.closest('.card, .slot, .hand, .over'))) e.preventDefault(); }));
+// Un appui long ne doit pas déclencher le clic qui le suit
+document.addEventListener('click', e => {
+  if (pressFired){ pressFired = false; e.stopPropagation(); e.preventDefault(); }
+}, true);
+
+// Toucher ailleurs annule la carte sélectionnée
+document.addEventListener('click', e => {
+  if (!sel || over || modalOpen()) return;
+  if (e.target.closest('.hand, .slot, .card, .over')) return;
+  sel = null; msg(''); render();
+});
+
+// Plein écran (si le navigateur le permet ; iPhone Safari ne le propose pas)
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+function paintFull(){
+  const b = $('btnFull');
+  if (!(document.fullscreenEnabled || document.webkitFullscreenEnabled)) { b.hidden = true; return; }
+  b.hidden = false;
+  b.textContent = fsEl() ? 'Quitter le plein écran' : 'Plein écran';
+}
+$('btnFull').onclick = () => {
+  if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  else (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement);
+};
+document.addEventListener('fullscreenchange', paintFull);
+document.addEventListener('webkitfullscreenchange', paintFull);
+paintFull();
+
+// Plein écran automatique en tournant le téléphone : le navigateur exige un geste, donc le
+// premier appui en mode paysage l'active ; revenir en portrait le quitte. Écrans tactiles seulement.
+const fsDispo = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+const mqPaysage = window.matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 600px)');
+let fsArme = false, fsAuto = false;
+function entrerAuto(){
+  if (!fsDispo || fsEl() || !mqPaysage.matches) return;
+  const el = document.documentElement, r = (el.requestFullscreen || el.webkitRequestFullscreen);
+  try { const pr = r.call(el); fsAuto = true; if (pr && pr.catch) pr.catch(() => { fsAuto = false; }); } catch (e) { fsAuto = false; }
+}
+function suivreOrientation(){
+  if (mqPaysage.matches){ fsArme = true; entrerAuto(); }
+  else { fsArme = false; if (fsAuto && fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); fsAuto = false; }
+}
+document.addEventListener('pointerup', () => { if (fsArme){ fsArme = false; entrerAuto(); } }, true);
+if (mqPaysage.addEventListener) mqPaysage.addEventListener('change', suivreOrientation); else mqPaysage.addListener(suivreOrientation);
+suivreOrientation();
+
+// Bruitage léger à la pose d'une carte (synthèse WebAudio, sans fichier). Coupé avec le bouton Son.
+let actx = null;
+function sfx(f1 = 660, f2 = 990, type = 'triangle'){
+  if (muted) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + 0.12);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 0.26);
+  } catch (e) {}
+}
+
+// Installation sur l'écran d'accueil (comme une application)
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+let installPrompt = null;
+// Version de test : pas de service worker (la version principale garde le sien)
+(function aideLore(){
+  const zc = document.getElementById('aideCaps');
+  if (zc) zc.innerHTML = Object.keys(CAP_TXT).filter(k => ICONS[k] && CARDS.some(c => c.a.some(x => x[0] === k))).map(k => { const t = CAP_TXT[k], i = t.indexOf(' : '); return `<div class="leg">${ICONS[k]}<span>${i > 0 ? `<b>${esc(t.slice(0, i))}</b> : ${esc(t.slice(i + 3))}` : esc(t)}</span></div>`; }).join('');
+  const zk = document.getElementById('aideCamps');
+  if (zk) zk.innerHTML = '<ul>' + ORDRE_CAMPS.map(k => { const t = CAMP_TXT[k].split(' Tempérament : ')[0], i = t.indexOf(' : '); return `<li><b>${esc(t.slice(0, i))}</b> : ${esc(t.slice(i + 3))} <i>(${CAMPS[k].join(', ')})</i></li>`; }).join('') + '</ul>';
+})();
+$('btnAddHome').hidden = isStandalone;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; });
+window.addEventListener('appinstalled', () => { installPrompt = null; $('btnAddHome').hidden = true; });
+$('btnAddHome').onclick = () => {
+  if (installPrompt) {
+    installPrompt.prompt();
+    installPrompt.userChoice.then(() => { installPrompt = null; $('btnAddHome').hidden = true; });
+  } else {
+    msg("Sur iPhone : touchez Partager ⬆︎ dans Safari, puis « Sur l'écran d'accueil ». Sur Android : menu ⋮ du navigateur, puis « Installer l'application » ou « Ajouter à l'écran d'accueil ».");
+  }
+};
+
+// Les Scouters : Vegeta et Vegeta Super Saiyan révèlent la main adverse
+CARDS[ID['Vegeta']].a.push(['scouter', 0]);
+CARDS[ID['Vegeta Super Saiyan']].a.push(['scouter', 0]);
+
+if (!loadGame()) newGame();
+
+</script></body>
+</html>

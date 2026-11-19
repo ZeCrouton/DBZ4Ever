@@ -1,3 +1,16 @@
+# Version Lore (test) — 2026-11-19
+
+Version à part, jouable dans le dossier `lore/` (adresse habituelle du jeu + `lore/`). La version principale (`index.html`) n'est pas modifiée et les sauvegardes sont séparées.
+
+- Puissances refaites d'après le manga : ATT de 1 à 22, coûts de 1 à 8 Ki.
+- Camps multiples (ex. Broly Saiyan + Boss, Piccolo Namek + Démon). Nouveaux camps Boss, Univers 6, Univers 11. Tempérament : +1 par camp partagé, +2 au maximum.
+- Nouvelles capacités : Hakai, Retour temporel, Bonbon, Mafuba, Senzu, Taiyoken, Kienzan (perçant), Épée de Trunks, Crachat pétrifiant, Immortel, Ultra Ego, Ultra Instinct (contre-attaque), Broly légendaire et Berserk, Jiren solitaire, Final Explosion, Absorption (Cell, Super Buu), Métamorphose (Oolong, Puar), Ozaru.
+- Fusions : Gotenks (Goten + Trunks) et Kefla (Kale + Caulifla) ; Gogeta blue et Vegetto SSJ ne durent que 3 tours.
+- Divin : insensible aux rayons sauf ceux d'un Dieu. Esquive plafonnée à 40 %, jamais deux fois de suite.
+- Charger : toujours +2 Ki. Ki de départ 2, 4 puis 6 selon la manche. Genkidama : 6 dégâts.
+- IA : prend en compte les nouveaux effets et sait patienter pour poser un grand combattant.
+- Service worker de la version principale : ne met pas en cache la version de test.
+
 # v2.22 — 2026-11-17
 
 - Ajout de Goten et de la fusion Goten + Trunks → Gotenks.
