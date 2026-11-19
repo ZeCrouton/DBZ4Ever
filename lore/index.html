@@ -1080,6 +1080,7 @@ function afterAction(estCharge){
     return;
   }
   avantCoup = null;
+  evoluerCell();
   koSiSansAtt();
   P[cur].actions++;
   P[cur].aCharge = !!estCharge;
@@ -1406,7 +1407,7 @@ const CAP_TXT = {
   temps: "Fusion temporaire : le combattant quitte le plateau après le nombre de tours indiqué.",
   finalexp: "Final Explosion (Vegeta Majin) : quand il est mis KO, chaque combattant ennemi subit les dégâts indiqués.",
   absorbAllie: "Absorption (Super Buu) : à sa pose, il absorbe ton autre combattant le plus fort et gagne son ATT.",
-  cellabs: "Absorption des androïdes (Cell) : si C-17 ou C-18 est en jeu (sur n'importe quel plateau), Cell parfait se pose sur Cell sans payer de Ki, et les androïdes sont absorbés.",
+  cellabs: "Absorption des androïdes (Cell) : dès que C-17 ou C-18 est en jeu (sur n'importe quel plateau), Cell devient Cell parfait tout seul, et les androïdes sont absorbés.",
   barriere: "Barrière (C-17) : bloque la valeur indiquée de dégâts à chaque coup (au lieu de 1 pour les autres cyborgs).",
   immortel: "Immortel (Zamasu) : les dégâts ne peuvent pas le faire descendre sous 1 ATT. Seul le Hakai peut le mettre KO.",
   bonbon: "Bonbon (Majin Buu) : à sa pose, transforme en bonbon (met KO) le combattant adverse le plus fort dont l'ATT ne dépasse pas la valeur.",
@@ -1549,7 +1550,6 @@ function coutCarte(p, i, s){
   const me = P[p], c = CARDS[me.hand[i]];
   if (c.e < 0) return c.k;
   const actuel = me.slots[s];
-  if (actuel && actuel.id === c.e && aAb(c.e, 'cellabs') && androidesEnJeu().length) return 0; // Cell absorbe un androïde : forme parfaite gratuite
   return (actuel && actuel.id === c.e) ? Math.max(0, c.k - CARDS[c.e].k) : c.k;
 }
 // C-17 et C-18 présents sur un plateau (les deux camps)
@@ -1686,7 +1686,6 @@ function playCard(p, i, s){
   if (cout > me.ki){ msg(`Il faut ${cout} Ki pour jouer ${c.n} (tu as ${me.ki}).`); return; }
   if (p === HUMAN) animerCarteJouee(i, s);
   const meneAvant = total(p) < total(1 - p);
-  const absorbeCell = c.e >= 0 && aAb(c.e, 'cellabs') && cout === 0 && androidesEnJeu().length ? androidesEnJeu() : [];
   const ancien = c.e >= 0 ? me.slots[s] : null;
   if (ancien) me.disc.push(ancien.id);
   // Une évolution est le même combattant : il garde son identité et ses bonus de lien en cours.
@@ -1700,12 +1699,6 @@ function playCard(p, i, s){
   // Ozaru (Goku enfant) : la pleine lune le transforme quand tu es mené
   const oz = abVal(id, 'ozaru');
   if (oz && meneAvant){ me.slots[s].bonus += oz; jour(`Pleine lune : ${c.n} se transforme en Ozaru (+${oz} ATT).`); }
-  // Cell absorbe les androïdes pour atteindre sa forme parfaite
-  absorbeCell.forEach(({ q, j }) => {
-    const o = P[q].slots[j]; if (!o) return;
-    P[q].slots[j] = null; P[q].disc.push(o.id);
-    jour(`Absorption : Cell absorbe ${CARDS[o.id].n} (${nom(q)}) et atteint sa forme parfaite.`);
-  });
   activerLiensSpeciaux(p);
   liensPose(p, s);
   sfx();
@@ -1736,6 +1729,22 @@ function liensPose(p, s){
     P[p].ki = Math.min(R.kiMax, P[p].ki + 1);
     jour(`Universe 6 : ${nom(p)} gagne 1 Ki.`);
   }
+}
+// Cell se transforme seul en Cell parfait dès qu'un androïde (C-17 ou C-18) est en jeu, sur n'importe quel plateau.
+// Les androïdes sont absorbés. Les dégâts, bonus et liens de Cell sont gardés.
+function evoluerCell(){
+  [HUMAN, AI].forEach(q => P[q].slots.forEach((o, j) => {
+    if (!o || nomC(o.id) !== 'Cell') return;
+    const andr = androidesEnJeu();
+    if (!andr.length) return;
+    andr.forEach(({ q: aq, j: aj }) => {
+      const a = P[aq].slots[aj]; if (!a) return;
+      P[aq].slots[aj] = null; P[aq].disc.push(a.id);
+      jour(`Absorption : Cell absorbe ${CARDS[a.id].n} (${nom(aq)}) et devient Cell parfait.`);
+    });
+    o.id = ID['Cell parfait'];
+    msg('Cell atteint sa forme parfaite !');
+  }));
 }
 // Cible automatique : le combattant adverse le plus fort qui respecte la condition
 function meilleureCible(q, ok){
