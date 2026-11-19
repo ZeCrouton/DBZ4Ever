@@ -329,6 +329,11 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .aide-intro{color:var(--muted);font-size:13px;margin:0 0 8px}
 .board .row.n3 .card.hz,.board .row.n3 .slot{width:calc(33% - 8px)}
 @media (max-width:639px){.board .row.n3 .card.hz,.board .row.n3 .slot{width:calc(50% - 5px)}}
+
+/* Main repliée : format compact (comme avant), mais les cartes ne rétrécissent plus : elles défilent sur le côté */
+.dock.reduit .hand{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;overflow-y:visible;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding:50px 10px 10px;margin-top:-50px;gap:8px}
+.dock.reduit .hand .card{flex:0 0 62px;width:62px;min-width:62px;max-width:62px;padding:3px;scroll-snap-align:start}
+.dock.reduit .hand .card img{height:62px;object-fit:cover}
 </style>
 </head>
 <body>
