@@ -340,7 +340,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 </main>
 <footer class="dock reduit" id="dock"><div class="poignee" id="poignee" title="Glisse vers le haut pour agrandir la main"><span></span><button id="btnMain" type="button">▲</button></div><div id="msg"></div><div class="handline"><h2 class="handhead" id="handTitle"></h2><span class="handbtns"><button id="btnCharge" type="button">Charger (+2 Ki)</button></span></div><div class="hand" id="hand"></div><div class="actions"><button id="btnFusion" type="button" hidden>Fusion</button><button id="btnGenki" type="button" hidden>Genkidama</button><button id="btnAnnGenki" type="button" hidden>Annuler la Genkidama adverse</button><button id="btnMull" type="button" hidden>Mulligan</button><button id="btnCancel">Annuler la sélection</button><button id="btnFull" type="button" hidden>Plein écran</button><button id="btnAddHome" type="button">Ajouter à l'écran d'accueil</button></div></footer>
 <div class="over hidden" id="over"><div class="box"><h2 id="overTitle" style="margin-top:0"></h2><p id="overText"></p><div id="overSummary" hidden></div><button class="primary" id="btnOver"></button><button id="btnStay" type="button" hidden>Continuer</button></div></div>
-<div class="over hidden" id="journalModal"><div class="box"><h2 style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
+<div class="over hidden" id="journalModal"><div class="box"><h2 id="journalTitre" style="margin-top:0">Journal de la partie</h2><ol class="journal-liste" id="journalListe"></ol><button class="primary" id="btnJournalClose" type="button">Fermer</button></div></div>
 <div class="over hidden" id="inspect"><div class="box"><img id="inspImg" alt=""><h2 id="inspName" style="margin:0"></h2><p id="inspTxt"></p><div id="inspCartes" class="inspcartes" hidden></div><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="zoomCarte"><div class="box"><img id="zoomImg" alt=""><h2 id="zoomName" style="margin:0"></h2><div id="zoomTxt"></div><p id="zoomExpl" class="zexpl">Touche une caractéristique pour l'expliquer.</p><p class="insp-hint">Touchez pour fermer</p></div></div>
 <div class="over hidden" id="rulesModal"><div class="box rules-box"><h2 style="margin-top:0">Règles et aide</h2>
@@ -609,7 +609,7 @@ let R = { kiDebut: 2, kiTour: 1, kiMax: 12, noRayon: false, nom: '' };
 const NIVEAUX = { facile: { nom: 'Facile', slots: 3 }, normal: { nom: 'Normal', slots: 6 }, difficile: { nom: 'Difficile', slots: 6 } };
 let niveau = lire('dbzLoreNiveau', 'normal');
 let NB = NIVEAUX[niveau].slots, mullMode = false;
-let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '';
+let advIdx = -1, sursaut = null, mullUsed = false, journal = [], deckEdit = [], compteMsg = '', journalDebutManche = 0;
 let overCb = null, stayCb = null, tutoEtape = 0, avantCoup = null, msgTimer = null;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -952,6 +952,7 @@ function startRound(){
     sursaut = null;
   }
   cur = first;
+  journalDebutManche = journal.length; // repère pour relire le journal de la manche
   jour(`Manche ${round} : ${nom(cur)} commence.`);
   startTurn();
 }
@@ -1223,7 +1224,7 @@ function endRound(raison){
   const text = `${raison ? 'Fin de manche : ' + raison + ' ' : ''}Toi ${tt[0]} – ${tt[1]} ${oppNom()}. Manches : ${wins[HUMAN]} – ${wins[AI]}.`;
   jour(`Fin de la manche ${round} : ${tt[0]} – ${tt[1]}.`);
   const matchOver = wins[HUMAN] >= ROUNDS_TO_WIN || wins[AI] >= ROUNDS_TO_WIN || round >= MAX_ROUNDS;
-  const html = resumeHTML() + (debloques.length ? `<p class="succes">Succès débloqué : ${debloques.join(', ')}</p>` : '');
+  const html = resumeHTML() + (debloques.length ? `<p class="succes">Succès débloqué : ${debloques.join(', ')}</p>` : '') + `<p><button type="button" id="btnJournalManche">Relire le journal de la manche</button></p>`;
   if (matchOver){
     over = true; inGame = false;
     // Issue de la partie : victoire, défaite ou nul (égalité de manches à la fin)
@@ -2168,12 +2169,22 @@ function rendreJournalBarre(){
 }
 function ouvrirJournal(){
   const ol = $('journalListe');
+  $('journalTitre').textContent = 'Journal de la partie';
   ol.innerHTML = journal.length ? journal.slice().reverse().map(t => `<li>${formaterJournal(t)}</li>`).join('') : '<li>Aucune action pour l\'instant.</li>';
   $('journalModal').classList.remove('hidden');
   ol.scrollTop = ol.scrollHeight;
 }
 $('btnJournal').onclick = ouvrirJournal;
 $('btnJournalClose').onclick = () => fermerModal('journalModal');
+// Journal de la manche : les entrées depuis le début de la manche, dans l'ordre chronologique
+function ouvrirJournalManche(){
+  const n = Math.min(journal.length, Math.max(0, journal.length - journalDebutManche));
+  const entrees = journal.slice(0, n).reverse();
+  $('journalTitre').textContent = `Journal de la manche ${round}`;
+  $('journalListe').innerHTML = entrees.length ? entrees.map(t => `<li>${formaterJournal(t)}</li>`).join('') : '<li>Aucune action pendant cette manche.</li>';
+  $('journalModal').classList.remove('hidden');
+}
+$('overSummary').addEventListener('click', e => { if (e.target.id === 'btnJournalManche') ouvrirJournalManche(); });
 
 function render(){
   rendreJournalBarre();
@@ -2458,7 +2469,7 @@ function focusTurn(){
 const modalOpen = () => !!document.querySelector('.over:not(.hidden)');
 function persist(){
   try {
-    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, partieMode, advIdx, sursaut, mullUsed, journal, NB, deckCle }));
+    if (inGame && !over) localStorage.setItem(SAVE_KEY, JSON.stringify({ P, round, wins, first, cur, pending, curBg, msg: $('msg').textContent, R, partieMode, advIdx, sursaut, mullUsed, journal, journalDebutManche, NB, deckCle }));
     else localStorage.removeItem(SAVE_KEY);
   } catch (e) {}
 }
@@ -2477,6 +2488,7 @@ function loadGame(){
     NB = d.NB || NIVEAUX[niveau].slots;
     deckCle = d.deckCle || deckSignature();
     journal = Array.isArray(d.journal) ? d.journal : [];
+    journalDebutManche = typeof d.journalDebutManche === 'number' ? d.journalDebutManche : 0;
     P.forEach(p => { p.actions = p.actions || 0; p.soutiens = p.soutiens || 0; p.regenUsed = p.regenUsed || []; });
     over = false; inGame = true; sel = null;
     document.body.style.backgroundImage = `url(${BGS[curBg]})`;
