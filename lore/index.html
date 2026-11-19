@@ -104,8 +104,13 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 #inspect{cursor:pointer}
 #zoomCarte{cursor:pointer;z-index:12;overflow-y:auto;-webkit-overflow-scrolling:touch}
 /* Carte agrandie : si elle est plus haute que l'écran, elle défile au lieu de couper le haut et le bas */
-#zoomCarte .box{margin:auto;max-height:none}
-#zoomImg{width:220px;max-width:70vw;height:auto;border-radius:10px;display:block;margin:0 auto 10px}
+#zoomCarte .box{margin:auto;max-height:none;padding:16px 18px;max-width:340px}
+#zoomCarte h2{font-size:20px}
+#zoomCarte .zstats{margin:4px 0 8px}
+#zoomCarte .zcaps{gap:6px;margin:2px 0}
+#zoomCarte .zcap{font-size:14px}
+#zoomCarte .zliens{font-size:13px;margin-top:6px}
+#zoomImg{width:150px;max-width:40vw;height:auto;border-radius:10px;display:block;margin:0 auto 8px}
 .insp-hint{font-size:12px;color:var(--muted)}
 #inspect .box.large{max-width:420px;max-height:90vh;overflow:auto}
 .inspcartes{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
