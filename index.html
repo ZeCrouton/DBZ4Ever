@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DBZ4Ever Lore (version de test)</title>
+<title>DBZ4Ever</title>
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="theme-color" content="#f47c20">
@@ -264,7 +264,11 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 .board.vu{outline:3px solid var(--ki);outline-offset:3px}
 .board.cible{outline:3px solid var(--ok);outline-offset:3px;animation:cibleClig .6s ease-in-out infinite alternate}
 @keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
+.card.frappe{animation:frappeFx 2s ease-in-out 1 both}
+@keyframes frappeFx{0%{transform:scale(1);background-color:var(--surface)}15%{transform:scale(1.12);background-color:#e53935}30%{transform:scale(.96)}45%{transform:scale(1.06)}60%,85%{transform:scale(1);background-color:#e53935}100%{transform:scale(1);background-color:var(--surface)}}
+html.fxVue{overflow:hidden;touch-action:none}
 .board{scroll-margin-top:90px}
+#msg svg{width:15px;height:15px;vertical-align:-3px;display:inline-block}
 #msg.alerte{color:#b3261e;font-weight:bold;animation:alerteClig 1.6s steps(1,end) infinite}
 @keyframes alerteClig{0%{opacity:1}50%{opacity:.25}}
 .handline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px}
@@ -338,7 +342,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 </style>
 </head>
 <body>
-<header class="top"><h1>DBZ Lore (test)</h1><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
+<header class="top"><h1>DBZ4Ever</h1><span class="tools"><button id="btnRules" type="button">Règles</button><button id="btnSound" type="button" aria-pressed="false">Son : on</button><button id="btnNew" type="button">Nouvelle partie</button></span></header>
 <div id="scoreFixe" class="score-fixe" hidden></div>
 <main>
   <div class="menu"><button id="btnMode" type="button">Mode</button><button id="btnNiveau" type="button">Niveau</button><button id="btnBoule" type="button" class="boule" title="Collection et succès"><img src="./icons/dragonball.webp" alt="Collection et succès"></button></div>
@@ -632,6 +636,13 @@ function menuNote(t){
   clearTimeout(noteTimer);
   if (t) noteTimer = setTimeout(() => el.classList.remove('visible'), 4000);
 }
+// Message de choix de cible : en gras, sigle du rayon d'énergie placé devant la valeur
+function msgCible(html){
+  const el = $('msg');
+  el.innerHTML = `<b>${html}</b>`;
+  el.classList.add('visible');
+  clearTimeout(msgTimer);
+}
 function msg(t){
   const el = $('msg');
   el.textContent = t || '';
@@ -754,6 +765,18 @@ function degatsRayon(attInst, tp, ts, base){
   return n;
 }
 // from : { p, id } du combattant qui attaque (pour Divin, attaque perçante et contre-attaque)
+// Animation d'attaque : zoom, fond rouge pendant 2 s, vue figée sur le plateau de la carte touchée
+let frappeTimer = null;
+function frappeFx(p, s){
+  const row = document.getElementById(p === HUMAN ? 'myBoard' : 'oppBoard');
+  const el = row && row.children[s];
+  if (el && el.classList.contains('card')){ el.classList.remove('frappe'); void el.offsetWidth; el.classList.add('frappe'); }
+  const plateau = row && row.closest('.board');
+  if (plateau) plateau.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.documentElement.classList.add('fxVue');
+  clearTimeout(frappeTimer);
+  frappeTimer = setTimeout(() => document.documentElement.classList.remove('fxVue'), 2000);
+}
 function hit(p, s, n, src, from){
   const inst = P[p].slots[s];
   if (!inst) return;
@@ -826,6 +849,7 @@ function hit(p, s, n, src, from){
   secouer();
   inst.dmg += n;
   inst.attTouche = Date.now(); // l'ATT clignote 3 secondes après une attaque
+  inst.frappeAt = Date.now(); frappeFx(p, s);
   if (hasAb(inst, 'absorbKi')){ P[p].ki = Math.min(R.kiMax, P[p].ki + 1); jour(`${CARDS[inst.id].n} absorbe l'énergie de l'attaque (+1 Ki).`); }
   vib(12);
   const reste = att(p, s);
@@ -1881,7 +1905,7 @@ function effetsEntree(p, id, inst){
         return false;
       }
       pending = { n: rayon, tp: opp, name: CARDS[id].n, reste: nbCibles - 1, deja: [], from: inst };
-      msg(nbCibles > 1 ? `${CARDS[id].n} : touche deux combattants ennemis, chacun subit ${rayon} dégâts.` : `${CARDS[id].n} : touche un combattant ennemi, il subit ${rayon} dégâts.`);
+      msgCible(nbCibles > 1 ? `${esc(CARDS[id].n)} : touche deux combattants ennemis, chacun subit ${ICONS.rayon}${rayon} dégâts.` : `${esc(CARDS[id].n)} : touche un combattant ennemi, il subit ${ICONS.rayon}${rayon} dégâts.`);
       render();
       focusCible();
       return true;
@@ -1913,7 +1937,7 @@ function resolveRayon(j){
   const deja = [...pd.deja, j];
   if (pd.reste > 0 && P[pd.tp].slots.some((x, k) => x && !deja.includes(k) && !immuniseRayon(x, pd.from ? pd.from.id : null))){
     pending = { ...pd, reste: pd.reste - 1, deja };
-    msg(`Choisis la deuxième cible de ${pd.name}.`);
+    msgCible(`Choisis la deuxième cible de ${esc(pd.name)}.`);
     render();
     focusCible();
     return;
@@ -2162,7 +2186,10 @@ function slotHTML(player, s){
   const valide = isTarget && !immuniseRayon(inst, pending.from ? pending.from.id : null);
   const det = detailATT(player, s);
   const depuis = inst.attTouche ? Date.now() - inst.attTouche : Infinity;
-  return cardHTML(inst.id, { att: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), horiz: true, blesse: inst.dmg > 0, clig: depuis < 3000 ? depuis : null, attrs: `onclick="onSlot(${player},${s})"` });
+  const html = cardHTML(inst.id, { att: det.v, bonus: det.bonus, cls: valide ? 'target' : (isTarget ? 'nontarget' : ''), horiz: true, blesse: inst.dmg > 0, clig: depuis < 3000 ? depuis : null, attrs: `onclick="onSlot(${player},${s})"` });
+  const frappe = inst.frappeAt ? Date.now() - inst.frappeAt : Infinity;
+  if (frappe < 2000) return html.replace('<div class="card ', '<div class="card frappe ').replace('data-cid=', `style="animation-delay:-${Math.round(frappe)}ms" data-cid=`);
+  return html;
 }
 
 function modeInfo(){
