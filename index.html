@@ -564,7 +564,16 @@ const LIENS_INFO = [
   { nom: 'Universe 6', cartes: ['Kale', 'Caulifla'], texte: "Quand l'un est posé, l'autre gagne 1 Ki." },
   { nom: 'Couple', cartes: ['Krillin', 'C-18'], texte: 'Le premier dégât reçu par chacun est réduit de 1.' },
   { nom: 'Duel', cartes: [...GOKU_DUEL, ...VEGETA_DUEL], texte: "Un rayon entre Goku et Vegeta inflige 1 dégât de plus, quel que soit le plateau." },
-  { nom: 'Haine des Saiyans', cartes: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer'], texte: 'Un rayon de Freezer contre un Saiyan inflige 2 dégâts de plus.' },
+  { nom: 'Haine des Saiyans', cartes: ['Freezer', 'Freezer (forme finale)', 'Golden Freezer'], texte: 'Un rayon de Freezer contre un Saiyan inflige 1 dégât de plus.' },
+  { nom: 'Vainqueur de Freezer', cartes: ['Goku Super Saiyan'], texte: 'Son rayon contre la famille Freezer inflige 1 dégât de plus.' },
+  { nom: 'Vengeance de Vegeta', cartes: VEGETA_DUEL, texte: 'Un rayon de Vegeta contre la famille Freezer inflige 1 dégât de plus.' },
+  { nom: 'Kienzan', cartes: ['Krillin'], texte: 'Son rayon contre la famille Freezer inflige 2 dégâts de plus.' },
+  { nom: 'Cell Games', cartes: ['Gohan Super Saiyan 2'], texte: 'Son rayon contre Cell inflige 2 dégâts de plus.' },
+  { nom: 'Kamehameha père-fils', cartes: ['Gohan Super Saiyan 2', ...GOKU_DUEL], texte: 'Gohan Super Saiyan 2 inflige 1 dégât de plus avec son rayon si un Goku est sur ton plateau.' },
+  { nom: "Plan d'extermination", cartes: ['Zamasu', 'Goku Black'], texte: 'Leur rayon contre un Terrien inflige 1 dégât de plus.' },
+  { nom: "Sœurs de l'Univers 6", cartes: ['Caulifla', 'Kale'], texte: 'Caulifla inflige 1 dégât de plus avec son rayon si Kale est sur ton plateau.' },
+  { nom: 'Duo de fusion', cartes: ['Goten', 'Trunks', 'Trunks Super Saiyan'], texte: 'Goten inflige 1 dégât de plus avec son rayon si Trunks est sur ton plateau.' },
+  { nom: 'Ultra Ego', cartes: ['Vegeta Ultra Ego'], texte: "Son rayon inflige 2 dégâts de plus si ton total est inférieur à celui de l'adversaire." },
   { nom: 'Vengeance', cartes: ['Broly', ...GOKU_DUEL], texte: "Un rayon de Broly contre Goku inflige 1 dégât de plus, quel que soit le plateau." },
 ];
 function lienInfosCarte(id){
@@ -582,11 +591,30 @@ function protecteurDe(p, s){
 // Liens d'attaque (Duel, Vengeance : +1 ; Haine des Saiyans : +2) : dégâts en plus au rayon, quel que soit le plateau de chaque combattant
 function bonusRayon(att, tgtP, tgtS){
   const t = P[tgtP].slots[tgtS]; if (!att || !t) return null;
-  const fa = famOf(att.id), ft = famOf(t.id);
-  if ((fa === 'goku' && ft === 'vegeta') || (fa === 'vegeta' && ft === 'goku')) return 'Duel';
-  if (nomC(att.id) === 'Broly' && ft === 'goku') return 'Vengeance';
-  if (fa === 'freezer' && aCamp(t.id, 'saiyan')) return 'Haine des Saiyans';
-  return null;
+  const fa = famOf(att.id), ft = famOf(t.id), na = nomC(att.id);
+  const mesCombattants = P[1 - tgtP].slots.filter(Boolean); // plateau de l'attaquant
+  const aliee = f => mesCombattants.some(o => o !== att && famOf(o.id) === f);
+  const alieeNom = n => mesCombattants.some(o => o !== att && nomC(o.id) === n);
+  const c = []; // bonus applicables : un seul s'applique par tir, le plus fort (+2 au maximum)
+  if ((fa === 'goku' && ft === 'vegeta') || (fa === 'vegeta' && ft === 'goku')) c.push(['Duel', 1]);
+  if (na === 'Broly' && ft === 'goku') c.push(['Vengeance', 1]);
+  if (fa === 'freezer' && aCamp(t.id, 'saiyan')) c.push(['Haine des Saiyans', 1]);
+  if (ft === 'freezer'){
+    if (na === 'Goku Super Saiyan') c.push(['Vainqueur de Freezer', 1]);
+    if (fa === 'vegeta') c.push(['Vengeance de Vegeta', 1]);
+    if (na === 'Krillin') c.push(['Kienzan', 2]);
+  }
+  if (na === 'Gohan Super Saiyan 2'){
+    if (ft === 'cell') c.push(['Cell Games', 2]);
+    if (aliee('goku')) c.push(['Kamehameha père-fils', 1]);
+  }
+  if ((na === 'Zamasu' || na === 'Goku Black') && aCamp(t.id, 'terrien')) c.push(['Plan d\'extermination', 1]);
+  if (na === 'Caulifla' && alieeNom('Kale')) c.push(['Sœurs de l\'Univers 6', 1]);
+  if (na === 'Goten' && aliee('trunks')) c.push(['Duo de fusion', 1]);
+  if (na === 'Vegeta Ultra Ego' && totalSansCond(1 - tgtP) < totalSansCond(tgtP)) c.push(['Ultra Ego', 2]);
+  if (!c.length) return null;
+  c.sort((x, y) => y[1] - x[1]);
+  return { nom: c[0][0], plus: c[0][1] };
 }
 const paire = (liste, a, b) => !!a && !!b && liste.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
 
@@ -762,7 +790,7 @@ function immuniseRayon(inst, attId){ return !!inst && hasAb(inst, 'divin') && !(
 function degatsRayon(attInst, tp, ts, base){
   const t = P[tp].slots[ts]; let n = base;
   const lien = bonusRayon(attInst, tp, ts);
-  if (lien){ const plus = lien === 'Haine des Saiyans' ? 2 : 1; n += plus; jour(`${lien} : +${plus} dégât${plus > 1 ? 's' : ''}.`); }
+  if (lien){ n += lien.plus; jour(`${lien.nom} : +${lien.plus} dégât${lien.plus > 1 ? 's' : ''}.`); }
   if (attInst && t && hasAb(attInst, 'epee') && (famOf(t.id) === 'freezer' || instCamp(t, 'cyborg'))){ n *= 2; jour(`Épée de Trunks : dégâts doublés contre ${CARDS[t.id].n}.`); }
   return n;
 }
