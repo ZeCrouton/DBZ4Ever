@@ -765,6 +765,8 @@ function degatsRayon(attInst, tp, ts, base){
   return n;
 }
 // from : { p, id } du combattant qui attaque (pour Divin, attaque perçante et contre-attaque)
+// Chance d'esquive : capacité Esquive + 10 % pour l'Univers 6, 40 % maximum
+function chanceEsq(id){ const b = abVal(id, 'esquive'); return Math.min(40, b + (aCamp(id, 'u6') ? 10 : 0)); }
 // Animation d'attaque : zoom, fond rouge pendant 2 s, vue figée sur le plateau de la carte touchée
 let frappeTimer = null;
 function frappeFx(p, s){
@@ -803,7 +805,7 @@ function hit(p, s, n, src, from){
     if (immuniseRayon(inst, from ? from.id : null)){ jour(`${qui}${CARDS[inst.id].n} (${nom(p)}) est Divin : ce rayon ne le touche pas.`); return; }
   }
   // Esquive : un peu de hasard (40 % maximum), jamais deux esquives de suite pour le même combattant
-  const esq = Math.min(40, abVal(inst.id, 'esquive'));
+  const esq = chanceEsq(inst.id);
   if (esq && !perce){
     if (!inst.esqDerniere && Math.random() * 100 < esq){
       inst.esqDerniere = true;
@@ -1490,7 +1492,7 @@ const CAMP_TXT = {
   dieu: "Dieu : aura divine. Au début de ton tour, si tu as un Dieu sur ton plateau, tu gagnes 1 Ki de plus. Le rayon d'un Dieu touche les Divins. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
   cyborg: "Cyborg : barrière. Chaque coup reçu par un Cyborg est réduit de 1 (2 pour C-17), sauf les attaques perçantes. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
   boss: "Boss : rancune. Quand un Saiyan adverse est mis KO, tes Boss gagnent +1 ATT. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
-  u6: '',
+  u6: "Univers 6 : instinct de tournoi. Un combattant de ce camp gagne +10 % d'esquive (40 % maximum). Les attaques perçantes ne s'esquivent pas. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2).",
   u11: "Univers 11 : dernier rempart. Si ton total est inférieur à celui de l'adversaire, chaque combattant de ce camp gagne +1 ATT. Tempérament : +1 ATT par camp partagé avec un allié (maximum +2)."
 };
 // Définition d'un camp : « Camp : » et « Tempérament : » en gras, une ligne vide entre les deux
@@ -1658,7 +1660,7 @@ function scoreDifficile(id, i, s, style){
   if (rayon && !R.noRayon && cibles.length){
     let meilleur = 0;
     cibles.forEach(k => {
-      const v = att(HUMAN, k), esq = aAb(id, 'percant') ? 0 : Math.min(40, abVal(P[HUMAN].slots[k].id, 'esquive')) / 100;
+      const v = att(HUMAN, k), esq = aAb(id, 'percant') ? 0 : chanceEsq(P[HUMAN].slots[k].id) / 100;
       const val = (Math.min(rayon, v) + (v <= rayon ? 1 : 0)) * (1 - esq);
       if (val > meilleur) meilleur = val;
     });
@@ -2640,7 +2642,7 @@ let installPrompt = null;
   const zc = document.getElementById('aideCaps');
   if (zc) zc.innerHTML = Object.keys(CAP_TXT).filter(k => ICONS[k] && CARDS.some(c => c.a.some(x => x[0] === k))).map(k => { const t = CAP_TXT[k], i = t.indexOf(' : '); return `<div class="leg">${ICONS[k]}<span>${i > 0 ? `<b>${esc(t.slice(0, i))}</b> : ${esc(t.slice(i + 3))}` : esc(t)}</span></div>`; }).join('');
   const zk = document.getElementById('aideCamps');
-  if (zk) zk.innerHTML = '<ul>' + ORDRE_CAMPS.map(k => { const t = (CAMP_TXT[k] || 'Univers 6 : pas d\'effet propre, seulement le Tempérament.').split(' Tempérament : ')[0], i = t.indexOf(' : '); return `<li><b>${esc(t.slice(0, i))}</b> : ${esc(t.slice(i + 3))} <i>(${CAMPS[k].join(', ')})</i></li>`; }).join('') + '</ul>';
+  if (zk) zk.innerHTML = '<ul>' + ORDRE_CAMPS.map(k => { const t = (CAMP_TXT[k] || '').split(' Tempérament : ')[0], i = t.indexOf(' : '); return `<li><b>${esc(t.slice(0, i))}</b> : ${esc(t.slice(i + 3))} <i>(${CAMPS[k].join(', ')})</i></li>`; }).join('') + '</ul>';
 })();
 $('btnAddHome').hidden = isStandalone;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; });
