@@ -1813,6 +1813,33 @@ function retourTemporel(p, inst){
   jour(`Retour temporel : Whis remonte le temps, la dernière action de ${nom(opp)} est annulée.`);
   msg('Retour temporel : la dernière action adverse est annulée !');
 }
+// Mafuba en trois temps lisibles : Tortue Géniale posée et touchée, puis le Démon touché sur le plateau adverse, puis les deux KO
+function mafubaSeq(p, inst, t){
+  const opp = 1 - p, demon = P[opp].slots[t], nomT = CARDS[inst.id].n, nomD = CARDS[demon.id].n;
+  let bloc = document.getElementById('blocAnim');
+  if (!bloc){ bloc = document.createElement('div'); bloc.id = 'blocAnim'; bloc.style.cssText = 'position:fixed;inset:0;z-index:9999;background:transparent'; document.body.appendChild(bloc); }
+  bloc.hidden = false;
+  render();
+  msg(`${nomT} est posé… Mafuba !`);
+  setTimeout(() => {
+    const moi = P[p].slots.indexOf(inst);
+    inst.frappeAt = Date.now(); render(); if (moi >= 0) frappeFx(p, moi);
+    msg(`${nomT} s'épuise en lançant le Mafuba.`);
+  }, 800);
+  setTimeout(() => {
+    const j = P[opp].slots.indexOf(demon);
+    demon.frappeAt = Date.now(); render(); if (j >= 0) frappeFx(opp, j);
+    msg(`Mafuba : ${nomD} est scellé.`);
+  }, 3000);
+  setTimeout(() => {
+    jour(`Mafuba ! ${nomT} scelle ${nomD}, mais s'épuise.`);
+    const j = P[opp].slots.indexOf(demon); if (j >= 0) ko(opp, j);
+    const moi = P[p].slots.indexOf(inst); if (moi >= 0) ko(p, moi);
+    bloc.hidden = true;
+    render();
+    afterAction();
+  }, 5200);
+}
 function effetsEntree(p, id, inst){
   const opp = 1 - p;
   if (aAb(id, 'retour')){ retourTemporel(p, inst); return false; }
@@ -1838,11 +1865,8 @@ function effetsEntree(p, id, inst){
   if (mf){
     const t = meilleureCible(opp, (o, j) => instCamp(o, 'demon') && att(opp, j) <= mf);
     if (t >= 0){
-      jour(`Mafuba ! ${CARDS[id].n} scelle ${CARDS[P[opp].slots[t].id].n}, mais s'épuise.`);
-      ko(opp, t);
-      const moi = P[p].slots.indexOf(inst);
-      if (moi >= 0) ko(p, moi);
-      return false;
+      mafubaSeq(p, inst, t);
+      return true; // la suite (KO puis fin d'action) est jouée par la séquence
     }
     jour(`Mafuba : aucun Démon adverse à sceller (${mf} ATT maximum).`);
   }
