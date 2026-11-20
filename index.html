@@ -266,7 +266,7 @@ header.top button{padding:6px 10px;font-size:13px;white-space:nowrap}
 @keyframes cibleClig{from{outline-color:transparent}to{outline-color:var(--ok)}}
 .card.frappe{animation:frappeFx 2s ease-in-out 1 both}
 @keyframes frappeFx{0%{transform:scale(1);background-color:var(--surface)}15%{transform:scale(1.12);background-color:#e53935}30%{transform:scale(.96)}45%{transform:scale(1.06)}60%,85%{transform:scale(1);background-color:#e53935}100%{transform:scale(1);background-color:var(--surface)}}
-html.fxVue{overflow:hidden;touch-action:none}
+html.fxVue,html.vueFigee{overflow:hidden;touch-action:none}
 .board{scroll-margin-top:90px}
 #msg svg{width:15px;height:15px;vertical-align:-3px;display:inline-block}
 #msg.alerte{color:#b3261e;font-weight:bold;animation:alerteClig 1.6s steps(1,end) infinite}
@@ -951,7 +951,7 @@ function draw(p, tour){
 
 /* ---------- Manches et tours ---------- */
 function newGame(){
-  clearTimeout(vueTimer); vueTimer = null;
+  clearTimeout(vueTimer); vueTimer = null; document.documentElement.classList.remove('vueFigee');
   pickBg();
   inGame = true; over = false; finDerniere = null; history.pushState({ g: 1 }, ''); startMusic();
   partieMode = mode;
@@ -1158,14 +1158,18 @@ function pauseVueIA(){
   const plateau = $('oppBoard').closest('.board');
   plateau.classList.add('vu');
   render();
+  // Vue figée sur le plateau adverse (4,5 s à vitesse normale, suit le réglage de vitesse)
+  plateau.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.documentElement.classList.add('vueFigee');
   clearTimeout(vueTimer);
   vueTimer = setTimeout(() => {
     vueTimer = null;
     plateau.classList.remove('vu');
+    document.documentElement.classList.remove('vueFigee');
     if (over || !inGame) return;
     cur = HUMAN;
     startTurn();
-  }, 2000);
+  }, Math.round(4500 * VITESSES[vitesse][1] / 900));
 }
 
 // Un joueur peut agir s'il peut poser une carte, ou charger son Ki
